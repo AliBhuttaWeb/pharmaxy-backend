@@ -1,0 +1,1745 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//////////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////////
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+
+  @@map("user_status")
+}
+
+enum PermissionEffect {
+  ALLOW
+  DENY
+
+  @@map("permission_effect")
+}
+
+//////////////////////////////////////////////////////
+// USERS & AUTHENTICATION
+//////////////////////////////////////////////////////
+
+model User {
+  id                   String     @id @default(uuid()) @db.Uuid
+  first_name           String     @db.VarChar(100)
+  last_name            String?    @db.VarChar(100)
+  email                String     @unique @db.VarChar(255)
+  phone                String?    @unique @db.VarChar(30)
+  password             String     @db.VarChar(255)
+  avatar_url           String?    @db.Text
+  is_email_verified    Boolean    @default(false)
+  is_phone_verified    Boolean    @default(false)
+  last_login_at        DateTime?
+  status               UserStatus @default(ACTIVE)
+
+  created_at           DateTime   @default(now())
+  updated_at           DateTime   @updatedAt
+
+  user_roles           UserRole[]
+  user_permissions     UserPermission[]
+  requested_transfers  StockTransfer[] @relation("TransferRequester")
+  dispatched_transfers StockTransfer[] @relation("TransferDispatcher")
+  received_transfers   StockTransfer[] @relation("TransferReceiver")
+  invoices             Invoice[] @relation("InvoiceCashier")
+  hold_orders          HoldOrder[] @relation("HoldOrderCashier")
+  returns              Return[] @relation("ReturnCashier")
+  stock_adjustments    StockAdjustment[] @relation("StockAdjustmentUser")
+  support_tickets      SupportTicket[] @relation("SupportTicketCreator")
+  audit_logs           AuditLog[] @relation("AuditLogUser")
+  notifications        Notification[]
+  support_ticket_messages SupportTicketMessage[]
+  system_logs          SystemLog[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([status])
+  @@map("users")
+}
+
+
+model Role {
+  id                   String     @id @default(uuid()) @db.Uuid
+  name                 String     @unique @db.VarChar(100)
+  description          String?    @db.Text
+
+  created_at           DateTime   @default(now())
+  updated_at           DateTime   @updatedAt
+
+  role_permissions     RolePermission[]
+  user_roles           UserRole[]
+
+  @@map("roles")
+}
+
+
+model Permission {
+  id                   String     @id @default(uuid()) @db.Uuid
+  name                 String     @unique @db.VarChar(150)
+  description          String?    @db.Text
+
+  created_at           DateTime   @default(now())
+  updated_at           DateTime   @updatedAt
+
+  role_permissions     RolePermission[]
+  user_permissions     UserPermission[]
+
+  @@map("permissions")
+}
+
+
+model UserRole {
+  id                   String     @id @default(uuid()) @db.Uuid
+
+  user_id              String     @db.Uuid
+  role_id              String     @db.Uuid
+
+  created_at           DateTime   @default(now())
+
+  user                 User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  role                 Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, role_id])
+  @@index([user_id])
+  @@index([role_id])
+  @@map("user_roles")
+}
+
+
+model RolePermission {
+  id                   String     @id @default(uuid()) @db.Uuid
+
+  role_id              String     @db.Uuid
+  permission_id        String     @db.Uuid
+
+  created_at           DateTime   @default(now())
+
+  role                 Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  permission           Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+
+  @@unique([role_id, permission_id])
+  @@index([role_id])
+  @@index([permission_id])
+  @@map("role_permissions")
+}
+
+
+model UserPermission {
+  id                   String             @id @default(uuid()) @db.Uuid
+
+  user_id              String             @db.Uuid
+  permission_id        String             @db.Uuid
+
+  effect               PermissionEffect
+
+  created_at           DateTime           @default(now())
+  updated_at           DateTime           @updatedAt
+
+  user                 User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  permission           Permission         @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, permission_id])
+  @@index([user_id])
+  @@index([permission_id])
+  @@map("user_permissions")
+}
+
+//////////////////////////////////////////////////////
+// PHARMACY MODULE
+//////////////////////////////////////////////////////
+
+enum PharmacyStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+
+  @@map("pharmacy_status")
+}
+
+model Pharmacy {
+  id                      String                @id @default(uuid()) @db.Uuid
+
+  name                    String                @db.VarChar(255)
+
+  legal_name              String?               @db.VarChar(255)
+
+  registration_number     String?               @db.VarChar(100)
+
+  license_number          String?               @db.VarChar(100)
+
+  tax_number              String?               @db.VarChar(100)
+
+  email                   String?               @db.VarChar(255)
+
+  phone                   String?               @db.VarChar(30)
+
+  website                 String?               @db.VarChar(255)
+
+  logo_url                String?               @db.Text
+
+  status                  PharmacyStatus        @default(ACTIVE)
+
+  created_at              DateTime              @default(now())
+  updated_at              DateTime              @updatedAt
+  deleted_at              DateTime?
+
+  settings                PharmacySettings?
+
+  branches                Branch[]
+
+  subscriptions           Subscription[]
+
+  customers               Customer[]
+
+  purchase_orders         PurchaseOrder[]
+
+  invoices                Invoice[]
+
+  hold_orders             HoldOrder[]
+
+  sale_returns            Return[]
+
+  stock_adjustments       StockAdjustment[]
+
+  stock_transfers         StockTransfer[]
+
+  notifications           Notification[]
+
+  support_tickets         SupportTicket[]
+
+  audit_logs              AuditLog[]
+
+  payment_methods         PaymentMethod[]
+
+  suppliers               Supplier[]
+
+  system_logs             SystemLog[]
+
+  @@index([status])
+
+  @@map("pharmacies")
+}
+
+model Branch {
+  id                            String              @id @default(uuid()) @db.Uuid
+
+  pharmacy_id                   String              @db.Uuid
+
+  name                          String              @db.VarChar(255)
+
+  address                       String              @db.Text
+
+  city                          String              @db.VarChar(100)
+
+  state                         String?             @db.VarChar(100)
+
+  country                       String              @db.VarChar(100)
+
+  postal_code                   String?             @db.VarChar(20)
+
+  latitude                      Decimal?            @db.Decimal(10,7)
+
+  longitude                     Decimal?            @db.Decimal(10,7)
+
+  email                         String?             @db.VarChar(255)
+
+  phone                         String?             @db.VarChar(30)
+
+  is_main                       Boolean             @default(false)
+
+  is_active                     Boolean             @default(true)
+
+  created_at                    DateTime            @default(now())
+
+  updated_at                    DateTime            @updatedAt
+
+  deleted_at                    DateTime?
+
+  pharmacy                      Pharmacy            @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+
+  branch_products               BranchProduct[]
+
+  purchase_orders               PurchaseOrder[]
+
+  hold_orders                   HoldOrder[]
+
+  invoices                      Invoice[]
+
+  stock_adjustments             StockAdjustment[]
+
+  stock_transfers_from          StockTransfer[]     @relation("TransferFromBranch")
+
+  stock_transfers_to            StockTransfer[]     @relation("TransferToBranch")
+
+  returns                       Return[]
+
+  audit_logs                    AuditLog[]
+
+  system_logs                   SystemLog[]
+
+  @@unique([pharmacy_id, name])
+
+  @@index([pharmacy_id])
+
+  @@index([city])
+
+  @@map("branches")
+}
+
+
+//////////////////////////////////////////////////////
+// SUBSCRIPTION MODULE
+//////////////////////////////////////////////////////
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  SUSPENDED
+
+  @@map("subscription_status")
+}
+
+enum SubscriptionPaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+
+  @@map("subscription_payment_status")
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+
+  @@map("billing_cycle")
+}
+
+
+model SubscriptionPlan {
+  id                   String              @id @default(uuid()) @db.Uuid
+
+  name                 String              @unique @db.VarChar(100)
+  description          String?             @db.Text
+
+  billing_cycle        BillingCycle
+
+  price                Decimal             @db.Decimal(12, 2)
+
+  max_branches         Int?
+  max_users            Int?
+
+  is_active            Boolean             @default(true)
+
+  created_at           DateTime            @default(now())
+  updated_at           DateTime            @updatedAt
+
+  subscriptions        Subscription[]
+
+  @@index([is_active])
+  @@map("subscription_plans")
+}
+
+
+model Subscription {
+  id                   String              @id @default(uuid()) @db.Uuid
+
+  pharmacy_id          String              @db.Uuid
+  plan_id              String              @db.Uuid
+
+  status               SubscriptionStatus @default(TRIAL)
+
+  started_at           DateTime
+  expires_at           DateTime
+
+  trial_started_at     DateTime?
+  trial_ends_at        DateTime?
+
+  cancelled_at         DateTime?
+
+  auto_renew           Boolean             @default(true)
+
+  created_at           DateTime            @default(now())
+  updated_at           DateTime            @updatedAt
+
+  pharmacy             Pharmacy            @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+
+  plan                 SubscriptionPlan    @relation(fields: [plan_id], references: [id], onDelete: Restrict)
+
+  payments             SubscriptionPayment[]
+
+  @@index([pharmacy_id])
+  @@index([plan_id])
+  @@index([status])
+  @@index([expires_at])
+  @@map("subscriptions")
+}
+
+
+model SubscriptionPayment {
+  id                   String              @id @default(uuid()) @db.Uuid
+
+  subscription_id      String              @db.Uuid
+
+  amount               Decimal             @db.Decimal(12, 2)
+
+  payment_status       SubscriptionPaymentStatus       @default(PENDING)
+
+  payment_reference    String?             @db.VarChar(255)
+
+  paid_at              DateTime?
+
+  payment_method       String?             @db.VarChar(100)
+
+  created_at           DateTime            @default(now())
+  updated_at           DateTime            @updatedAt
+
+  subscription         Subscription        @relation(fields: [subscription_id], references: [id], onDelete: Cascade)
+
+  @@index([subscription_id])
+  @@index([payment_status])
+  @@index([paid_at])
+  @@map("subscription_payments")
+}
+
+//////////////////////////////////////////////////////
+// PRODUCT CATALOG
+//////////////////////////////////////////////////////
+
+model Manufacturer {
+  id          String   @id @default(uuid()) @db.Uuid
+
+  name        String   @unique @db.VarChar(200)
+
+  description String?  @db.Text
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  deleted_at  DateTime?
+
+  products    Product[]
+
+  @@index([name])
+  @@map("manufacturers")
+}
+
+model ProductCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+
+  name        String   @unique @db.VarChar(150)
+
+  description String?  @db.Text
+
+  parent_id   String?  @db.Uuid
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  deleted_at  DateTime?
+
+  parent ProductCategory? @relation("category_parent", fields: [parent_id], references: [id], onDelete: SetNull)
+
+  children ProductCategory[] @relation("category_parent")
+
+  products Product[]
+
+  @@index([parent_id])
+  @@index([name])
+
+  @@map("product_categories")
+}
+
+model Product {
+  id String @id @default(uuid()) @db.Uuid
+
+  manufacturer_id String? @db.Uuid
+  category_id     String? @db.Uuid
+
+  // Medicine Information
+
+  name         String  @db.VarChar(255)
+  generic_name String? @db.VarChar(255)
+
+  formula      String? @db.VarChar(1000)
+
+  dosage_form  String? @db.VarChar(100)
+
+  strength     String? @db.VarChar(100)
+
+  pack_size    String? @db.VarChar(100)
+
+  barcode      String? @unique @db.VarChar(100)
+
+  image_url    String? @db.Text
+
+  description  String? @db.Text
+
+  requires_prescription Boolean @default(false)
+
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+
+  //////////////////////////////////////////////////////
+  // Relations
+  //////////////////////////////////////////////////////
+
+  manufacturer Manufacturer? @relation(fields: [manufacturer_id], references: [id], onDelete: SetNull)
+
+  category ProductCategory? @relation(fields: [category_id], references: [id], onDelete: SetNull)
+
+  branch_products BranchProduct[]
+
+  purchase_order_items PurchaseOrderItem[]
+
+  invoice_items InvoiceItem[]
+
+  //////////////////////////////////////////////////////
+  // Indexes
+  //////////////////////////////////////////////////////
+
+  @@index([name])
+  @@index([generic_name])
+  @@index([manufacturer_id])
+  @@index([category_id])
+  @@index([barcode])
+  @@index([requires_prescription])
+  @@index([is_active])
+
+  @@map("products")
+}
+
+model BranchProduct {
+  id String @id @default(uuid()) @db.Uuid
+
+  branch_id  String @db.Uuid
+  product_id String @db.Uuid
+
+  quantity String @db.VarChar(100)
+
+  selling_price Decimal @db.Decimal(12,2)
+
+  storage_temperature String? @db.VarChar(100)
+
+  storage_instructions String? @db.Text
+
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+
+  //////////////////////////////////////////////////////
+  // Relations
+  //////////////////////////////////////////////////////
+
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Cascade)
+
+  product Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
+
+  batches ProductBatch[]
+
+  invoice_items InvoiceItem[]
+
+  hold_order_items HoldOrderItem[]
+
+  stock_adjustment_items StockAdjustmentItem[]
+
+  stock_transfer_items StockTransferItem[]
+
+  //////////////////////////////////////////////////////
+  // Constraints
+  //////////////////////////////////////////////////////
+
+  @@unique([branch_id, product_id])
+
+  //////////////////////////////////////////////////////
+  // Indexes
+  //////////////////////////////////////////////////////
+
+  @@index([branch_id])
+  @@index([product_id])
+  @@index([selling_price])
+  @@index([is_active])
+
+  @@map("branch_products")
+}
+
+enum BatchSourceType {
+  PURCHASE_ORDER
+  OPENING_STOCK
+  STOCK_TRANSFER
+  MANUAL_ADJUSTMENT
+  SALE_RETURN
+  DONATION
+  IMPORT
+  OTHER
+
+  @@map("batch_source_type")
+}
+
+model ProductBatch {
+  id String @id @default(uuid()) @db.Uuid
+
+  branch_product_id String @db.Uuid
+
+  batch_number String @db.VarChar(100)
+
+  manufacturing_date DateTime?
+
+  expiry_date DateTime?
+
+  purchase_price Decimal @db.Decimal(12,2)
+  mrp Decimal @db.Decimal(12,2)
+
+  quantity Int @default(0)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+
+  //////////////////////////////////////////////////////
+  // Relations
+  //////////////////////////////////////////////////////
+
+  branch_product BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Cascade)
+
+  source_type            BatchSourceType
+
+  purchase_order_item_id String? @db.Uuid
+
+  purchase_order_item PurchaseOrderItem? @relation(fields: [purchase_order_item_id], references: [id], onDelete: SetNull)
+
+  invoice_item_batches InvoiceItemBatch[]
+
+  stock_adjustment_items StockAdjustmentItem[]
+
+  stock_transfer_items StockTransferItem[]
+
+  //////////////////////////////////////////////////////
+  // Constraints
+  //////////////////////////////////////////////////////
+
+  @@unique([branch_product_id, batch_number])
+
+  //////////////////////////////////////////////////////
+  // Indexes
+  //////////////////////////////////////////////////////
+
+  @@index([branch_product_id])
+  @@index([expiry_date])
+  @@index([batch_number])
+
+  @@map("product_batches")
+}
+
+enum PurchaseOrderStatus {
+  DRAFT
+  PENDING_SUPPLIER
+  ACCEPTED
+  REJECTED
+  PARTIALLY_FULFILLED
+  FULFILLED
+  RECEIVED
+  CANCELLED
+
+  @@map("purchase_order_status")
+}
+
+model PurchaseOrder {
+  id                          String                 @id @default(uuid()) @db.Uuid
+
+  pharmacy_id                 String                 @db.Uuid
+  branch_id                   String                 @db.Uuid
+  supplier_id                 String                 @db.Uuid
+
+  purchase_order_number       String                 @db.VarChar(50)
+
+  status                      PurchaseOrderStatus    @default(DRAFT)
+
+  order_date                  DateTime               @db.Date
+  expected_delivery_date      DateTime?              @db.Date
+
+  subtotal                    Decimal                @default(0) @db.Decimal(14,2)
+  discount_amount             Decimal                @default(0) @db.Decimal(14,2)
+  tax_amount                  Decimal                @default(0) @db.Decimal(14,2)
+  shipping_amount             Decimal                @default(0) @db.Decimal(14,2)
+  other_charges               Decimal                @default(0) @db.Decimal(14,2)
+
+  grand_total                 Decimal                @default(0) @db.Decimal(14,2)
+
+  supplier_response_at        DateTime?
+  fulfilled_at                DateTime?
+  received_at                 DateTime?
+
+  supplier_notes              String?                @db.Text
+  receiver_notes              String?                @db.Text
+  internal_notes              String?                @db.Text
+
+  created_by                  String?                @db.Uuid
+  approved_by                 String?                @db.Uuid
+  received_by                 String?                @db.Uuid
+
+  created_at                  DateTime               @default(now())
+  updated_at                  DateTime               @updatedAt
+  deleted_at                  DateTime?
+
+  pharmacy                    Pharmacy               @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+
+  branch                      Branch                 @relation(fields: [branch_id], references: [id], onDelete: Restrict)
+
+  supplier                    Supplier               @relation(fields: [supplier_id], references: [id], onDelete: Restrict)
+
+  items                       PurchaseOrderItem[]
+
+  @@unique([branch_id, purchase_order_number])
+
+  @@index([pharmacy_id])
+  @@index([branch_id])
+  @@index([supplier_id])
+
+  @@index([status])
+  @@index([order_date])
+  @@index([expected_delivery_date])
+
+  @@index([created_by])
+  @@index([approved_by])
+  @@index([received_by])
+
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id                        String   @id @default(uuid()) @db.Uuid
+
+  purchase_order_id         String   @db.Uuid
+  product_id                String   @db.Uuid
+
+  ordered_quantity          Decimal  @db.Decimal(14,3)
+  fulfilled_quantity        Decimal  @default(0) @db.Decimal(14,3)
+  received_quantity         Decimal  @default(0) @db.Decimal(14,3)
+
+  unit_cost                 Decimal  @db.Decimal(14,2)
+
+  discount_percentage       Decimal? @db.Decimal(5,2)
+  discount_amount           Decimal  @default(0) @db.Decimal(14,2)
+
+  tax_percentage            Decimal? @db.Decimal(5,2)
+  tax_amount                Decimal  @default(0) @db.Decimal(14,2)
+
+  line_total                Decimal  @db.Decimal(14,2)
+
+  remarks                   String?  @db.Text
+
+  created_at                DateTime @default(now())
+  updated_at                DateTime @updatedAt
+
+  purchase_order            PurchaseOrder @relation(fields: [purchase_order_id], references: [id], onDelete: Cascade)
+
+  product                   Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
+
+  product_batches           ProductBatch[]
+
+  @@index([purchase_order_id])
+  @@index([product_id])
+
+  @@map("purchase_order_items")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+
+  @@map("gender")
+}
+
+model Customer {
+  id                          String            @id @default(uuid()) @db.Uuid
+
+  pharmacy_id                 String            @db.Uuid
+
+  customer_code               String            @db.VarChar(50)
+
+  first_name                  String            @db.VarChar(100)
+  last_name                   String?           @db.VarChar(100)
+
+  phone                       String?           @db.VarChar(30)
+  email                       String?           @db.VarChar(255)
+
+  gender                      Gender?
+
+  date_of_birth               DateTime?         @db.Date
+
+  address                     String?           @db.Text
+  city                        String?           @db.VarChar(100)
+  state                       String?           @db.VarChar(100)
+  country                     String?           @db.VarChar(100)
+  postal_code                 String?           @db.VarChar(20)
+
+  loyalty_points              Decimal           @default(0) @db.Decimal(14,2)
+
+  total_spent                 Decimal           @default(0) @db.Decimal(14,2)
+
+  total_orders                Int               @default(0)
+
+  notes                       String?           @db.Text
+
+  is_walk_in                  Boolean           @default(false)
+
+  is_active                   Boolean           @default(true)
+
+  created_by                  String?           @db.Uuid
+  updated_by                  String?           @db.Uuid
+
+  created_at                  DateTime          @default(now())
+  updated_at                  DateTime          @updatedAt
+  deleted_at                  DateTime?
+
+  pharmacy                    Pharmacy          @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+
+  invoices                    Invoice[]
+
+  hold_orders                 HoldOrder[]
+
+  returns                     Return[]
+
+  @@unique([pharmacy_id, customer_code])
+
+  @@index([pharmacy_id])
+  @@index([phone])
+  @@index([email])
+  @@index([is_walk_in])
+  @@index([is_active])
+
+  @@map("customers")
+}
+
+model PaymentMethod {
+  id                    String    @id @default(uuid()) @db.Uuid
+
+  pharmacy_id           String    @db.Uuid
+
+  name                  String    @db.VarChar(100)
+  code                  String    @db.VarChar(50)
+
+  description           String?   @db.Text
+
+  is_cash               Boolean   @default(false)
+
+  requires_reference    Boolean   @default(false)
+
+  is_active             Boolean   @default(true)
+
+  display_order         Int       @default(0)
+
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @updatedAt
+  deleted_at            DateTime?
+
+  pharmacy              Pharmacy  @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+
+  invoice_payments      InvoicePayment[]
+
+  @@unique([pharmacy_id, code])
+  @@unique([pharmacy_id, name])
+
+  @@index([pharmacy_id])
+  @@index([is_active])
+
+  @@map("payment_methods")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  COMPLETED
+  CANCELLED
+  PARTIALLY_REFUNDED
+  REFUNDED
+
+  @@map("invoice_status")
+}
+
+model Invoice {
+  id                      String          @id @default(uuid()) @db.Uuid
+
+  pharmacy_id             String          @db.Uuid
+  branch_id               String          @db.Uuid
+
+  customer_id             String          @db.Uuid
+
+  cashier_id              String          @db.Uuid
+
+  invoice_number          String          @db.VarChar(50)
+
+  status                  InvoiceStatus   @default(DRAFT)
+
+  subtotal                Decimal         @default(0) @db.Decimal(14,2)
+  discount_amount         Decimal         @default(0) @db.Decimal(14,2)
+  tax_amount              Decimal         @default(0) @db.Decimal(14,2)
+  rounding_amount         Decimal         @default(0) @db.Decimal(14,2)
+  grand_total             Decimal         @default(0) @db.Decimal(14,2)
+
+  paid_amount             Decimal         @default(0) @db.Decimal(14,2)
+  due_amount              Decimal         @default(0) @db.Decimal(14,2)
+
+  notes                   String?         @db.Text
+
+  completed_at            DateTime?
+  cancelled_at            DateTime?
+
+  created_at              DateTime        @default(now())
+  updated_at              DateTime        @updatedAt
+  deleted_at              DateTime?
+
+  pharmacy                Pharmacy        @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+
+  branch                  Branch          @relation(fields: [branch_id], references: [id], onDelete: Restrict)
+
+  customer                Customer        @relation(fields: [customer_id], references: [id], onDelete: Restrict)
+  cashier                 User            @relation("InvoiceCashier", fields: [cashier_id], references: [id], onDelete: Restrict)
+
+  items                   InvoiceItem[]
+  payments                InvoicePayment[]
+  returns                 Return[]
+
+  @@unique([branch_id, invoice_number])
+
+  @@index([pharmacy_id])
+  @@index([branch_id])
+  @@index([customer_id])
+  @@index([cashier_id])
+  @@index([status])
+  @@index([completed_at])
+
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id                      String      @id @default(uuid()) @db.Uuid
+
+  invoice_id              String      @db.Uuid
+
+  product_id              String      @db.Uuid
+  branch_product_id       String      @db.Uuid
+
+  quantity                Decimal     @db.Decimal(14,3)
+
+  unit_price              Decimal     @db.Decimal(14,2)
+
+  discount_amount         Decimal     @default(0) @db.Decimal(14,2)
+
+  tax_amount              Decimal     @default(0) @db.Decimal(14,2)
+
+  line_total              Decimal     @db.Decimal(14,2)
+
+  notes                   String?     @db.Text
+
+  created_at              DateTime    @default(now())
+  updated_at              DateTime    @updatedAt
+
+  invoice Invoice @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
+
+  product                 Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
+
+  branch_product          BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+
+  batches                 InvoiceItemBatch[]
+
+  return_items            ReturnItem[]
+
+  @@index([invoice_id])
+  @@index([product_id])
+  @@index([branch_product_id])
+
+  @@map("invoice_items")
+}
+
+model InvoiceItemBatch {
+  id                          String            @id @default(uuid()) @db.Uuid
+
+  invoice_item_id             String            @db.Uuid
+
+  product_batch_id            String            @db.Uuid
+
+  quantity                    Decimal           @db.Decimal(14,3)
+
+  created_at                  DateTime          @default(now())
+
+  invoice_item                InvoiceItem       @relation(fields: [invoice_item_id], references: [id], onDelete: Cascade)
+
+  product_batch               ProductBatch      @relation(fields: [product_batch_id], references: [id], onDelete: Restrict)
+
+  @@index([invoice_item_id])
+
+  @@index([product_batch_id])
+
+  @@map("invoice_item_batches")
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  REFUNDED
+
+  @@map("payment_status")
+}
+
+model InvoicePayment {
+  id                         String          @id @default(uuid()) @db.Uuid
+
+  invoice_id                 String          @db.Uuid
+  payment_method_id          String          @db.Uuid
+
+  amount                     Decimal         @db.Decimal(14,2)
+
+  status                     PaymentStatus   @default(PENDING)
+
+  gateway_transaction_id     String?         @db.VarChar(255)
+  gateway_reference          String?         @db.VarChar(255)
+
+  gateway_response           Json?
+  metadata                   Json?
+
+  notes                      String?         @db.Text
+
+  paid_at                    DateTime?
+  created_at                 DateTime        @default(now())
+  updated_at                 DateTime        @updatedAt
+
+  invoice                    Invoice         @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
+
+  payment_method             PaymentMethod   @relation(fields: [payment_method_id], references: [id], onDelete: Restrict)
+
+  @@index([invoice_id])
+  @@index([payment_method_id])
+  @@index([status])
+
+  @@map("invoice_payments")
+}
+
+model HoldOrder {
+  id                    String      @id @default(uuid()) @db.Uuid
+
+  pharmacy_id           String      @db.Uuid
+  branch_id             String      @db.Uuid
+
+  customer_id           String?     @db.Uuid
+
+  cashier_id            String      @db.Uuid
+
+  hold_number           String      @db.VarChar(50)
+
+  subtotal              Decimal     @default(0) @db.Decimal(14,2)
+  discount_amount       Decimal     @default(0) @db.Decimal(14,2)
+  tax_amount            Decimal     @default(0) @db.Decimal(14,2)
+  grand_total           Decimal     @default(0) @db.Decimal(14,2)
+
+  notes                 String?     @db.Text
+
+  expires_at            DateTime?
+
+  created_at            DateTime    @default(now())
+  updated_at            DateTime    @updatedAt
+
+  pharmacy              Pharmacy    @relation(fields: [pharmacy_id], references: [id])
+
+  branch                Branch      @relation(fields: [branch_id], references: [id])
+
+  customer              Customer?   @relation(fields: [customer_id], references: [id])
+
+  cashier               User        @relation("HoldOrderCashier", fields: [cashier_id], references: [id])
+
+  items                 HoldOrderItem[]
+
+  @@unique([branch_id, hold_number])
+
+  @@index([branch_id])
+
+  @@map("hold_orders")
+}
+
+model HoldOrderItem {
+  id                          String            @id @default(uuid()) @db.Uuid
+
+  hold_order_id               String            @db.Uuid
+
+  branch_product_id           String            @db.Uuid
+
+  quantity                    Decimal           @db.Decimal(14,3)
+
+  unit_price                  Decimal           @db.Decimal(14,2)
+
+  discount_amount             Decimal           @default(0) @db.Decimal(14,2)
+
+  tax_amount                  Decimal           @default(0) @db.Decimal(14,2)
+
+  subtotal                    Decimal           @db.Decimal(14,2)
+
+  notes                       String?           @db.Text
+
+  created_at                  DateTime          @default(now())
+
+  hold_order                  HoldOrder         @relation(fields: [hold_order_id], references: [id], onDelete: Cascade)
+
+  branch_product              BranchProduct     @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+
+  @@index([hold_order_id])
+
+  @@index([branch_product_id])
+
+  @@map("hold_order_items")
+}
+
+enum ReturnStatus {
+  COMPLETED
+  CANCELLED
+
+  @@map("return_status")
+}
+
+model Return {
+  id                      String          @id @default(uuid()) @db.Uuid
+
+  pharmacy_id             String          @db.Uuid
+
+  branch_id               String          @db.Uuid
+
+  invoice_id              String          @db.Uuid
+
+  customer_id             String          @db.Uuid
+
+  cashier_id              String          @db.Uuid
+
+  return_number           String          @db.VarChar(50)
+
+  refund_amount           Decimal         @default(0) @db.Decimal(14,2)
+
+  status                  ReturnStatus    @default(COMPLETED)
+
+  reason                  String?         @db.Text
+
+  notes                   String?         @db.Text
+
+  created_at              DateTime        @default(now())
+
+  updated_at              DateTime        @updatedAt
+
+  pharmacy                Pharmacy        @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+
+  branch                  Branch          @relation(fields: [branch_id], references: [id], onDelete: Restrict)
+
+  invoice                 Invoice         @relation(fields: [invoice_id], references: [id], onDelete: Restrict)
+
+  customer                Customer        @relation(fields: [customer_id], references: [id], onDelete: Restrict)
+
+  cashier                 User            @relation("ReturnCashier", fields: [cashier_id], references: [id], onDelete: Restrict)
+
+  items                   ReturnItem[]
+
+  @@unique([branch_id, return_number])
+
+  @@index([invoice_id])
+
+  @@index([customer_id])
+
+  @@map("returns")
+}
+
+model ReturnItem {
+  id                      String          @id @default(uuid()) @db.Uuid
+
+  return_id               String          @db.Uuid
+
+  invoice_item_id         String          @db.Uuid
+
+  quantity                Decimal         @db.Decimal(14,3)
+
+  refund_amount           Decimal         @db.Decimal(14,2)
+
+  notes                   String?         @db.Text
+
+  return                  Return          @relation(fields: [return_id], references: [id], onDelete: Cascade)
+
+  invoice_item            InvoiceItem     @relation(fields: [invoice_item_id], references: [id], onDelete: Restrict)
+
+  @@index([return_id])
+
+  @@index([invoice_item_id])
+
+  @@map("return_items")
+}
+
+enum StockAdjustmentStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+
+  @@map("stock_adjustment_status")
+}
+
+model StockAdjustment {
+  id                      String                  @id @default(uuid()) @db.Uuid
+
+  pharmacy_id             String                  @db.Uuid
+  branch_id               String                  @db.Uuid
+
+  adjustment_number       String                  @db.VarChar(50)
+
+  status                  StockAdjustmentStatus   @default(PENDING)
+
+  notes                   String?                 @db.Text
+
+  adjusted_by             String                  @db.Uuid
+
+  adjusted_at             DateTime?
+
+  created_at              DateTime                @default(now())
+  updated_at              DateTime                @updatedAt
+
+  pharmacy                Pharmacy                @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+
+  branch                  Branch                  @relation(fields: [branch_id], references: [id], onDelete: Restrict)
+
+  user                    User                    @relation("StockAdjustmentUser", fields: [adjusted_by], references: [id], onDelete: Restrict)
+
+  items                   StockAdjustmentItem[]
+
+  @@unique([branch_id, adjustment_number])
+
+  @@index([branch_id])
+  @@index([status])
+
+  @@map("stock_adjustments")
+}
+
+enum AdjustmentReason {
+  DAMAGED
+  EXPIRED
+  PHYSICAL_COUNT
+  THEFT
+  OPENING_STOCK
+  OTHER
+
+  @@map("adjustment_reason")
+}
+
+model StockAdjustmentItem {
+  id                        String              @id @default(uuid()) @db.Uuid
+
+  stock_adjustment_id       String              @db.Uuid
+
+  branch_product_id         String              @db.Uuid
+
+  product_batch_id          String?             @db.Uuid
+
+  reason                    AdjustmentReason
+
+  quantity_before           Decimal             @db.Decimal(14,3)
+
+  quantity_after            Decimal             @db.Decimal(14,3)
+
+  adjustment_quantity       Decimal             @db.Decimal(14,3)
+
+  remarks                   String?             @db.Text
+
+  stock_adjustment          StockAdjustment     @relation(fields: [stock_adjustment_id], references: [id], onDelete: Cascade)
+
+  branch_product            BranchProduct       @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+
+  product_batch             ProductBatch?       @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
+
+  @@index([stock_adjustment_id])
+  @@index([branch_product_id])
+
+  @@map("stock_adjustment_items")
+}
+
+enum StockTransferStatus {
+  DRAFT
+  IN_TRANSIT
+  RECEIVED
+  CANCELLED
+
+  @@map("stock_transfer_status")
+}
+
+model StockTransfer {
+  id                          String                @id @default(uuid()) @db.Uuid
+
+  pharmacy_id                 String                @db.Uuid
+
+  from_branch_id              String                @db.Uuid
+  to_branch_id                String                @db.Uuid
+
+  transfer_number             String                @db.VarChar(50)
+
+  status                      StockTransferStatus   @default(DRAFT)
+
+  notes                       String?               @db.Text
+
+  requested_by                String                @db.Uuid
+
+  dispatched_by               String?               @db.Uuid
+  received_by                 String?               @db.Uuid
+
+  dispatched_at               DateTime?
+  received_at                 DateTime?
+
+  created_at                  DateTime              @default(now())
+  updated_at                  DateTime              @updatedAt
+
+  pharmacy                    Pharmacy              @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+
+  from_branch                 Branch                @relation("TransferFromBranch", fields: [from_branch_id], references: [id], onDelete: Restrict)
+
+  to_branch                   Branch                @relation("TransferToBranch", fields: [to_branch_id], references: [id], onDelete: Restrict)
+
+  requester                   User                  @relation("TransferRequester", fields: [requested_by], references: [id], onDelete: Restrict)
+
+  dispatcher                  User?                 @relation("TransferDispatcher", fields: [dispatched_by], references: [id], onDelete: SetNull)
+
+  receiver                    User?                 @relation("TransferReceiver", fields: [received_by], references: [id], onDelete: SetNull)
+
+  items                       StockTransferItem[]
+
+  @@unique([pharmacy_id, transfer_number])
+
+  @@index([from_branch_id])
+  @@index([to_branch_id])
+  @@index([status])
+
+  @@map("stock_transfers")
+}
+
+model StockTransferItem {
+  id                          String            @id @default(uuid()) @db.Uuid
+
+  stock_transfer_id           String            @db.Uuid
+
+  branch_product_id           String            @db.Uuid
+
+  product_batch_id            String?           @db.Uuid
+
+  quantity                    Decimal           @db.Decimal(14,3)
+
+  notes                       String?           @db.Text
+
+  stock_transfer              StockTransfer     @relation(fields: [stock_transfer_id], references: [id], onDelete: Cascade)
+
+  branch_product              BranchProduct     @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+
+  product_batch               ProductBatch?     @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
+
+  @@index([stock_transfer_id])
+  @@index([branch_product_id])
+  @@index([product_batch_id])
+
+  @@map("stock_transfer_items")
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+
+  @@map("notification_status")
+}
+
+model Notification {
+  id                    String                 @id @default(uuid()) @db.Uuid
+
+  pharmacy_id           String?                @db.Uuid
+
+  user_id               String                 @db.Uuid
+
+  status                NotificationStatus     @default(UNREAD)
+
+  title                 String                 @db.VarChar(255)
+
+  message               String                 @db.Text
+
+  reference_type        String?                @db.VarChar(50)
+
+  reference_id          String?                @db.Uuid
+
+  read_at               DateTime?
+
+  created_at            DateTime               @default(now())
+
+  pharmacy              Pharmacy?              @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+
+  user                  User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([status])
+  @@index([created_at])
+
+  @@map("notifications")
+}
+
+enum SupportTicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+
+  @@map("support_ticket_status")
+}
+
+model SupportTicket {
+  id                      String                @id @default(uuid()) @db.Uuid
+
+  pharmacy_id             String                @db.Uuid
+
+  created_by              String                @db.Uuid
+
+  ticket_number           String                @db.VarChar(50)
+
+  subject                 String                @db.VarChar(255)
+
+  status                  SupportTicketStatus   @default(OPEN)
+
+  created_at              DateTime              @default(now())
+  updated_at              DateTime              @updatedAt
+
+  pharmacy                Pharmacy              @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+
+  creator                 User                  @relation("SupportTicketCreator", fields: [created_by], references: [id], onDelete: Restrict)
+
+  messages                SupportTicketMessage[]
+
+  attachments             SupportTicketAttachment[]
+
+  @@unique([pharmacy_id, ticket_number])
+
+  @@index([status])
+
+  @@index([created_by])
+
+  @@map("support_tickets")
+}
+
+model SupportTicketMessage {
+  id                      String          @id @default(uuid()) @db.Uuid
+
+  support_ticket_id       String          @db.Uuid
+
+  user_id                 String          @db.Uuid
+
+  message                 String          @db.Text
+
+  created_at              DateTime        @default(now())
+
+  support_ticket          SupportTicket   @relation(fields: [support_ticket_id], references: [id], onDelete: Cascade)
+
+  user                    User            @relation(fields: [user_id], references: [id], onDelete: Restrict)
+
+  @@index([support_ticket_id])
+
+  @@map("support_ticket_messages")
+}
+
+model SupportTicketAttachment {
+  id                    String                @id @default(uuid()) @db.Uuid
+
+  support_ticket_id     String                @db.Uuid
+
+  file_name             String                @db.VarChar(255)
+
+  file_url              String                @db.Text
+
+  mime_type             String?               @db.VarChar(100)
+
+  file_size             Int?
+
+  created_at            DateTime              @default(now())
+
+  support_ticket        SupportTicket         @relation(fields: [support_ticket_id], references: [id], onDelete: Cascade)
+
+  @@index([support_ticket_id])
+
+  @@map("support_ticket_attachments")
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+
+  @@map("audit_action")
+}
+model AuditLog {
+  id                    String        @id @default(uuid()) @db.Uuid
+
+  pharmacy_id           String?       @db.Uuid
+
+  branch_id             String?       @db.Uuid
+
+  user_id               String?       @db.Uuid
+
+  action                AuditAction
+
+  entity                String        @db.VarChar(100)
+
+  entity_id             String        @db.Uuid
+
+  before_data           Json?
+
+  after_data            Json?
+
+  metadata              Json?
+
+  ip_address            String?       @db.VarChar(45)
+
+  user_agent            String?       @db.Text
+
+  created_at            DateTime      @default(now())
+
+  pharmacy              Pharmacy?     @relation(fields: [pharmacy_id], references: [id], onDelete: SetNull)
+
+  branch                Branch?       @relation(fields: [branch_id], references: [id], onDelete: SetNull)
+
+  user                  User?         @relation("AuditLogUser", fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@index([pharmacy_id])
+  @@index([branch_id])
+  @@index([user_id])
+  @@index([entity, entity_id])
+  @@index([created_at])
+
+  @@map("audit_logs")
+}
+
+enum RadiusUnit {
+  KM
+  MILE
+
+  @@map("radius_unit")
+}
+
+model PharmacySettings {
+  id                                  String                @id @default(uuid()) @db.Uuid
+
+  pharmacy_id                         String                @unique @db.Uuid
+
+  // -----------------------------
+  // General
+  // -----------------------------
+
+  timezone                            String                @default("Asia/Karachi") @db.VarChar(100)
+
+  currency                            String                @default("PKR") @db.VarChar(10)
+
+  // -----------------------------
+  // Receipt
+  // -----------------------------
+
+  receipt_header                      String?               @db.Text
+
+  receipt_footer                      String?               @db.Text
+
+  print_logo                          Boolean               @default(true)
+
+  print_tax_number                    Boolean               @default(true)
+
+  print_phone                         Boolean               @default(true)
+
+  print_address                       Boolean               @default(true)
+
+  print_qr_code                       Boolean               @default(false)
+
+  show_cashier_name                   Boolean               @default(true)
+
+  // -----------------------------
+  // Inventory
+  // -----------------------------
+
+  minimum_stock_quantity               Int      @default(10)
+
+  critical_stock_quantity              Int      @default(5)
+
+  expiry_alert_before_days             Int      @default(30)
+
+
+  // -----------------------------
+  // Nearby Search
+  // -----------------------------
+
+  enable_stock_sharing                Boolean               @default(false)
+
+  share_inventory_details             Boolean               @default(false)
+
+  allow_reservations                  Boolean               @default(false)
+
+  search_radius                       Decimal               @default(1) @db.Decimal(5,2)
+
+  radius_unit                         RadiusUnit            @default(KM)
+
+  // -----------------------------
+  // Notifications
+  // -----------------------------
+
+  email_notifications                 Boolean               @default(true)
+
+  sms_notifications                   Boolean               @default(false)
+
+  push_notifications                  Boolean               @default(true)
+
+  in_app_notifications                Boolean               @default(true)
+
+  low_stock_alert                     Boolean               @default(true)
+
+  expiry_alert                        Boolean               @default(true)
+
+  purchase_alert                      Boolean               @default(true)
+
+  sale_alert                          Boolean               @default(false)
+
+  // -----------------------------
+  // System
+  // -----------------------------
+
+  created_at                          DateTime              @default(now())
+
+  updated_at                          DateTime              @updatedAt
+
+  pharmacy                            Pharmacy              @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+
+  @@map("pharmacy_settings")
+}
+
+enum SystemLogLevel {
+  DEBUG
+  INFO
+  WARN
+  ERROR
+  FATAL
+}
+
+enum SystemLogSource {
+  AUTH
+  API
+  DATABASE
+  INVENTORY
+  POS
+  PURCHASE
+  SALE
+  PAYMENT
+  SUBSCRIPTION
+  NOTIFICATION
+  CRON
+  SYSTEM
+}
+
+model SystemLog {
+  id String @id @default(uuid()) @db.Uuid
+
+  pharmacy_id String? @db.Uuid
+  branch_id   String? @db.Uuid
+  user_id     String? @db.Uuid
+
+  level  SystemLogLevel
+  source SystemLogSource
+
+  event   String @db.VarChar(150)
+  message String @db.Text
+
+  context Json? @db.JsonB
+
+  ip_address String? @db.VarChar(50)
+  user_agent String? @db.Text
+
+  created_at DateTime @default(now())
+
+  //////////////////////////////////////////////////////
+  // Relations
+  //////////////////////////////////////////////////////
+
+  pharmacy Pharmacy? @relation(fields: [pharmacy_id], references: [id], onDelete: SetNull)
+
+  branch Branch? @relation(fields: [branch_id], references: [id], onDelete: SetNull)
+
+  user User? @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@index([level])
+  @@index([source])
+  @@index([created_at])
+  @@index([pharmacy_id])
+  @@index([branch_id])
+  @@index([user_id])
+
+  @@map("system_logs")
+}
+
+enum SupplierStatus {
+  ACTIVE
+  INACTIVE
+
+  @@map("supplier_status")
+}
+
+
+model Supplier {
+  id                      String            @id @default(uuid()) @db.Uuid
+
+  pharmacy_id             String            @db.Uuid
+
+  name                    String            @db.VarChar(255)
+
+  company_name            String?           @db.VarChar(255)
+
+  registration_number     String?           @db.VarChar(100)
+
+  tax_number              String?           @db.VarChar(100)
+
+  contact_person          String?           @db.VarChar(255)
+
+  phone                   String?           @db.VarChar(30)
+
+  email                   String?           @db.VarChar(255)
+
+  address                 String?           @db.Text
+
+  city                    String?           @db.VarChar(100)
+
+  notes                   String?           @db.Text
+
+  status                  SupplierStatus    @default(ACTIVE)
+
+  created_at              DateTime          @default(now())
+
+  updated_at              DateTime          @updatedAt
+
+  deleted_at              DateTime?
+
+
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+
+  purchase_orders          PurchaseOrder[]
+
+
+  @@unique([pharmacy_id, name])
+
+  @@index([pharmacy_id])
+
+  @@index([status])
+
+  @@map("suppliers")
+}
