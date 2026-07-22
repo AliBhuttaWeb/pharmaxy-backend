@@ -2,10 +2,11 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } fro
 import type { Request } from 'express';
 
 import { AuthService } from './services/auth.service';
-import { LoginDto, LoginResultDto, RefreshTokenDto } from './dtos';
-import { AuthenticatedUser, SessionMetadata } from './types';
+import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from './dtos';
+import type { AuthenticatedUser, SessionMetadata } from './types';
 import { CurrentUser } from '@/common/decorators';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { Session } from './dtos/session-metadata.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -58,5 +59,14 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     getProfile(@CurrentUser() user: AuthenticatedUser): AuthenticatedUser {
         return user;
+    }
+
+    @Post('switch-branch')
+    switchBranch(
+        @Body() dto: SwitchBranchDto,
+        @CurrentUser() user: AuthenticatedUser,
+        @Session() session: SessionMetadata,
+    ): Promise<LoginResultDto> {
+        return this.authService.switchBranch(user.id, dto, session);
     }
 }

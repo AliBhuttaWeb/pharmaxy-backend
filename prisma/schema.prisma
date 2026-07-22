@@ -58,7 +58,7 @@ model Otp {
   code_hash   String   @db.VarChar(255)
 
   expires_at  DateTime
-  used_at     DateTime? //An OTP is used, not verified.
+  verified_at     DateTime?
 
   attempts    Int      @default(0)
 

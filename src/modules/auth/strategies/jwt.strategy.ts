@@ -4,7 +4,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { MESSAGES } from '@/common/constants/messages.constants';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from '../types/jwt-payload.type';
+import { SessionTokenPayload } from '../types/session-token-payload.type';
 import { AuthenticatedUser } from '../types';
 import { AuthService } from '../services/auth.service';
 
@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         });
     }
 
-    async validate(payload: JwtPayload): Promise<AuthenticatedUser> {
-        return this.authService.validateAccessToken(payload.sub);
+    async validate(payload: SessionTokenPayload): Promise<AuthenticatedUser> {
+        return this.authService.validateAccessToken(payload);
     }
 }

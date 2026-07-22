@@ -1,8 +1,8 @@
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from '@/modules/auth/types';
+import { SessionTokenPayload } from '@/modules/auth/types';
 
 export function getTokenExpirationDate(jwtService: JwtService, token: string): Date {
-    const payload = jwtService.decode(token) as JwtPayload & {
+    const payload = jwtService.decode(token) as SessionTokenPayload & {
         exp: number;
     };
 

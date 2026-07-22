@@ -1,17 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AuthenticatedUser } from '../types';
+
+import type { AuthFlowStatus } from '../types/auth-flow-status.type';
+
+import { LoginUserDto } from './login-user.dto';
 
 export class LoginResultDto {
+    @ApiProperty({
+        example: 'COMPLETE',
+    })
+    authStatus!: AuthFlowStatus;
+
+    @ApiProperty({
+        type: LoginUserDto,
+    })
+    user!: LoginUserDto;
+
     @ApiProperty()
     accessToken!: string;
 
     @ApiProperty()
     refreshToken!: string;
-
-    @ApiProperty({
-        example: 900,
-        description: 'Access token expiration time in seconds',
-    })
-    @ApiProperty()
-    user!: AuthenticatedUser;
 }

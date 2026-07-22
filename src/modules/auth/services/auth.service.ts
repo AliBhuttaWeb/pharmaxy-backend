@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
@@ -7,17 +7,23 @@ import * as bcrypt from 'bcrypt';
 import { userWithPermissionsQuery } from '../queries/user-with-permissions.query';
 import type { Prisma } from '@prisma/client';
 import {
+    AuthenticatedRole,
     AuthenticatedUser,
-    JwtPayload,
+    AuthFlowStatus,
+    LoginUserDto,
     RefreshTokenRecord,
     SessionMetadata,
-    TokenPair,
+    SessionTokenPayload,
+    UserRole,
     UserWithPermissions,
 } from '../types';
 import { PermissionEffect, RefreshTokenRevocationReason, UserStatus } from '@prisma/client';
-import { LoginDto, LoginResultDto, RefreshTokenDto } from '../dtos';
+import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
 import { MESSAGES } from '@/common/constants/messages.constants';
 import { RefreshTokenService } from './refresh-token.service';
+import { isBranchScopedRole, isNonBranchScopedRole } from '@/common/helpers/role.helper';
+import { Role, Permission } from '@/common/types';
+import { AUTH_FLOW_STATUS } from '../constants';
 
 @Injectable()
 export class AuthService {
@@ -77,7 +83,7 @@ export class AuthService {
         return [...permissions];
     }
 
-    private buildAuthenticatedUser(user: UserWithPermissions): AuthenticatedUser {
+    private buildLoginUser(user: UserWithPermissions): LoginUserDto {
         return {
             id: user.id,
 
@@ -88,29 +94,62 @@ export class AuthService {
             lastName: user.last_name,
 
             status: user.status,
-
-            roles: this.extractRoles(user),
-
-            permissions: this.extractPermissions(user),
         };
     }
 
-    private async generateTokenPair(user: AuthenticatedUser): Promise<TokenPair> {
-        const payload: JwtPayload = { sub: user.id };
+    private async generateAccessToken(payload: SessionTokenPayload): Promise<string> {
+        return this.jwtService.signAsync(payload, {
+            secret: this.config.getOrThrow('jwt.accessSecret'),
+
+            expiresIn: this.config.getOrThrow('jwt.accessTokenTtl'),
+        });
+    }
+
+    private async generateRefreshToken(payload: SessionTokenPayload): Promise<string> {
+        return this.jwtService.signAsync(payload, {
+            secret: this.config.getOrThrow('jwt.refreshSecret'),
+
+            expiresIn: this.config.getOrThrow('jwt.refreshTokenTtl'),
+        });
+    }
+
+    private async createSessionTokens(
+        userId: string,
+
+        activeBranchId: string | null,
+    ): Promise<{
+        accessToken: string;
+
+        refreshToken: string;
+    }> {
+        const payload: SessionTokenPayload = {
+            sub: userId,
+
+            activeBranchId,
+        };
 
         const [accessToken, refreshToken] = await Promise.all([
-            this.jwtService.signAsync(payload, {
-                secret: this.config.getOrThrow('jwt.accessSecret'),
-                expiresIn: this.config.getOrThrow('jwt.accessTokenTtl'),
-            }),
+            this.generateAccessToken(payload),
 
-            this.jwtService.signAsync(payload, {
-                secret: this.config.getOrThrow('jwt.refreshSecret'),
-                expiresIn: this.config.getOrThrow('jwt.refreshTokenTtl'),
-            }),
+            this.generateRefreshToken(payload),
         ]);
 
         return {
+            accessToken,
+
+            refreshToken,
+        };
+    }
+
+    private buildLoginResult(
+        authStatus: AuthFlowStatus,
+        user: LoginUserDto,
+        accessToken: string,
+        refreshToken: string,
+    ): LoginResultDto {
+        return {
+            authStatus,
+            user,
             accessToken,
             refreshToken,
         };
@@ -154,9 +193,9 @@ export class AuthService {
         return bcrypt.compare(plainPassword, hashedPassword);
     }
 
-    private async verifyRefreshTokenJwt(refreshToken: string): Promise<JwtPayload> {
+    private async verifyRefreshTokenJwt(refreshToken: string): Promise<SessionTokenPayload> {
         try {
-            return await this.jwtService.verifyAsync<JwtPayload>(refreshToken, {
+            return await this.jwtService.verifyAsync<SessionTokenPayload>(refreshToken, {
                 secret: this.config.getOrThrow('jwt.refreshSecret'),
             });
         } catch {
@@ -165,11 +204,78 @@ export class AuthService {
     }
 
     private getTokenExpirationDate(token: string): Date {
-        const payload = this.jwtService.decode(token) as JwtPayload & {
+        const payload = this.jwtService.decode(token) as SessionTokenPayload & {
             exp: number;
         };
 
         return new Date(payload.exp * 1000);
+    }
+
+    private getNonBranchUserRole(user: UserWithPermissions): UserRole | null {
+        return user.user_roles.find(({ role }) => isNonBranchScopedRole(role.name as Role)) ?? null;
+    }
+
+    private getBranchScopedUserRoles(user: UserWithPermissions): UserRole[] {
+        return user.user_roles.filter(({ role }) => isBranchScopedRole(role.name as Role));
+    }
+    private getDefaultUserRole(user: UserWithPermissions): UserRole | null {
+        const nonBranchRole = this.getNonBranchUserRole(user);
+
+        if (nonBranchRole) {
+            return nonBranchRole;
+        }
+
+        const branchRoles = this.getBranchScopedUserRoles(user);
+
+        if (branchRoles.length === 1) {
+            return branchRoles[0];
+        }
+
+        return null;
+    }
+    private getUserPermissions(user: UserWithPermissions): Permission[] {
+        const rolePermissions = user.user_roles.flatMap(({ role }) =>
+            role.role_permissions.map(({ permission }) => permission.name as Permission),
+        );
+
+        const directPermissions = user.user_permissions.map(
+            ({ permission }) => permission.name as Permission,
+        );
+
+        return [...new Set([...rolePermissions, ...directPermissions])];
+    }
+
+    private buildAuthenticatedRoles(user: UserWithPermissions): AuthenticatedRole[] {
+        return user.user_roles.map((userRole) => ({
+            id: userRole.id,
+
+            name: userRole.role.name as Role,
+
+            branchId: userRole.branch_id,
+        }));
+    }
+
+    private buildAuthenticatedUser(
+        user: UserWithPermissions,
+        activeBranchId: string | null,
+    ): AuthenticatedUser {
+        return {
+            id: user.id,
+
+            email: user.email,
+
+            firstName: user.first_name,
+
+            lastName: user.last_name,
+
+            status: user.status,
+
+            activeBranchId,
+
+            roles: this.buildAuthenticatedRoles(user),
+
+            permissions: this.getUserPermissions(user),
+        };
     }
 
     async refreshToken(
@@ -188,10 +294,9 @@ export class AuthService {
 
         this.ensureUserCanAuthenticate(user);
 
-        const authenticatedUser = this.buildAuthenticatedUser(user);
+        const authenticatedUser = this.buildLoginUser(user);
 
-        const tokens = await this.generateTokenPair(authenticatedUser);
-
+        const tokens = await this.createSessionTokens(user.id, payload.activeBranchId);
         await this.refreshTokenService.rotateRefreshToken(
             storedRefreshToken.id,
             user.id,
@@ -201,6 +306,7 @@ export class AuthService {
         );
 
         return {
+            authStatus: AUTH_FLOW_STATUS.COMPLETE,
             user: authenticatedUser,
             ...tokens,
         };
@@ -232,9 +338,34 @@ export class AuthService {
             throw new UnauthorizedException(MESSAGES.AUTH.ERROR.INVALID_CREDENTIALS);
         }
 
-        const authenticatedUser = this.buildAuthenticatedUser(user);
+        const loginUser = this.buildLoginUser(user);
 
-        const tokens = await this.generateTokenPair(authenticatedUser);
+        const nonBranchRole = this.getNonBranchUserRole(user);
+
+        let activeBranchId: string | null = null;
+
+        let authStatus: AuthFlowStatus;
+
+        if (nonBranchRole) {
+            authStatus = AUTH_FLOW_STATUS.COMPLETE;
+        } else {
+            const branchRoles = this.getBranchScopedUserRoles(user);
+
+            if (!branchRoles.length) {
+                throw new UnauthorizedException(MESSAGES.AUTH.ERROR.NO_ROLE_ASSIGNED);
+            }
+
+            if (branchRoles.length === 1) {
+                // Only one branch so make it selected
+                activeBranchId = branchRoles[0].branch_id;
+
+                authStatus = AUTH_FLOW_STATUS.COMPLETE;
+            } else {
+                authStatus = AUTH_FLOW_STATUS.BRANCH_SELECTION_REQUIRED;
+            }
+        }
+
+        const tokens = await this.createSessionTokens(user.id, activeBranchId);
 
         await this.refreshTokenService.createRefreshToken(
             user.id,
@@ -246,7 +377,10 @@ export class AuthService {
         await this.updateLastLogin(user.id);
 
         return {
-            user: authenticatedUser,
+            authStatus,
+
+            user: loginUser,
+
             ...tokens,
         };
     }
@@ -272,11 +406,50 @@ export class AuthService {
         );
     }
 
-    async validateAccessToken(userId: string): Promise<AuthenticatedUser> {
+    async validateAccessToken(payload: SessionTokenPayload): Promise<AuthenticatedUser> {
+        const user = await this.findUserById(payload.sub);
+
+        this.ensureUserCanAuthenticate(user);
+
+        return this.buildAuthenticatedUser(user, payload.activeBranchId);
+    }
+
+    async switchBranch(
+        userId: string,
+        dto: SwitchBranchDto,
+        session: SessionMetadata,
+    ): Promise<LoginResultDto> {
         const user = await this.findUserById(userId);
 
         this.ensureUserCanAuthenticate(user);
 
-        return this.buildAuthenticatedUser(user);
+        const hasBranchAccess = user.user_roles.some(
+            (userRole) =>
+                userRole.branch_id === dto.branchId &&
+                isBranchScopedRole(userRole.role.name as Role),
+        );
+
+        if (!hasBranchAccess) {
+            throw new ForbiddenException(MESSAGES.AUTH.ERROR.BRANCH_ACCESS_DENIED);
+        }
+
+        const loginUser = this.buildLoginUser(user);
+
+        const tokens = await this.createSessionTokens(user.id, dto.branchId);
+
+        await this.refreshTokenService.createRefreshToken(
+            user.id,
+            tokens.refreshToken,
+            this.getTokenExpirationDate(tokens.refreshToken),
+            session,
+        );
+
+        return {
+            authStatus: AUTH_FLOW_STATUS.COMPLETE,
+
+            user: loginUser,
+
+            ...tokens,
+        };
     }
 }

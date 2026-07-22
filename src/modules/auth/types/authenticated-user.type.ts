@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserStatus } from '@prisma/client';
 
+import { AuthenticatedRole } from './authenticated-role.type';
+
 export class AuthenticatedUser {
     @ApiProperty()
     id!: string;
@@ -20,12 +22,19 @@ export class AuthenticatedUser {
     status!: UserStatus;
 
     @ApiProperty({
-        type: [String],
+        nullable: true,
+        example: 'branch-uuid',
     })
-    roles!: string[];
+    activeBranchId!: string | null;
+
+    @ApiProperty({
+        type: () => [AuthenticatedRole],
+    })
+    roles!: AuthenticatedRole[];
 
     @ApiProperty({
         type: [String],
+        example: ['CREATE_INVOICE', 'VIEW_STOCK'],
     })
     permissions!: string[];
 }
