@@ -21,6 +21,11 @@ export const MESSAGES = Object.freeze({
             TOKEN_EXPIRED: 'Token has expired.',
             ACCESS_DENIED: 'Access denied.',
             INVALID_OLD_PASSWORD: 'Current password is incorrect.',
+            INVALID_REFRESH_TOKEN: 'Refresh token is invalid.',
+            EMAIL_NOT_VERIFIED: 'Please verify your email address before signing in.',
+            PHONE_NOT_VERIFIED: 'Please verify your phone number before signing in.',
+            UNAUTHORIZED: "You're not unauthorized person to perform this action.",
+            FORBIDDEN: "You're not allowed to perform this action.",
         },
     },
 

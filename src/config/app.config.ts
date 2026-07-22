@@ -14,8 +14,10 @@ export default () => ({
     },
 
     jwt: {
-        secret: env.JWT_SECRET!,
+        accessSecret: env.JWT_ACCESS_SECRET,
         accessTokenTtl: env.JWT_ACCESS_TOKEN_TTL ?? '15m',
+
+        refreshSecret: env.JWT_REFRESH_SECRET,
         refreshTokenTtl: env.JWT_REFRESH_TOKEN_TTL ?? '30d',
     },
 

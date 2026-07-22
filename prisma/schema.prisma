@@ -30,6 +30,46 @@ enum PermissionEffect {
 // USERS & AUTHENTICATION
 //////////////////////////////////////////////////////
 
+enum OtpType {
+  EMAIL_VERIFICATION
+  PHONE_VERIFICATION
+  LOGIN
+  PASSWORD_RESET
+  EMAIL_CHANGE
+  PHONE_CHANGE
+}
+
+enum OtpChannel {
+  EMAIL
+  SMS
+}
+
+model Otp {
+  id          String   @id @default(uuid()) @db.Uuid
+
+  user_id     String?  @db.Uuid
+  user        User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  destination String   @db.VarChar(255) // email or phone number
+
+  type        OtpType
+  channel     OtpChannel
+
+  code_hash   String   @db.VarChar(255)
+
+  expires_at  DateTime
+  used_at     DateTime? //An OTP is used, not verified.
+
+  attempts    Int      @default(0)
+
+  created_at  DateTime @default(now())
+
+  @@index([destination])
+  @@index([expires_at])
+  @@index([type])
+  @@map("otps")
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   first_name           String     @db.VarChar(100)
@@ -42,6 +82,8 @@ model User {
   is_phone_verified    Boolean    @default(false)
   last_login_at        DateTime?
   status               UserStatus @default(ACTIVE)
+
+  otps Otp[]
 
   created_at           DateTime   @default(now())
   updated_at           DateTime   @updatedAt
@@ -60,6 +102,7 @@ model User {
   notifications        Notification[]
   support_ticket_messages SupportTicketMessage[]
   system_logs          SystemLog[]
+  refresh_tokens RefreshToken[]
 
   @@index([email])
   @@index([phone])
@@ -99,19 +142,27 @@ model Permission {
 
 
 model UserRole {
-  id                   String     @id @default(uuid()) @db.Uuid
+  id          String @id @default(uuid()) @db.Uuid
 
-  user_id              String     @db.Uuid
-  role_id              String     @db.Uuid
+  user_id     String @db.Uuid
+  role_id     String @db.Uuid
+  branch_id   String? @db.Uuid
 
-  created_at           DateTime   @default(now())
+  pharmacy_id String? @db.Uuid
+  supplier_id String? @db.Uuid
 
-  user                 User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  role                 Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  created_at  DateTime @default(now())
 
-  @@unique([user_id, role_id])
+  user        User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  role        Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  branch      Branch?  @relation(fields: [branch_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, branch_id])
   @@index([user_id])
   @@index([role_id])
+  @@index([pharmacy_id])
+  @@index([supplier_id])
+
   @@map("user_roles")
 }
 
@@ -287,6 +338,8 @@ model Branch {
 
   system_logs                   SystemLog[]
 
+  user_roles UserRole[]
+  
   @@unique([pharmacy_id, name])
 
   @@index([pharmacy_id])
@@ -1742,4 +1795,76 @@ model Supplier {
   @@index([status])
 
   @@map("suppliers")
+}
+
+enum RefreshTokenRevocationReason {
+  /**
+   * User explicitly logged out.
+   */
+  LOGOUT
+
+  /**
+   * User changed their password.
+   */
+  PASSWORD_CHANGED
+
+  /**
+   * User account was disabled or deleted.
+   */
+  ACCOUNT_DISABLED
+
+  /**
+   * Revoked manually by an administrator.
+   */
+  ADMIN_REVOKED
+
+  /**
+   * Suspicious activity or compromised credentials.
+   */
+  SECURITY
+
+  /**
+   * Refresh token reuse detected.
+   * Usually indicates token theft.
+   */
+  TOKEN_REUSED
+
+  /**
+   * Token naturally expired and was cleaned up.
+   */
+  EXPIRED
+
+  /// Token was replaced with a newly issued refresh token during normal token rotation.
+  ROTATED
+
+}
+
+model RefreshToken {
+  id                   String    @id @default(uuid()) @db.Uuid
+
+  user_id              String    @db.Uuid
+  token_hash           String    @unique @db.VarChar(255)
+
+  expires_at           DateTime
+  revoked_at           DateTime?
+  revoked_reason RefreshTokenRevocationReason?
+
+  replaced_by_token_id String?   @db.Uuid
+
+  device_name          String?   @db.VarChar(100)
+  ip_address           String?   @db.VarChar(45)
+  user_agent           String?   @db.Text
+
+  last_used_at         DateTime  @default(now())
+
+  created_at           DateTime  @default(now())
+  updated_at           DateTime  @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([expires_at])
+  @@index([revoked_at])
+
+  @@map("refresh_tokens")
 }

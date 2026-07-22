@@ -13,7 +13,9 @@ export default Joi.object({
 
     DATABASE_URL: Joi.string().required(),
 
-    JWT_SECRET: Joi.string().min(32).required(),
+    JWT_ACCESS_SECRET: Joi.string().min(32).required(),
+
+    JWT_REFRESH_SECRET: Joi.string().min(32).required(),
 
     JWT_ACCESS_TOKEN_TTL: Joi.string().default('15m'),
 

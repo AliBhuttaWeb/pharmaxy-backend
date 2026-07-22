@@ -3,6 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 
 import envValidationSchema from '@/config/env-validation.config';
 import appConfig from '@/config/app.config';
+import { APP_GUARD } from '@nestjs/core';
+
+import { JwtAuthGuard } from '@common/guards';
+import { PrismaModule } from '@/database/prisma/prisma.module';
+import { AuthModule } from '@/modules/auth/auth.module';
 
 @Module({
     imports: [
@@ -13,6 +18,14 @@ import appConfig from '@/config/app.config';
             expandVariables: true,
             cache: true,
         }),
+        PrismaModule,
+        AuthModule,
+    ],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: JwtAuthGuard,
+        },
     ],
 })
 export class AppModule {}
