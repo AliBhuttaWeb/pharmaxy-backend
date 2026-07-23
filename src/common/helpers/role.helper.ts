@@ -1,6 +1,6 @@
-import { ROLES } from '@/common/constants/roles.constants';
+import { ROLES } from '@/common/constants';
 
-import type { Role } from '@/common/types/role.type';
+import type { Role } from '@/common/types';
 
 const BRANCH_SCOPED_ROLES = new Set<Role>([ROLES.PHARMACY_OWNER, ROLES.CASHIER]);
 

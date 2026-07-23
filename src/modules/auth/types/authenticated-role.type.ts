@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ROLES } from '@/common/constants/roles.constants';
-import type { Role } from '@/common/types/role.type';
+import { ROLES } from '@/common/constants';
+import type { Role } from '@/common/types';
 
 export class AuthenticatedRole {
     @ApiProperty()

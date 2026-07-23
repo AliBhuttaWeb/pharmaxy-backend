@@ -6,7 +6,7 @@ import { ROLES_KEY } from '../decorators/roles.decorator';
 
 import type { AuthenticatedUser } from '@/modules/auth/types';
 
-import { MESSAGES } from '@/common/constants/messages.constants';
+import { MESSAGES } from '@/common/constants';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

@@ -1,6 +1,6 @@
 import { UserStatus } from '@prisma/client';
 
-import { Permission } from '@/common/types/permission.type';
+import { Permission } from '@/common/types';
 
 export interface SessionUser {
     id: string;

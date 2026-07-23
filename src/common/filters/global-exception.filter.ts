@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
-import { MESSAGES } from '@/common/constants/messages.constants';
+import { MESSAGES } from '@/common/constants';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {

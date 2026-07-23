@@ -19,9 +19,9 @@ import {
 } from '../types';
 import { PermissionEffect, RefreshTokenRevocationReason, UserStatus } from '@prisma/client';
 import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
-import { MESSAGES } from '@/common/constants/messages.constants';
+import { MESSAGES } from '@/common/constants';
 import { RefreshTokenService } from './refresh-token.service';
-import { isBranchScopedRole, isNonBranchScopedRole } from '@/common/helpers/role.helper';
+import { isBranchScopedRole, isNonBranchScopedRole } from '@/common/helpers';
 import { Role, Permission } from '@/common/types';
 import { AUTH_FLOW_STATUS } from '../constants';
 

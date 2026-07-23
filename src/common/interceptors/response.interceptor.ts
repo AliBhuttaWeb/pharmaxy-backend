@@ -2,7 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 
 import { Observable, map } from 'rxjs';
 
-import { MESSAGES } from '@/common/constants/messages.constants';
+import { MESSAGES } from '@/common/constants';
 
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
