@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import { AppModule } from '@/app.module';
 import { setupSwagger } from '@/config/swagger.config';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 async function bootstrap(): Promise<void> {
     const logger = new Logger('Bootstrap');
@@ -67,8 +68,9 @@ async function bootstrap(): Promise<void> {
     app.enableShutdownHooks();
 
     const configService = app.get(ConfigService);
-    const port = configService.getOrThrow('app.port');
+    app.useGlobalFilters(new GlobalExceptionFilter(configService));
 
+    const port = configService.getOrThrow('app.port');
     await app.listen(port);
 
     const url = await app.getUrl();

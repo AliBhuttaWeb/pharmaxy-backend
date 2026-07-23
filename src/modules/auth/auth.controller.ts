@@ -5,8 +5,8 @@ import { AuthService } from './services/auth.service';
 import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from './dtos';
 import type { AuthenticatedUser, SessionMetadata } from './types';
 import { CurrentUser } from '@/common/decorators';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { Session } from './dtos/session-metadata.decorator';
+import { JwtAuthGuard } from '@/common/guards';
 
 @Controller('auth')
 export class AuthController {
@@ -22,12 +22,14 @@ export class AuthController {
         };
     }
 
-    @Post('login')
     @HttpCode(HttpStatus.OK)
     @Post('login')
-    @HttpCode(HttpStatus.OK)
     async login(@Body() loginDto: LoginDto, @Req() request: Request): Promise<LoginResultDto> {
+        throw new Error('TEST');
+        console.log('Login controller reached top');
+
         const session = this.buildSessionMetadata(request);
+        console.log('Login controller reached');
 
         return this.authService.login(loginDto, session);
     }
