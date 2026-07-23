@@ -1,24 +1,4 @@
 import { Prisma } from '@prisma/client';
+import { userWithPermissionsQuery } from '../queries'
 
-export type UserWithPermissions = Prisma.UserGetPayload<{
-    include: {
-        user_roles: {
-            include: {
-                role: {
-                    include: {
-                        role_permissions: {
-                            include: {
-                                permission: true;
-                            };
-                        };
-                    };
-                };
-            };
-        };
-        user_permissions: {
-            include: {
-                permission: true;
-            };
-        };
-    };
-}>;
+export type UserWithPermissions = Prisma.UserGetPayload<typeof userWithPermissionsQuery>;
