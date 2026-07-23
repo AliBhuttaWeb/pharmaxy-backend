@@ -1,6 +1,5 @@
 export * from './session-token-payload.type';
 export * from './token-pair.type';
-export * from './user-with-permissions.type';
 export * from './authenticated-user.type';
 export * from './session-metadata.type';
 export * from './refresh-token.type';
@@ -12,3 +11,4 @@ export * from './session-user.type';
 export * from './session-token-payload.type';
 export * from './user-role.type';
 export * from './authenticated-role.type';
+export * from './user-with-permissions.type';

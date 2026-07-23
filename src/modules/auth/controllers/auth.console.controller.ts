@@ -1,23 +1,21 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import type { Request } from 'express';
 
-import { AuthService } from './services/auth.service';
-import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from './dtos';
-import type { AuthenticatedUser, SessionMetadata } from './types';
-import { CurrentUser } from '@/common/decorators';
-import { Session } from './dtos/session-metadata.decorator';
+import { AuthService } from '../services/auth.service';
+import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
+import type { AuthenticatedUser, SessionMetadata } from '../types';
+import { ConsoleController, CurrentUser } from '@/common/decorators';
+import { Session } from '../dtos/session-metadata.decorator';
 import { JwtAuthGuard } from '@/common/guards';
 
-@Controller('auth')
-export class AuthController {
+@ConsoleController('auth')
+export class AuthConsoleController {
     constructor(private readonly authService: AuthService) {}
 
     private buildSessionMetadata(request: Request): SessionMetadata {
         return {
             ipAddress: request.ip ?? request.socket.remoteAddress ?? null,
-
             userAgent: request.get('user-agent') ?? null,
-
             deviceName: null,
         };
     }
@@ -25,11 +23,7 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('login')
     async login(@Body() loginDto: LoginDto, @Req() request: Request): Promise<LoginResultDto> {
-        throw new Error('TEST');
-        console.log('Login controller reached top');
-
         const session = this.buildSessionMetadata(request);
-        console.log('Login controller reached');
 
         return this.authService.login(loginDto, session);
     }

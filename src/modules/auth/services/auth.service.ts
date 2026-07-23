@@ -1,11 +1,8 @@
 import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '@/database/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
-import { userWithPermissionsQuery } from '../queries/user-with-permissions.query';
-import type { Prisma } from '@prisma/client';
 import {
     AuthenticatedRole,
     AuthenticatedUser,
@@ -24,32 +21,16 @@ import { RefreshTokenService } from './refresh-token.service';
 import { isBranchScopedRole, isNonBranchScopedRole } from '@/common/helpers';
 import { Role, Permission } from '@/common/types';
 import { AUTH_FLOW_STATUS } from '../constants';
+import { AuthRepository } from '../repositories/auth.repository';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly prisma: PrismaService,
         private readonly jwtService: JwtService,
         private readonly config: ConfigService,
         private readonly refreshTokenService: RefreshTokenService,
+        private readonly authRepository: AuthRepository,
     ) {}
-
-    private async findUser(
-        where: Prisma.UserWhereUniqueInput,
-    ): Promise<UserWithPermissions | null> {
-        return this.prisma.user.findUnique({
-            where,
-            ...userWithPermissionsQuery,
-        });
-    }
-
-    private async findUserByEmail(email: string): Promise<UserWithPermissions | null> {
-        return this.findUser({ email });
-    }
-
-    private async findUserById(userId: string): Promise<UserWithPermissions | null> {
-        return this.findUser({ id: userId });
-    }
 
     private extractRoles(user: UserWithPermissions): string[] {
         return user.user_roles.map(({ role }) => role.name);
@@ -156,14 +137,7 @@ export class AuthService {
     }
 
     private async updateLastLogin(userId: string): Promise<void> {
-        await this.prisma.user.update({
-            where: {
-                id: userId,
-            },
-            data: {
-                last_login_at: new Date(),
-            },
-        });
+        await this.authRepository.updateLastLogin(userId);
     }
 
     private ensureUserCanAuthenticate(
@@ -290,7 +264,7 @@ export class AuthService {
 
         this.ensureRefreshTokenIsValid(storedRefreshToken);
 
-        const user = await this.findUserById(payload.sub);
+        const user = await this.authRepository.findUserById(payload.sub);
 
         this.ensureUserCanAuthenticate(user);
 
@@ -328,7 +302,7 @@ export class AuthService {
         }
     }
     async login(loginDto: LoginDto, session: SessionMetadata): Promise<LoginResultDto> {
-        const user = await this.findUserByEmail(loginDto.email);
+        const user = await this.authRepository.findUserByEmail(loginDto.email);
 
         this.ensureUserCanAuthenticate(user);
 
@@ -407,7 +381,7 @@ export class AuthService {
     }
 
     async validateAccessToken(payload: SessionTokenPayload): Promise<AuthenticatedUser> {
-        const user = await this.findUserById(payload.sub);
+        const user = await this.authRepository.findUserById(payload.sub);
 
         this.ensureUserCanAuthenticate(user);
 
@@ -419,7 +393,7 @@ export class AuthService {
         dto: SwitchBranchDto,
         session: SessionMetadata,
     ): Promise<LoginResultDto> {
-        const user = await this.findUserById(userId);
+        const user = await this.authRepository.findUserById(userId);
 
         this.ensureUserCanAuthenticate(user);
 

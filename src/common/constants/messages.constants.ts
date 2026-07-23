@@ -25,7 +25,7 @@ export const MESSAGES = Object.freeze({
             FORBIDDEN: 'You do not have permission to perform this action.',
             NO_ROLE_ASSIGNED: 'No role assigned to this user.',
             BRANCH_ACCESS_DENIED: 'You do not have access to this branch.',
-            AUTHENTICATION_REQUIRED: 'Authentication is required.',
+            AUTHENTICATION_REQUIRED: 'Authentication is required, please login first.',
             INVALID_ACCESS_TOKEN: 'The access token is invalid.',
             ACCESS_TOKEN_EXPIRED: 'Your session has expired. Please sign in again.',
             REFRESH_TOKEN_EXPIRED: 'Your session has expired. Please sign in again.',
