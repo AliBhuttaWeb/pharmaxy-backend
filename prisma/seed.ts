@@ -7,6 +7,7 @@ import { SeedContext } from './seed.type';
 
 import { seedPermissions } from './seeds/permissions.seed';
 import { seedRoles } from './seeds/roles.seed';
+import { seedRolePermissions } from './seeds/role-permissions.seed';
 // import { seedRolePermissions } from './seeds/role-permissions.seed.ts';
 
 async function main() {
@@ -24,8 +25,8 @@ async function main() {
         permissions: new Map<string, Permission>(),
     };
 
-    await seedPermissions(ctx);
     await seedRoles(ctx);
+    await seedPermissions(ctx);
 
     // Load once
     ctx.roles = new Map((await prisma.role.findMany()).map((role) => [role.name, role]));
@@ -34,7 +35,7 @@ async function main() {
         (await prisma.permission.findMany()).map((permission) => [permission.name, permission]),
     );
 
-    // await seedRolePermissions(ctx);
+    await seedRolePermissions(ctx);
 
     await prisma.$disconnect();
 }

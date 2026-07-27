@@ -1,16 +1,15 @@
-import { SeedContext } from '../seed.types';
-
-import { DEFAULT_ROLE_PERMISSIONS } from '@/modules/roles/constants';
+import { DEFAULT_ROLE_PERMISSIONS } from '@/modules/roles/policies/default-role-permissions.policy';
+import { SeedContext } from 'prisma/seed.type';
 
 export async function seedRolePermissions({ prisma, roles, permissions }: SeedContext) {
-    for (const [roleName, permissionFactory] of Object.entries(DEFAULT_ROLE_PERMISSIONS)) {
+    for (const [roleName, rolePermissions] of Object.entries(DEFAULT_ROLE_PERMISSIONS)) {
         const role = roles.get(roleName);
 
         if (!role) {
             continue;
         }
 
-        for (const permission of permissionFactory()) {
+        for (const permission of rolePermissions) {
             const dbPermission = permissions.get(permission.name);
 
             if (!dbPermission) {
