@@ -1,0 +1,42 @@
+import 'dotenv/config';
+
+import { PrismaClient, Permission, Role } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+
+import { SeedContext } from './seed.type';
+
+import { seedPermissions } from './seeds/permissions.seed';
+import { seedRoles } from './seeds/roles.seed';
+// import { seedRolePermissions } from './seeds/role-permissions.seed.ts';
+
+async function main() {
+    const prisma = new PrismaClient({
+        adapter: new PrismaPg({
+            connectionString: process.env.DATABASE_URL!,
+        }),
+    });
+
+    const ctx: SeedContext = {
+        prisma,
+
+        roles: new Map<string, Role>(),
+
+        permissions: new Map<string, Permission>(),
+    };
+
+    await seedPermissions(ctx);
+    await seedRoles(ctx);
+
+    // Load once
+    ctx.roles = new Map((await prisma.role.findMany()).map((role) => [role.name, role]));
+
+    ctx.permissions = new Map(
+        (await prisma.permission.findMany()).map((permission) => [permission.name, permission]),
+    );
+
+    // await seedRolePermissions(ctx);
+
+    await prisma.$disconnect();
+}
+
+main().catch(console.error);

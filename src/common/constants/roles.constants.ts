@@ -1,9 +1,26 @@
 export const ROLES = {
-    SUPER_ADMIN: 'SUPER_ADMIN',
+    SUPER_ADMIN: {
+        name: 'Super Admin',
+        description: 'Platform administrator',
+    },
 
-    SUPPLIER: 'SUPPLIER',
+    PHARMACY_ADMIN: {
+        name: 'Pharmacy Admin',
+        description: 'Administrator managing pharmacy operations',
+    },
 
-    PHARMACY_OWNER: 'PHARMACY_OWNER',
+    CASHIER: {
+        name: 'Cashier',
+        description: 'Handles sales and customer transactions',
+    },
 
-    CASHIER: 'CASHIER',
+    SUPPLIER: {
+        name: 'Supplier',
+        description: 'Supplier portal user',
+    },
+
+    USER: {
+        name: 'User',
+        description: 'Default authenticated user',
+    },
 } as const;

@@ -21,7 +21,6 @@ The backend is designed to support:
 - Mobile applications
 - Third-party integrations
 
-
 The system must be designed for:
 
 - Scalability
@@ -30,7 +29,6 @@ The system must be designed for:
 - High performance
 - Clear separation of responsibilities
 - Future feature expansion
-
 
 ---
 
@@ -42,12 +40,9 @@ The application follows a layered architecture.
 
 The dependency direction must always be:
 
-
-
 ---
 
 # 3. Responsibility Separation
-
 
 ## 3.1 Controller Layer
 
@@ -60,7 +55,6 @@ Controllers are responsible for:
 - Swagger documentation
 - Route definitions
 
-
 Controllers must NOT contain:
 
 - Business logic
@@ -69,9 +63,7 @@ Controllers must NOT contain:
 - Complex calculations
 - Data transformation logic
 
-
 Example:
-
 
 Good:
 
@@ -127,6 +119,7 @@ Repositories must NOT contain:
 # 4. Tech Stack & Project Structure
 
 ## 4.1 Tech Stack
+
 - **Framework:** NestJS
 - **Language:** TypeScript
 - **ORM:** Prisma
@@ -134,15 +127,16 @@ Repositories must NOT contain:
 - **Database:** PostgreSQL (implied by typical Prisma usage)
 
 ## 4.2 Project Structure
+
 The `src/` directory is organized as follows:
 
 - `common/`: Cross-cutting concerns such as decorators, exceptions, filters, guards, interceptors, pagination, and shared types.
 - `config/`: Application configuration files.
 - `database/`: Prisma schema, seeders, transaction utilities, and shared/base repositories.
 - `modules/`: Feature-based modules (e.g., `auth`). Each module typically contains:
-  - `controllers/`: HTTP route handlers.
-  - `services/`: Business logic.
-  - `repositories/`: Database access.
-  - `dtos/`: Data Transfer Objects for validation.
-  - `types/` & `constants/`: Module-specific types and constants.
-  - `strategies/`: Authentication strategies (e.g., JWT).
+    - `controllers/`: HTTP route handlers.
+    - `services/`: Business logic.
+    - `repositories/`: Database access.
+    - `dtos/`: Data Transfer Objects for validation.
+    - `types/` & `constants/`: Module-specific types and constants.
+    - `strategies/`: Authentication strategies (e.g., JWT).

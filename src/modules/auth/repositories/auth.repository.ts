@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
-import { userWithPermissionsQuery } from  '../queries'
+import { userWithPermissionsQuery } from '../queries';
 
 @Injectable()
 export class AuthRepository {
