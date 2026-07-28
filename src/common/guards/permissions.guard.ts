@@ -1,23 +1,52 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+    CanActivate,
+    ExecutionContext,
+    ForbiddenException,
+    Injectable,
+    UnauthorizedException,
+} from '@nestjs/common';
 
 import { Reflector } from '@nestjs/core';
+
 import type { AuthenticatedUser } from '@/modules/auth/types';
 
 import { MESSAGES } from '@/common/constants';
-import { PERMISSIONS_KEY } from '@/modules/auth/decorators';
+import { IS_PUBLIC_KEY, PERMISSIONS_KEY } from '../decorators';
+// import { PermissionResolverService } from '@/modules/permissions/services';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-    constructor(private readonly reflector: Reflector) {}
+    constructor(
+        private readonly reflector: Reflector,
+        // private readonly permissionResolver: PermissionResolverService,
+    ) {}
 
-    canActivate(context: ExecutionContext): boolean {
-        const requiredPermissions = this.reflector.getAllAndOverride<string[]>(PERMISSIONS_KEY, [
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        /**
+         * Skip authorization for public endpoints.
+         */
+        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
             context.getHandler(),
             context.getClass(),
         ]);
 
-        // No permission requirement
-        if (!requiredPermissions?.length) {
+        if (isPublic) {
+            return true;
+        }
+
+        /**
+         * Permissions required by the endpoint.
+         */
+        const requiredPermissions =
+            this.reflector.getAllAndOverride<string[]>(PERMISSIONS_KEY, [
+                context.getHandler(),
+                context.getClass(),
+            ]) ?? [];
+
+        /**
+         * No permissions required.
+         */
+        if (requiredPermissions.length === 0) {
             return true;
         }
 
@@ -26,14 +55,33 @@ export class PermissionsGuard implements CanActivate {
         const user = request.user as AuthenticatedUser | undefined;
 
         if (!user) {
-            throw new ForbiddenException(MESSAGES.AUTH.ERROR.UNAUTHORIZED);
+            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.UNAUTHORIZED);
         }
 
-        const hasPermission = requiredPermissions.every((permission) =>
+        /**
+         * TODO:
+         *
+         * Replace this placeholder with:
+         *
+         * const hasPermissions =
+         *     await this.permissionResolver.hasPermissions(
+         *         user.id,
+         *         requiredPermissions,
+         *     );
+         *
+         * if (!hasPermissions) {
+         *     throw new ForbiddenException(
+         *         MESSAGES.AUTH.ERROR.FORBIDDEN,
+         *     );
+         * }
+         */
+
+        // Temporary implementation
+        const hasPermissions = requiredPermissions.every((permission) =>
             user.permissions.includes(permission),
         );
 
-        if (!hasPermission) {
+        if (!hasPermissions) {
             throw new ForbiddenException(MESSAGES.AUTH.ERROR.FORBIDDEN);
         }
 

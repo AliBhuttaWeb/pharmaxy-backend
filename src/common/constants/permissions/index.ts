@@ -1,4 +1,3 @@
-export * from './auth.permissions';
 export * from './branches.permissions';
 export * from './categories.permissions';
 export * from './customers.permissions';

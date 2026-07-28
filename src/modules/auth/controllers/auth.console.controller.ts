@@ -1,12 +1,14 @@
-import { Body, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Get, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
+
 import type { Request } from 'express';
 
 import { AuthService } from '../services/auth.service';
 import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
 import type { AuthenticatedUser, SessionMetadata } from '../types';
-import { ConsoleController, CurrentUser } from '@/common/decorators';
+
+import { ConsoleController, CurrentUser, Public } from '@/common/decorators';
+
 import { Session } from '../dtos/session-metadata.decorator';
-import { JwtAuthGuard } from '@/common/guards';
 
 @ConsoleController('auth')
 export class AuthConsoleController {
@@ -15,45 +17,41 @@ export class AuthConsoleController {
     private buildSessionMetadata(request: Request): SessionMetadata {
         return {
             ipAddress: request.ip ?? request.socket.remoteAddress ?? null,
+
             userAgent: request.get('user-agent') ?? null,
+
             deviceName: null,
         };
     }
 
-    @HttpCode(HttpStatus.OK)
+    @Public()
     @Post('login')
-    async login(@Body() loginDto: LoginDto, @Req() request: Request): Promise<LoginResultDto> {
-        const session = this.buildSessionMetadata(request);
-
-        return this.authService.login(loginDto, session);
+    @HttpCode(HttpStatus.OK)
+    login(@Body() dto: LoginDto, @Req() request: Request): Promise<LoginResultDto> {
+        return this.authService.login(dto, this.buildSessionMetadata(request));
     }
 
+    @Public()
     @Post('refresh')
     @HttpCode(HttpStatus.OK)
-    async refreshToken(
-        @Body() dto: RefreshTokenDto,
-        @Req() request: Request,
-    ): Promise<LoginResultDto> {
-        const session = this.buildSessionMetadata(request);
-
-        return this.authService.refreshToken(dto, session);
+    refresh(@Body() dto: RefreshTokenDto, @Req() request: Request): Promise<LoginResultDto> {
+        return this.authService.refreshToken(dto, this.buildSessionMetadata(request));
     }
 
     @Post('logout')
     @HttpCode(HttpStatus.NO_CONTENT)
-    async logout(@Body() refreshTokenDto: RefreshTokenDto): Promise<void> {
-        await this.authService.logout(refreshTokenDto);
+    logout(@Body() dto: RefreshTokenDto): Promise<void> {
+        return this.authService.logout(dto);
     }
 
     @Post('logout-all')
     @HttpCode(HttpStatus.NO_CONTENT)
-    async logoutAll(): Promise<void> {
-        throw new Error('Not implemented');
+    logoutAll(@CurrentUser() user: AuthenticatedUser): Promise<void> {
+        return this.authService.logoutAll(user.id);
     }
 
     @Get('me')
-    @UseGuards(JwtAuthGuard)
-    getProfile(@CurrentUser() user: AuthenticatedUser): AuthenticatedUser {
+    me(@CurrentUser() user: AuthenticatedUser): AuthenticatedUser {
         return user;
     }
 

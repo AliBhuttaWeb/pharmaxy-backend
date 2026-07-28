@@ -8,6 +8,7 @@ import { SeedContext } from './seed.type';
 import { seedPermissions } from './seeds/permissions.seed';
 import { seedRoles } from './seeds/roles.seed';
 import { seedRolePermissions } from './seeds/role-permissions.seed';
+import { seedUsers } from './seeds/users.seeder';
 // import { seedRolePermissions } from './seeds/role-permissions.seed.ts';
 
 async function main() {
@@ -36,6 +37,7 @@ async function main() {
     );
 
     await seedRolePermissions(ctx);
+    await seedUsers(ctx);
 
     await prisma.$disconnect();
 }

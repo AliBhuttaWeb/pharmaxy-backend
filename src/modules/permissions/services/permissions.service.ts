@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PermissionEffect } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 
-import { PermissionsRepository } from './permissions.repository';
+import { PermissionsRepository } from '../permissions.repository';
+import { MESSAGES } from '../constants/messages.constants';
 
 @Injectable()
 export class PermissionsService {
@@ -16,7 +17,12 @@ export class PermissionsService {
         userId: string,
         roleIds: string[],
         selectedPermissionIds: string[],
+        permissionsModified: boolean,
     ): Promise<void> {
+        if (!permissionsModified) {
+            return;
+        }
+
         // ---------------------------------------------------------------------
         // Load current state
         // ---------------------------------------------------------------------
@@ -27,6 +33,10 @@ export class PermissionsService {
             await this.permissionsRepository.getUserPermissionOverrides(userId);
 
         const selectedPermissions = new Set(selectedPermissionIds);
+
+        if (selectedPermissions.size !== selectedPermissionIds.length) {
+            throw new BadRequestException(MESSAGES.ERROR.DUPLICATE_PERMISSION_IDS);
+        }
 
         // ---------------------------------------------------------------------
         // Determine required changes
