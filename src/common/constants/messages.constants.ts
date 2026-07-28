@@ -29,6 +29,8 @@ export const MESSAGES = Object.freeze({
             INVALID_ACCESS_TOKEN: 'The access token is invalid.',
             ACCESS_TOKEN_EXPIRED: 'Your session has expired. Please sign in again.',
             REFRESH_TOKEN_EXPIRED: 'Your session has expired. Please sign in again.',
+            SESSION_NOT_FOUND: 'Session not found.',
+            SESSION_REVOKED: 'Your session has expired or has been revoked.',
         },
     },
 

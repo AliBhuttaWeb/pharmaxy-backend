@@ -365,7 +365,11 @@ export class AuthService {
         );
 
         if (!storedRefreshToken) {
-            return;
+            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.SESSION_REVOKED);
+        }
+
+        if (storedRefreshToken.revoked_reason === RefreshTokenRevocationReason.ADMIN_REVOKED) {
+            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.SESSION_REVOKED);
         }
 
         await this.refreshTokenService.revokeRefreshToken(
@@ -373,6 +377,7 @@ export class AuthService {
             RefreshTokenRevocationReason.LOGOUT,
         );
     }
+
     async logoutAll(userId: string): Promise<void> {
         await this.refreshTokenService.revokeAllRefreshTokens(
             userId,

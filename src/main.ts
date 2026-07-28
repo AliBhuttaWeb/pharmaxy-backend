@@ -61,14 +61,14 @@ async function bootstrap(): Promise<void> {
         exposedHeaders: ['Content-Disposition'],
     });
 
-    // Swagger
-    setupSwagger(app);
-
     // Graceful shutdown
     app.enableShutdownHooks();
 
     const configService = app.get(ConfigService);
     app.useGlobalFilters(new GlobalExceptionFilter(configService));
+
+    // Swagger
+    setupSwagger(app);
 
     const port = configService.getOrThrow('app.port');
     await app.listen(port);
