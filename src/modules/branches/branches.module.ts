@@ -4,14 +4,8 @@ import { BranchesService } from './services/branches.service';
 import { BranchesRepository } from './repositories/branches.repository';
 
 @Module({
-    controllers: [
-        BranchesConsoleController,
-    ],
-    providers: [
-        BranchesService,
-        BranchesRepository,
-    ],
-    exports: [
-    ],
+    controllers: [BranchesConsoleController],
+    providers: [BranchesService, BranchesRepository],
+    exports: [],
 })
 export class BranchesModule {}

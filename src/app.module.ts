@@ -13,6 +13,7 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
 import { UsersModule } from './modules/users/users.module';
 import { PharmaciesModule } from './modules/pharmacies/pharmacies.module';
 import { BranchesModule } from './modules/branches/branches.module';
+import { SuppliersModule } from './modules/suppliers/suppliers.module';
 
 @Module({
     imports: [
@@ -29,7 +30,8 @@ import { BranchesModule } from './modules/branches/branches.module';
         PermissionsModule,
         UsersModule,
         PharmaciesModule,
-        BranchesModule
+        BranchesModule,
+        SuppliersModule
     ],
     providers: [
         {
