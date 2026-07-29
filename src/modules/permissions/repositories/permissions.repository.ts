@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PermissionEffect, Prisma, UserPermission } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
+import { FindPermissionsQueryDto } from '../dtos';
 
 @Injectable()
 export class PermissionsRepository {
@@ -86,6 +87,68 @@ export class PermissionsRepository {
                 user_id: userId,
                 permission_id: permissionId,
                 effect,
+            },
+        });
+    }
+
+    async findMany(query: FindPermissionsQueryDto) {
+        const { search, page, limit, sort_by, sort_order } = query;
+
+        const where: Prisma.PermissionWhereInput = {
+            ...(search && {
+                OR: [
+                    {
+                        name: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        description: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                ],
+            }),
+        };
+
+        const orderBy: Prisma.PermissionOrderByWithRelationInput = {
+            [(sort_by ?? 'name') as keyof Prisma.PermissionOrderByWithRelationInput]:
+                sort_order ?? 'asc',
+        };
+
+        const isPaginated = page !== undefined && limit !== undefined;
+
+        if (!isPaginated) {
+            return this.prisma.permission.findMany({
+                where,
+                orderBy,
+            });
+        }
+
+        const [records, total] = await this.prisma.$transaction([
+            this.prisma.permission.findMany({
+                where,
+                orderBy,
+                skip: (page - 1) * limit,
+                take: limit,
+            }),
+            this.prisma.permission.count({
+                where,
+            }),
+        ]);
+
+        return {
+            records,
+            total,
+        };
+    }
+
+    findById(id: string) {
+        return this.prisma.permission.findUnique({
+            where: {
+                id,
             },
         });
     }

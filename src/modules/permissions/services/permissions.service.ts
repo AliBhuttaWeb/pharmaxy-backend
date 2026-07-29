@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionEffect } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 
-import { PermissionsRepository } from '../permissions.repository';
+import { PermissionsRepository } from '../repositories/permissions.repository';
 import { MESSAGES } from '../constants/messages.constants';
+import { FindPermissionsQueryDto } from '../dtos';
 
 @Injectable()
 export class PermissionsService {
@@ -127,5 +128,19 @@ export class PermissionsService {
                 );
             }
         });
+    }
+
+    list(query: FindPermissionsQueryDto) {
+        return this.permissionsRepository.findMany(query);
+    }
+
+    async get(id: string) {
+        const permission = await this.permissionsRepository.findById(id);
+
+        if (!permission) {
+            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+        }
+
+        return permission;
     }
 }

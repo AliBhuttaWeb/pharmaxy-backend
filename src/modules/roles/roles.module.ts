@@ -5,11 +5,10 @@ import { RolesController } from './controllers/roles.controlle';
 import { RolesRepository } from './repositories/roles.repository';
 import { RolesService } from './services/roles.service';
 
-
 @Module({
     imports: [PrismaModule],
     controllers: [RolesController],
-    providers: [RolesRepository, RolesService ],
+    providers: [RolesRepository, RolesService],
     exports: [],
 })
 export class RolesModule {}
