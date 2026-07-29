@@ -12,7 +12,7 @@ import { RolesService } from '../services/roles.service';
 
 @ConsoleController('roles')
 @UseGuards(PermissionsGuard)
-export class RolesController {
+export class RolesConsoleController {
     constructor(private readonly rolesService: RolesService) {}
 
     @Get()

@@ -23,4 +23,9 @@ export const PHARMACIES_PERMISSIONS = {
         name: 'pharmacies.delete',
         description: 'Delete pharmacies',
     },
+
+    PHARMACY_UPDATE_STATUS: {
+        name: 'pharmacies.update.status',
+        description: 'Update pharmacy status',
+    },
 };

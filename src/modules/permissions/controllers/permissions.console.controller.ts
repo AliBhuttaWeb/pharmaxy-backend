@@ -9,7 +9,7 @@ import { FindPermissionsQueryDto } from '../dtos';
 
 @ConsoleController('permissions')
 @UseGuards(PermissionsGuard)
-export class PermissionsController {
+export class PermissionsConsoleController {
     constructor(private readonly permissionsService: PermissionsService) {}
 
     @Get()
