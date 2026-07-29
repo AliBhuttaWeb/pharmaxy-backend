@@ -9,7 +9,6 @@ import type { AuthenticatedUser, SessionMetadata } from '../types';
 import { ConsoleController, CurrentUser, Public } from '@/common/decorators';
 
 import { Session } from '../dtos/session-metadata.decorator';
-import { SwaggerBearerAuth } from '@/common/decorators/swagger-bearer-auth.decorator';
 
 @ConsoleController('auth')
 export class AuthConsoleController {
@@ -40,27 +39,23 @@ export class AuthConsoleController {
     }
 
     @Post('logout')
-    @SwaggerBearerAuth()
     @HttpCode(HttpStatus.NO_CONTENT)
     logout(@Body() dto: RefreshTokenDto): Promise<void> {
         return this.authService.logout(dto);
     }
 
     @Post('logout-all')
-    @SwaggerBearerAuth()
     @HttpCode(HttpStatus.NO_CONTENT)
     logoutAll(@CurrentUser() user: AuthenticatedUser): Promise<void> {
         return this.authService.logoutAll(user.id);
     }
 
     @Get('me')
-    @SwaggerBearerAuth()
     me(@CurrentUser() user: AuthenticatedUser): AuthenticatedUser {
         return user;
     }
 
     @Post('switch-branch')
-    @SwaggerBearerAuth()
     @HttpCode(HttpStatus.OK)
     switchBranch(
         @Body() dto: SwitchBranchDto,

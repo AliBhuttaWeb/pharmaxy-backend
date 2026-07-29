@@ -23,7 +23,12 @@ export function setupSwagger(app: INestApplication): void {
     const config = builder.build();
 
     const document = SwaggerModule.createDocument(app, config);
-
+    // Require Bearer authentication for all operations by default
+    document.security = [
+        {
+            [APP.SWAGGER.AUTH_NAME]: [],
+        },
+    ];
     SwaggerModule.setup(APP.SWAGGER.PATH, app, document, {
         customSiteTitle: `${APP.API.NAME} Docs`,
         swaggerOptions: {
