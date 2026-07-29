@@ -1,0 +1,54 @@
+import { Body, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+
+import { ConsoleController, Permissions } from '@/common/decorators';
+
+import {
+    CreateBranchDto,
+    FindBranchesQueryDto,
+    UpdateBranchDto,
+    UpdateBranchStatusDto,
+} from '../dtos';
+
+import { BRANCHES_PERMISSIONS } from '@/common/constants';
+import { BranchesService } from '../services/branches.service';
+
+@ConsoleController('branches')
+export class BranchesConsoleController {
+    constructor(private readonly branchesService: BranchesService) {}
+
+    @Get()
+    @Permissions(BRANCHES_PERMISSIONS.BRANCH_VIEW_LIST.name)
+    list(@Query() query: FindBranchesQueryDto) {
+        return this.branchesService.list(query);
+    }
+
+    @Get(':id')
+    @Permissions(BRANCHES_PERMISSIONS.BRANCH_VIEW_DETAIL.name)
+    get(@Param('id') id: string) {
+        return this.branchesService.get(id);
+    }
+
+    @Post()
+    @Permissions(BRANCHES_PERMISSIONS.BRANCH_CREATE.name)
+    create(@Body() dto: CreateBranchDto) {
+        return this.branchesService.create(dto);
+    }
+
+    @Put(':id')
+    @Permissions(BRANCHES_PERMISSIONS.BRANCH_UPDATE.name)
+    update(@Param('id') id: string, @Body() dto: UpdateBranchDto) {
+        return this.branchesService.update(id, dto);
+    }
+
+    @Patch(':id/status')
+    @Permissions(BRANCHES_PERMISSIONS.BRANCH_UPDATE.name)
+    updateStatus(@Param('id') id: string, @Body() dto: UpdateBranchStatusDto) {
+        return this.branchesService.updateStatus(id, dto);
+    }
+
+    @Delete(':id')
+    @Permissions(BRANCHES_PERMISSIONS.BRANCH_DELETE.name)
+    delete(@Param('id') id: string) {
+        return this.branchesService.delete(id);
+    }
+}
