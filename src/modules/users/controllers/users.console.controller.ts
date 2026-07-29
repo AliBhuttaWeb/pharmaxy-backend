@@ -9,7 +9,7 @@ import { UsersService } from '../services/users.service';
 
 @ConsoleController('users')
 @UseGuards(PermissionsGuard)
-export class UsersController {
+export class UsersConsoleController {
     constructor(private readonly usersService: UsersService) {}
 
     @Get()
