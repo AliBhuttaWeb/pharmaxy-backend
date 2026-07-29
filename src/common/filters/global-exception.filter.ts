@@ -23,7 +23,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
         let status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        let message = MESSAGES.COMMON.ERROR.INTERNAL_SERVER_ERROR as string;
+        let message = MESSAGES.ERROR.INTERNAL_SERVER_ERROR as string;
 
         let data: unknown = null;
 

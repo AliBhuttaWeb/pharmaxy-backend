@@ -27,7 +27,7 @@ export class RolesGuard implements CanActivate {
         const user = request.user as AuthenticatedUser | undefined;
 
         if (!user) {
-            throw new ForbiddenException(MESSAGES.AUTH.ERROR.UNAUTHORIZED);
+            throw new ForbiddenException(MESSAGES.ERROR.UNAUTHORIZED);
         }
 
         const hasRole = requiredRoles.some((requiredRole) =>
@@ -35,7 +35,7 @@ export class RolesGuard implements CanActivate {
         );
 
         if (!hasRole) {
-            throw new ForbiddenException(MESSAGES.AUTH.ERROR.FORBIDDEN);
+            throw new ForbiddenException(MESSAGES.ERROR.FORBIDDEN);
         }
 
         return true;

@@ -38,15 +38,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
         switch (passportInfo?.name) {
             case JWT.PASSPORT_ERROR.TOKEN_EXPIRED:
-                throw new UnauthorizedException(MESSAGES.AUTH.ERROR.ACCESS_TOKEN_EXPIRED);
+                throw new UnauthorizedException(MESSAGES.ERROR.ACCESS_TOKEN_EXPIRED);
 
             case JWT.PASSPORT_ERROR.INVALID_TOKEN:
             case JWT.PASSPORT_ERROR.NOT_BEFORE:
-                throw new UnauthorizedException(MESSAGES.AUTH.ERROR.INVALID_ACCESS_TOKEN);
+                throw new UnauthorizedException(MESSAGES.ERROR.INVALID_ACCESS_TOKEN);
         }
 
         if (err || !user) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.AUTHENTICATION_REQUIRED);
+            throw new UnauthorizedException(MESSAGES.ERROR.AUTHENTICATION_REQUIRED);
         }
 
         return user as TUser;

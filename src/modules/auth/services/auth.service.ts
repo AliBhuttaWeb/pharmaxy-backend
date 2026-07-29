@@ -16,7 +16,7 @@ import {
 } from '../types';
 import { PermissionEffect, RefreshTokenRevocationReason, UserStatus } from '@prisma/client';
 import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
-import { MESSAGES } from '@/common/constants';
+import { MESSAGES } from '../constants';
 import { RefreshTokenService } from './refresh-token.service';
 import { isBranchScopedRole, isNonBranchScopedRole } from '@/common/helpers';
 import { Role, Permission } from '@/common/types';
@@ -144,19 +144,19 @@ export class AuthService {
         user: UserWithPermissions | null,
     ): asserts user is UserWithPermissions {
         if (!user) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.INVALID_CREDENTIALS);
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
         }
 
         if (user.status !== UserStatus.ACTIVE) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.ACCOUNT_DISABLED);
+            throw new UnauthorizedException(MESSAGES.ERROR.ACCOUNT_DISABLED);
         }
 
         if (!user.is_email_verified) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.EMAIL_NOT_VERIFIED);
+            throw new UnauthorizedException(MESSAGES.ERROR.EMAIL_NOT_VERIFIED);
         }
 
         if (user.phone && !user.is_phone_verified) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.PHONE_NOT_VERIFIED);
+            throw new UnauthorizedException(MESSAGES.ERROR.PHONE_NOT_VERIFIED);
         }
     }
 
@@ -173,7 +173,7 @@ export class AuthService {
                 secret: this.config.getOrThrow('jwt.refreshSecret'),
             });
         } catch {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.INVALID_REFRESH_TOKEN);
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
         }
     }
 
@@ -290,15 +290,15 @@ export class AuthService {
         refreshToken: RefreshTokenRecord | null,
     ): asserts refreshToken is RefreshTokenRecord {
         if (!refreshToken) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.INVALID_REFRESH_TOKEN);
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
         }
 
         if (refreshToken.revoked_at) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.INVALID_REFRESH_TOKEN);
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
         }
 
         if (refreshToken.expires_at <= new Date()) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.INVALID_REFRESH_TOKEN);
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
         }
     }
     async login(loginDto: LoginDto, session: SessionMetadata): Promise<LoginResultDto> {
@@ -309,7 +309,7 @@ export class AuthService {
         const isPasswordValid = await this.validatePassword(loginDto.password, user.password);
 
         if (!isPasswordValid) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.INVALID_CREDENTIALS);
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
         }
 
         const loginUser = this.buildLoginUser(user);
@@ -326,7 +326,7 @@ export class AuthService {
             const branchRoles = this.getBranchScopedUserRoles(user);
 
             if (!branchRoles.length) {
-                throw new UnauthorizedException(MESSAGES.AUTH.ERROR.NO_ROLE_ASSIGNED);
+                throw new UnauthorizedException(MESSAGES.ERROR.NO_ROLE_ASSIGNED);
             }
 
             if (branchRoles.length === 1) {
@@ -365,11 +365,11 @@ export class AuthService {
         );
 
         if (!storedRefreshToken) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.SESSION_REVOKED);
+            throw new UnauthorizedException(MESSAGES.ERROR.SESSION_REVOKED);
         }
 
         if (storedRefreshToken.revoked_reason === RefreshTokenRevocationReason.ADMIN_REVOKED) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.SESSION_REVOKED);
+            throw new UnauthorizedException(MESSAGES.ERROR.SESSION_REVOKED);
         }
 
         await this.refreshTokenService.revokeRefreshToken(
@@ -409,7 +409,7 @@ export class AuthService {
         );
 
         if (!hasBranchAccess) {
-            throw new ForbiddenException(MESSAGES.AUTH.ERROR.BRANCH_ACCESS_DENIED);
+            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ACCESS_DENIED);
         }
 
         const loginUser = this.buildLoginUser(user);

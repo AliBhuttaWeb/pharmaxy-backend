@@ -10,6 +10,7 @@ import { PrismaModule } from '@/database/prisma/prisma.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
     imports: [
@@ -23,7 +24,8 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
         PrismaModule,
         AuthModule,
         RolesModule,
-        PermissionsModule
+        PermissionsModule,
+        UsersModule,
     ],
     providers: [
         {

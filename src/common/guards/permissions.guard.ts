@@ -55,7 +55,7 @@ export class PermissionsGuard implements CanActivate {
         const user = request.user as AuthenticatedUser | undefined;
 
         if (!user) {
-            throw new UnauthorizedException(MESSAGES.AUTH.ERROR.UNAUTHORIZED);
+            throw new UnauthorizedException(MESSAGES.ERROR.UNAUTHORIZED);
         }
 
         /**
@@ -82,7 +82,7 @@ export class PermissionsGuard implements CanActivate {
         );
 
         if (!hasPermissions) {
-            throw new ForbiddenException(MESSAGES.AUTH.ERROR.FORBIDDEN);
+            throw new ForbiddenException(MESSAGES.ERROR.FORBIDDEN);
         }
 
         return true;
