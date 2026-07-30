@@ -40,7 +40,6 @@ const RETAIL_CATEGORIES = [
         description: 'Ear, nose and throat products',
     },
 
-
     // Supplements
     {
         name: 'Vitamins',
@@ -50,7 +49,6 @@ const RETAIL_CATEGORIES = [
         name: 'Protein Supplements',
         description: 'Protein and fitness supplements',
     },
-
 
     // Personal Care
     {
@@ -70,7 +68,6 @@ const RETAIL_CATEGORIES = [
         description: 'Soap, body wash and hygiene products',
     },
 
-
     // Baby
     {
         name: 'Baby Food',
@@ -81,7 +78,6 @@ const RETAIL_CATEGORIES = [
         description: 'Diapers, wipes and baby care',
     },
 
-
     // Medical
     {
         name: 'Surgical Supplies',
@@ -91,7 +87,6 @@ const RETAIL_CATEGORIES = [
         name: 'Medical Equipment',
         description: 'BP machines, thermometers etc.',
     },
-
 
     // FMCG
     {
@@ -106,7 +101,6 @@ const RETAIL_CATEGORIES = [
         name: 'Household Items',
         description: 'General household products',
     },
-
 
     // Other
     {
