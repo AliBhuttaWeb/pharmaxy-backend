@@ -488,36 +488,10 @@ model Manufacturer {
   @@map("manufacturers")
 }
 
-model ProductCategory {
-  id          String   @id @default(uuid()) @db.Uuid
-
-  name        String   @unique @db.VarChar(150)
-
-  description String?  @db.Text
-
-  parent_id   String?  @db.Uuid
-
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  deleted_at  DateTime?
-
-  parent ProductCategory? @relation("category_parent", fields: [parent_id], references: [id], onDelete: SetNull)
-
-  children ProductCategory[] @relation("category_parent")
-
-  products Product[]
-
-  @@index([parent_id])
-  @@index([name])
-
-  @@map("product_categories")
-}
-
 model Product {
   id String @id @default(uuid()) @db.Uuid
 
   manufacturer_id String? @db.Uuid
-  category_id     String? @db.Uuid
 
   // Medicine Information
 
@@ -526,7 +500,11 @@ model Product {
 
   formula      String? @db.VarChar(1000)
 
-  dosage_form  String? @db.VarChar(100)
+  product_type_id String? @db.Uuid
+
+  retail_category_id String? @db.Uuid
+
+  dosage_form_id String? @db.Uuid
 
   strength     String? @db.VarChar(100)
 
@@ -551,8 +529,12 @@ model Product {
   //////////////////////////////////////////////////////
 
   manufacturer Manufacturer? @relation(fields: [manufacturer_id], references: [id], onDelete: SetNull)
+  
+  product_type ProductType? @relation(fields: [product_type_id], references: [id], onDelete: SetNull)
 
-  category ProductCategory? @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  retail_category RetailCategory? @relation(fields: [retail_category_id], references: [id], onDelete: SetNull)
+
+  dosage_form DosageForm? @relation(fields: [dosage_form_id], references: [id], onDelete: SetNull)
 
   branch_products BranchProduct[]
 
@@ -567,10 +549,12 @@ model Product {
   @@index([name])
   @@index([generic_name])
   @@index([manufacturer_id])
-  @@index([category_id])
   @@index([barcode])
   @@index([requires_prescription])
   @@index([is_active])
+  @@index([product_type_id])
+  @@index([retail_category_id])
+  @@index([dosage_form_id]) 
 
   @@map("products")
 }
@@ -581,12 +565,11 @@ model BranchProduct {
   branch_id  String @db.Uuid
   product_id String @db.Uuid
 
-  quantity String @db.VarChar(100)
+  quantity Int @default(0)
 
   selling_price Decimal @db.Decimal(12,2)
 
-  storage_temperature String? @db.VarChar(100)
-
+  is_controlled_drug Boolean @default(false)
   storage_instructions String? @db.Text
 
   is_active Boolean @default(true)
@@ -629,6 +612,66 @@ model BranchProduct {
   @@index([is_active])
 
   @@map("branch_products")
+}
+
+model ProductType {
+  id          String   @id @default(uuid()) @db.Uuid
+
+  name        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  deleted_at  DateTime?
+
+  products Product[]
+
+  @@index([name])
+
+  @@map("product_types")
+}
+
+model RetailCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+
+  name        String   @unique @db.VarChar(150)
+
+  description String?  @db.Text
+
+  parent_id   String?  @db.Uuid
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  deleted_at  DateTime?
+
+  parent   RetailCategory?  @relation("retail_category_parent", fields: [parent_id], references: [id], onDelete: SetNull)
+  children RetailCategory[] @relation("retail_category_parent")
+
+  products Product[]
+
+  @@index([parent_id])
+
+  @@index([name])
+
+  @@map("retail_categories")
+}
+
+model DosageForm {
+  id          String   @id @default(uuid()) @db.Uuid
+
+  name        String   @unique @db.VarChar(100)
+
+  description String?  @db.Text
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  deleted_at  DateTime?
+
+  products Product[]
+
+  @@index([name])
+
+  @@map("dosage_forms")
 }
 
 enum BatchSourceType {

@@ -1,5 +1,4 @@
 export * from './branches.permissions';
-export * from './categories.permissions';
 export * from './customers.permissions';
 export * from './dashboard.permissions';
 export * from './hold-orders.permissions';
@@ -28,3 +27,6 @@ export * from './users.permissions';
 export * from './support-ticket-messages.permissions';
 export * from './support-ticket-attachments.permissions';
 export * from './nearby-inventories.permissions';
+export * from './retail-categories.permissions';
+export * from './product-types.permissions';
+export * from './dosage-forms.permissions';

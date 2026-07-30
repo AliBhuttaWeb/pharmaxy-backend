@@ -35,7 +35,7 @@ import { CategoriesModule } from './modules/categories/categories.module';
         BranchesModule,
         SuppliersModule,
         ManufacturersModule,
-        CategoriesModule
+        CategoriesModule,
     ],
     providers: [
         {

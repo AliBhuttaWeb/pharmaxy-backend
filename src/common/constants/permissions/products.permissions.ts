@@ -33,9 +33,4 @@ export const PRODUCTS_PERMISSIONS = {
         name: 'products.export',
         description: 'Export products data',
     },
-
-    PRODUCT_STOCK_VIEW: {
-        name: 'products.stock.view',
-        description: 'View product stock information',
-    },
-};
+} as const;

@@ -9,6 +9,10 @@ import { seedPermissions } from './seeds/permissions.seed';
 import { seedRoles } from './seeds/roles.seed';
 import { seedRolePermissions } from './seeds/role-permissions.seed';
 import { seedUsers } from './seeds/users.seeder';
+import { seedDosageForms } from './seeds/dosage-form.seed';
+import { seedManufacturers } from './seeds/manufacturers.seed';
+import { seedProductTypes } from './seeds/product-type.seed';
+import { seedRetailCategories } from './seeds/retail-category.seed';
 // import { seedRolePermissions } from './seeds/role-permissions.seed.ts';
 
 async function main() {
@@ -38,6 +42,10 @@ async function main() {
 
     await seedRolePermissions(ctx);
     await seedUsers(ctx);
+    seedDosageForms(ctx);
+    seedManufacturers(ctx);
+    seedProductTypes(ctx);
+    seedRetailCategories(ctx)l
 
     await prisma.$disconnect();
 }
