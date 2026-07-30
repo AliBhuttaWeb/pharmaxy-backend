@@ -45,7 +45,7 @@ async function main() {
     seedDosageForms(ctx);
     seedManufacturers(ctx);
     seedProductTypes(ctx);
-    seedRetailCategories(ctx)l
+    seedRetailCategories(ctx);
 
     await prisma.$disconnect();
 }

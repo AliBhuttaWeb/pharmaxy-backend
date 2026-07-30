@@ -1,3 +1,4 @@
+import { MESSAGES } from 'prisma/seed.messages';
 import { SeedContext } from '../seed.type';
 
 const PRODUCT_TYPES = [
@@ -57,4 +58,6 @@ export async function seedProductTypes({ prisma }: SeedContext) {
             create: type,
         });
     }
+
+    console.log(MESSAGES.SUCCESS.PRODUCT_TYPES_SEEDED);
 }

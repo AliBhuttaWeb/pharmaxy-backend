@@ -1,4 +1,5 @@
 import { DEFAULT_ROLE_PERMISSIONS } from '@/modules/roles/policies/default-role-permissions.policy';
+import { MESSAGES } from 'prisma/seed.messages';
 import { SeedContext } from 'prisma/seed.type';
 
 export async function seedRolePermissions({ prisma, roles, permissions }: SeedContext) {
@@ -32,5 +33,7 @@ export async function seedRolePermissions({ prisma, roles, permissions }: SeedCo
                 },
             });
         }
+
+        console.log(MESSAGES.SUCCESS.ROLES_PERMISSIONS_SEEDED);
     }
 }

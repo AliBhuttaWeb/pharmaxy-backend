@@ -1,3 +1,4 @@
+import { MESSAGES } from 'prisma/seed.messages';
 import { SeedContext } from '../seed.type';
 
 const RETAIL_CATEGORIES = [
@@ -128,4 +129,6 @@ export async function seedRetailCategories({ prisma }: SeedContext) {
             create: category,
         });
     }
+
+    console.log(MESSAGES.SUCCESS.RETAIL_CATEGORIES_SEEDED);
 }

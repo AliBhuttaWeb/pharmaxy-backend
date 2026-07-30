@@ -22,7 +22,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         // Catalog control (platform level)
         'PRODUCTS',
         'PRODUCT_BATCHES',
-        'CATEGORIES',
+        'RETAIL_CATEGORIES',
+        'PRODUCT_TYPES',
+        'DOSAGE_FORMS',
         'MANUFACTURERS',
 
         // Support

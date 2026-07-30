@@ -1,3 +1,4 @@
+import { MESSAGES } from 'prisma/seed.messages';
 import { SeedContext } from '../seed.type';
 
 const DOSAGE_FORMS = [
@@ -77,4 +78,6 @@ export async function seedDosageForms({ prisma }: SeedContext) {
             create: dosageForm,
         });
     }
+
+    console.log(MESSAGES.SUCCESS.DOSAGE_FORMS_SEEDED);
 }

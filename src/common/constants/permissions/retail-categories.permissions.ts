@@ -1,4 +1,4 @@
-export const RETAIL_CATEGORY_PERMISSIONS = {
+export const RETAIL_CATEGORIES_PERMISSIONS = {
     RETAIL_CATEGORY_VIEW_LIST: {
         name: 'retail_categories.view.list',
         description: 'View retail categories listing',

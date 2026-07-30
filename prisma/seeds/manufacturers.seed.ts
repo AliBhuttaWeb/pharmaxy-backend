@@ -1,3 +1,4 @@
+import { MESSAGES } from 'prisma/seed.messages';
 import { SeedContext } from 'prisma/seed.type';
 
 const MANUFACTURERS = [
@@ -95,4 +96,6 @@ export async function seedManufacturers({ prisma }: SeedContext): Promise<void> 
             create: manufacturer,
         });
     }
+
+    console.log(MESSAGES.SUCCESS.MANUFACTURERS_SEEDED);
 }

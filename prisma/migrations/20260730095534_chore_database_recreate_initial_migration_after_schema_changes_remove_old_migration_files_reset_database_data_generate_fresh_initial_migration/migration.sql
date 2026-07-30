@@ -5,6 +5,12 @@ CREATE TYPE "user_status" AS ENUM ('ACTIVE', 'INACTIVE', 'SUSPENDED');
 CREATE TYPE "permission_effect" AS ENUM ('ALLOW', 'DENY');
 
 -- CreateEnum
+CREATE TYPE "OtpType" AS ENUM ('EMAIL_VERIFICATION', 'PHONE_VERIFICATION', 'LOGIN', 'PASSWORD_RESET', 'EMAIL_CHANGE', 'PHONE_CHANGE');
+
+-- CreateEnum
+CREATE TYPE "OtpChannel" AS ENUM ('EMAIL', 'SMS');
+
+-- CreateEnum
 CREATE TYPE "pharmacy_status" AS ENUM ('ACTIVE', 'INACTIVE', 'SUSPENDED');
 
 -- CreateEnum
@@ -64,6 +70,25 @@ CREATE TYPE "SystemLogSource" AS ENUM ('AUTH', 'API', 'DATABASE', 'INVENTORY', '
 -- CreateEnum
 CREATE TYPE "supplier_status" AS ENUM ('ACTIVE', 'INACTIVE');
 
+-- CreateEnum
+CREATE TYPE "RefreshTokenRevocationReason" AS ENUM ('LOGOUT', 'PASSWORD_CHANGED', 'ACCOUNT_DISABLED', 'ADMIN_REVOKED', 'SECURITY', 'TOKEN_REUSED', 'EXPIRED', 'ROTATED');
+
+-- CreateTable
+CREATE TABLE "otps" (
+    "id" UUID NOT NULL,
+    "user_id" UUID,
+    "destination" VARCHAR(255) NOT NULL,
+    "type" "OtpType" NOT NULL,
+    "channel" "OtpChannel" NOT NULL,
+    "code_hash" VARCHAR(255) NOT NULL,
+    "expires_at" TIMESTAMP(3) NOT NULL,
+    "verified_at" TIMESTAMP(3),
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "otps_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" UUID NOT NULL,
@@ -110,6 +135,9 @@ CREATE TABLE "user_roles" (
     "id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
     "role_id" UUID NOT NULL,
+    "branch_id" UUID,
+    "pharmacy_id" UUID,
+    "supplier_id" UUID,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "user_roles_pkey" PRIMARY KEY ("id")
@@ -242,27 +270,15 @@ CREATE TABLE "manufacturers" (
 );
 
 -- CreateTable
-CREATE TABLE "product_categories" (
-    "id" UUID NOT NULL,
-    "name" VARCHAR(150) NOT NULL,
-    "description" TEXT,
-    "parent_id" UUID,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "deleted_at" TIMESTAMP(3),
-
-    CONSTRAINT "product_categories_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "products" (
     "id" UUID NOT NULL,
     "manufacturer_id" UUID,
-    "category_id" UUID,
     "name" VARCHAR(255) NOT NULL,
     "generic_name" VARCHAR(255),
     "formula" VARCHAR(1000),
-    "dosage_form" VARCHAR(100),
+    "product_type_id" UUID,
+    "retail_category_id" UUID,
+    "dosage_form_id" UUID,
     "strength" VARCHAR(100),
     "pack_size" VARCHAR(100),
     "barcode" VARCHAR(100),
@@ -282,9 +298,9 @@ CREATE TABLE "branch_products" (
     "id" UUID NOT NULL,
     "branch_id" UUID NOT NULL,
     "product_id" UUID NOT NULL,
-    "quantity" VARCHAR(100) NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 0,
     "selling_price" DECIMAL(12,2) NOT NULL,
-    "storage_temperature" VARCHAR(100),
+    "is_controlled_drug" BOOLEAN NOT NULL DEFAULT false,
     "storage_instructions" TEXT,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -292,6 +308,43 @@ CREATE TABLE "branch_products" (
     "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "branch_products_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "product_types" (
+    "id" UUID NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
+    "description" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+
+    CONSTRAINT "product_types_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "retail_categories" (
+    "id" UUID NOT NULL,
+    "name" VARCHAR(150) NOT NULL,
+    "description" TEXT,
+    "parent_id" UUID,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+
+    CONSTRAINT "retail_categories_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "dosage_forms" (
+    "id" UUID NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
+    "description" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+
+    CONSTRAINT "dosage_forms_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -768,6 +821,34 @@ CREATE TABLE "suppliers" (
     CONSTRAINT "suppliers_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "refresh_tokens" (
+    "id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
+    "token_hash" VARCHAR(255) NOT NULL,
+    "expires_at" TIMESTAMP(3) NOT NULL,
+    "revoked_at" TIMESTAMP(3),
+    "revoked_reason" "RefreshTokenRevocationReason",
+    "replaced_by_token_id" UUID,
+    "device_name" VARCHAR(100),
+    "ip_address" VARCHAR(45),
+    "user_agent" TEXT,
+    "last_used_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "refresh_tokens_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "otps_destination_idx" ON "otps"("destination");
+
+-- CreateIndex
+CREATE INDEX "otps_expires_at_idx" ON "otps"("expires_at");
+
+-- CreateIndex
+CREATE INDEX "otps_type_idx" ON "otps"("type");
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
@@ -796,7 +877,13 @@ CREATE INDEX "user_roles_user_id_idx" ON "user_roles"("user_id");
 CREATE INDEX "user_roles_role_id_idx" ON "user_roles"("role_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_roles_user_id_role_id_key" ON "user_roles"("user_id", "role_id");
+CREATE INDEX "user_roles_pharmacy_id_idx" ON "user_roles"("pharmacy_id");
+
+-- CreateIndex
+CREATE INDEX "user_roles_supplier_id_idx" ON "user_roles"("supplier_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_roles_user_id_branch_id_key" ON "user_roles"("user_id", "branch_id");
 
 -- CreateIndex
 CREATE INDEX "role_permissions_role_id_idx" ON "role_permissions"("role_id");
@@ -862,15 +949,6 @@ CREATE UNIQUE INDEX "manufacturers_name_key" ON "manufacturers"("name");
 CREATE INDEX "manufacturers_name_idx" ON "manufacturers"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "product_categories_name_key" ON "product_categories"("name");
-
--- CreateIndex
-CREATE INDEX "product_categories_parent_id_idx" ON "product_categories"("parent_id");
-
--- CreateIndex
-CREATE INDEX "product_categories_name_idx" ON "product_categories"("name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "products_barcode_key" ON "products"("barcode");
 
 -- CreateIndex
@@ -883,9 +961,6 @@ CREATE INDEX "products_generic_name_idx" ON "products"("generic_name");
 CREATE INDEX "products_manufacturer_id_idx" ON "products"("manufacturer_id");
 
 -- CreateIndex
-CREATE INDEX "products_category_id_idx" ON "products"("category_id");
-
--- CreateIndex
 CREATE INDEX "products_barcode_idx" ON "products"("barcode");
 
 -- CreateIndex
@@ -893,6 +968,15 @@ CREATE INDEX "products_requires_prescription_idx" ON "products"("requires_prescr
 
 -- CreateIndex
 CREATE INDEX "products_is_active_idx" ON "products"("is_active");
+
+-- CreateIndex
+CREATE INDEX "products_product_type_id_idx" ON "products"("product_type_id");
+
+-- CreateIndex
+CREATE INDEX "products_retail_category_id_idx" ON "products"("retail_category_id");
+
+-- CreateIndex
+CREATE INDEX "products_dosage_form_id_idx" ON "products"("dosage_form_id");
 
 -- CreateIndex
 CREATE INDEX "branch_products_branch_id_idx" ON "branch_products"("branch_id");
@@ -908,6 +992,27 @@ CREATE INDEX "branch_products_is_active_idx" ON "branch_products"("is_active");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "branch_products_branch_id_product_id_key" ON "branch_products"("branch_id", "product_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "product_types_name_key" ON "product_types"("name");
+
+-- CreateIndex
+CREATE INDEX "product_types_name_idx" ON "product_types"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "retail_categories_name_key" ON "retail_categories"("name");
+
+-- CreateIndex
+CREATE INDEX "retail_categories_parent_id_idx" ON "retail_categories"("parent_id");
+
+-- CreateIndex
+CREATE INDEX "retail_categories_name_idx" ON "retail_categories"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "dosage_forms_name_key" ON "dosage_forms"("name");
+
+-- CreateIndex
+CREATE INDEX "dosage_forms_name_idx" ON "dosage_forms"("name");
 
 -- CreateIndex
 CREATE INDEX "product_batches_branch_product_id_idx" ON "product_batches"("branch_product_id");
@@ -1164,11 +1269,29 @@ CREATE INDEX "suppliers_status_idx" ON "suppliers"("status");
 -- CreateIndex
 CREATE UNIQUE INDEX "suppliers_pharmacy_id_name_key" ON "suppliers"("pharmacy_id", "name");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "refresh_tokens_token_hash_key" ON "refresh_tokens"("token_hash");
+
+-- CreateIndex
+CREATE INDEX "refresh_tokens_user_id_idx" ON "refresh_tokens"("user_id");
+
+-- CreateIndex
+CREATE INDEX "refresh_tokens_expires_at_idx" ON "refresh_tokens"("expires_at");
+
+-- CreateIndex
+CREATE INDEX "refresh_tokens_revoked_at_idx" ON "refresh_tokens"("revoked_at");
+
+-- AddForeignKey
+ALTER TABLE "otps" ADD CONSTRAINT "otps_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 -- AddForeignKey
 ALTER TABLE "user_roles" ADD CONSTRAINT "user_roles_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_roles" ADD CONSTRAINT "user_roles_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_roles" ADD CONSTRAINT "user_roles_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "branches"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "role_permissions" ADD CONSTRAINT "role_permissions_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1195,19 +1318,25 @@ ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_plan_id_fkey" FOREIGN 
 ALTER TABLE "subscription_payments" ADD CONSTRAINT "subscription_payments_subscription_id_fkey" FOREIGN KEY ("subscription_id") REFERENCES "subscriptions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "product_categories" ADD CONSTRAINT "product_categories_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "product_categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_manufacturer_id_fkey" FOREIGN KEY ("manufacturer_id") REFERENCES "manufacturers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "product_categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "products" ADD CONSTRAINT "products_product_type_id_fkey" FOREIGN KEY ("product_type_id") REFERENCES "product_types"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "products" ADD CONSTRAINT "products_retail_category_id_fkey" FOREIGN KEY ("retail_category_id") REFERENCES "retail_categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "products" ADD CONSTRAINT "products_dosage_form_id_fkey" FOREIGN KEY ("dosage_form_id") REFERENCES "dosage_forms"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "branch_products" ADD CONSTRAINT "branch_products_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "branches"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "branch_products" ADD CONSTRAINT "branch_products_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "retail_categories" ADD CONSTRAINT "retail_categories_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "retail_categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "product_batches" ADD CONSTRAINT "product_batches_branch_product_id_fkey" FOREIGN KEY ("branch_product_id") REFERENCES "branch_products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1397,3 +1526,6 @@ ALTER TABLE "system_logs" ADD CONSTRAINT "system_logs_user_id_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "suppliers" ADD CONSTRAINT "suppliers_pharmacy_id_fkey" FOREIGN KEY ("pharmacy_id") REFERENCES "pharmacies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
