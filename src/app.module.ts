@@ -14,6 +14,7 @@ import { UsersModule } from './modules/users/users.module';
 import { PharmaciesModule } from './modules/pharmacies/pharmacies.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { SuppliersModule } from './modules/suppliers/suppliers.module';
+import { ManufacturersModule } from './modules/manufacturers/manufacturers.module';
 
 @Module({
     imports: [
@@ -31,7 +32,8 @@ import { SuppliersModule } from './modules/suppliers/suppliers.module';
         UsersModule,
         PharmaciesModule,
         BranchesModule,
-        SuppliersModule
+        SuppliersModule,
+        ManufacturersModule
     ],
     providers: [
         {
