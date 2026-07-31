@@ -2,11 +2,11 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 
 import { CreateRetailCategoryDto, RetailCategoryQueryDto, UpdateRetailCategoryDto } from '../dtos';
 import { MESSAGES } from '../constants';
-import { RetailCategoryRepository } from '../repositories/retail-category.repository';
+import { RetailCategoriesRepository } from '../repositories/retail-categories.repository';
 
 @Injectable()
-export class RetailCategoryService {
-    constructor(private readonly retailCategoryRepository: RetailCategoryRepository) {}
+export class RetailCategoriesService {
+    constructor(private readonly retailCategoryRepository: RetailCategoriesRepository) {}
 
     findMany(query: RetailCategoryQueryDto) {
         return this.retailCategoryRepository.findMany(query);

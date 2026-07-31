@@ -6,7 +6,7 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 import { CreateRetailCategoryDto, RetailCategoryQueryDto, UpdateRetailCategoryDto } from '../dtos';
 
 @Injectable()
-export class RetailCategoryRepository {
+export class RetailCategoriesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMany(query: RetailCategoryQueryDto) {

@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { RetailCategoryConsoleController } from './controllers/retail-category.console.controller';
-import { RetailCategoryRepository } from './repositories/retail-category.repository';
-import { RetailCategoryService } from './services/retail-category.service';
+import { RetailCategoriesConsoleController } from './controllers/retail-categories.console.controller';
+import { RetailCategoriesService } from './services/retail-categories.service';
+import { RetailCategoriesRepository } from './repositories/retail-categories.repository';
 
 @Module({
     imports: [],
-    controllers: [RetailCategoryConsoleController],
-    providers: [RetailCategoryService, RetailCategoryRepository],
+    controllers: [RetailCategoriesConsoleController],
+    providers: [RetailCategoriesService, RetailCategoriesRepository],
     exports: [],
 })
 export class RetailCategoriesModule {}

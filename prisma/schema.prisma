@@ -508,7 +508,9 @@ model Product {
 
   strength     String? @db.VarChar(100)
 
-  pack_size    String? @db.VarChar(100)
+  pack_quantity Int?
+
+  pack_unit String? @db.VarChar(50)
 
   barcode      String? @unique @db.VarChar(100)
 

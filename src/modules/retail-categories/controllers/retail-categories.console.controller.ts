@@ -1,12 +1,12 @@
 import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 
 import { CreateRetailCategoryDto, RetailCategoryQueryDto, UpdateRetailCategoryDto } from '../dtos';
-import { RetailCategoryService } from '../services/retail-category.service';
 import { ConsoleController } from '@/common/decorators';
+import { RetailCategoriesService } from '../services/retail-categories.service';
 
 @ConsoleController('retail-categories')
-export class RetailCategoryConsoleController {
-    constructor(private readonly retailCategoryService: RetailCategoryService) {}
+export class RetailCategoriesConsoleController {
+    constructor(private readonly retailCategoryService: RetailCategoriesService) {}
 
     @Get()
     findMany(@Query() query: RetailCategoryQueryDto) {
