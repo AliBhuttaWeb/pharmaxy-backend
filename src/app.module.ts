@@ -17,6 +17,7 @@ import { SuppliersModule } from './modules/suppliers/suppliers.module';
 import { ManufacturersModule } from './modules/manufacturers/manufacturers.module';
 import { RetailCategoriesModule } from './modules/retail-categories/retail-categories.module';
 import { ProductTypesModule } from './modules/product-types/product-types.module';
+import { DosageFormsModule } from './modules/dosage-forms/dosage-forms.module';
 
 @Module({
     imports: [
@@ -37,7 +38,8 @@ import { ProductTypesModule } from './modules/product-types/product-types.module
         SuppliersModule,
         ManufacturersModule,
         RetailCategoriesModule,
-        ProductTypesModule
+        ProductTypesModule,
+        DosageFormsModule,
     ],
     providers: [
         {

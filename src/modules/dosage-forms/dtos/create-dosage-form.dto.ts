@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, MaxLength } from 'class-validator';
 
-export class CreateProductTypeDto {
+export class CreateDosageFormDto {
     @ApiProperty({
-        example: 'Medicine',
+        example: 'Tablet',
         maxLength: 100,
     })
     @IsString()
@@ -11,7 +11,7 @@ export class CreateProductTypeDto {
     name!: string;
 
     @ApiProperty({
-        example: 'Prescription and over-the-counter medicines',
+        example: 'Solid oral dosage form',
         required: false,
         maxLength: 500,
     })

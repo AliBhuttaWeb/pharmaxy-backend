@@ -1,28 +1,12 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    Post,
-    Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 
-import {
-    CreateProductTypeDto,
-    ProductTypeQueryDto,
-    UpdateProductTypeDto,
-} from '../dtos';
+import { CreateProductTypeDto, ProductTypeQueryDto, UpdateProductTypeDto } from '../dtos';
 import { ProductTypesService } from '../services/product-types.service';
 import { ConsoleController } from '@/common/decorators';
 
-
 @ConsoleController('product-types')
 export class ProductTypesConsoleController {
-    constructor(
-        private readonly productTypeService: ProductTypesService,
-    ) {}
+    constructor(private readonly productTypeService: ProductTypesService) {}
 
     @Get()
     findMany(@Query() query: ProductTypeQueryDto) {
@@ -40,10 +24,7 @@ export class ProductTypesConsoleController {
     }
 
     @Patch(':id')
-    update(
-        @Param('id') id: string,
-        @Body() dto: UpdateProductTypeDto,
-    ) {
+    update(@Param('id') id: string, @Body() dto: UpdateProductTypeDto) {
         return this.productTypeService.update(id, dto);
     }
 

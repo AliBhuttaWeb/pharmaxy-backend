@@ -3,20 +3,16 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 
-import {
-    CreateProductTypeDto,
-    ProductTypeQueryDto,
-    UpdateProductTypeDto,
-} from '../dtos';
+import { CreateDosageFormDto, DosageFormQueryDto, UpdateDosageFormDto } from '../dtos';
 
 @Injectable()
-export class ProductTypesRepository {
+export class DosageFormsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findMany(query: ProductTypeQueryDto) {
+    async findMany(query: DosageFormQueryDto) {
         const { search, is_active, page, limit, sortBy, sortOrder } = query;
 
-        const where: Prisma.ProductTypeWhereInput = {
+        const where: Prisma.DosageFormWhereInput = {
             deleted_at: null,
 
             ...(search && {
@@ -41,29 +37,29 @@ export class ProductTypesRepository {
             }),
         };
 
-        const orderBy: Prisma.ProductTypeOrderByWithRelationInput = {
-            [(sortBy ?? 'name') as keyof Prisma.ProductTypeOrderByWithRelationInput]:
+        const orderBy: Prisma.DosageFormOrderByWithRelationInput = {
+            [(sortBy ?? 'name') as keyof Prisma.DosageFormOrderByWithRelationInput]:
                 sortOrder ?? 'asc',
         };
 
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.productType.findMany({
+            return this.prisma.dosageForm.findMany({
                 where,
                 orderBy,
             });
         }
 
         const [records, total] = await this.prisma.$transaction([
-            this.prisma.productType.findMany({
+            this.prisma.dosageForm.findMany({
                 where,
                 orderBy,
                 skip: (page - 1) * limit,
                 take: limit,
             }),
 
-            this.prisma.productType.count({
+            this.prisma.dosageForm.count({
                 where,
             }),
         ]);
@@ -75,7 +71,7 @@ export class ProductTypesRepository {
     }
 
     findById(id: string) {
-        return this.prisma.productType.findFirst({
+        return this.prisma.dosageForm.findFirst({
             where: {
                 id,
                 deleted_at: null,
@@ -84,7 +80,7 @@ export class ProductTypesRepository {
     }
 
     findByName(name: string, excludeId?: string) {
-        return this.prisma.productType.findFirst({
+        return this.prisma.dosageForm.findFirst({
             where: {
                 name,
                 deleted_at: null,
@@ -98,14 +94,14 @@ export class ProductTypesRepository {
         });
     }
 
-    create(data: CreateProductTypeDto) {
-        return this.prisma.productType.create({
+    create(data: CreateDosageFormDto) {
+        return this.prisma.dosageForm.create({
             data,
         });
     }
 
-    update(id: string, data: UpdateProductTypeDto) {
-        return this.prisma.productType.update({
+    update(id: string, data: UpdateDosageFormDto) {
+        return this.prisma.dosageForm.update({
             where: {
                 id,
             },
@@ -114,7 +110,7 @@ export class ProductTypesRepository {
     }
 
     delete(id: string) {
-        return this.prisma.productType.update({
+        return this.prisma.dosageForm.update({
             where: {
                 id,
             },

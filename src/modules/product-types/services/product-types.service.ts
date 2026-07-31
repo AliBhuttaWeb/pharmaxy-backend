@@ -1,22 +1,12 @@
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { MESSAGES } from '../constants';
-import {
-    CreateProductTypeDto,
-    ProductTypeQueryDto,
-    UpdateProductTypeDto,
-} from '../dtos';
-import { ProductTypesRepository } from '../repositories/product-type.repository';
+import { CreateProductTypeDto, ProductTypeQueryDto, UpdateProductTypeDto } from '../dtos';
+import { ProductTypesRepository } from '../repositories/product-types.repository';
 
 @Injectable()
 export class ProductTypesService {
-    constructor(
-        private readonly productTypeRepository: ProductTypesRepository,
-    ) {}
+    constructor(private readonly productTypeRepository: ProductTypesRepository) {}
 
     findMany(query: ProductTypeQueryDto) {
         return this.productTypeRepository.findMany(query);
@@ -33,8 +23,7 @@ export class ProductTypesService {
     }
 
     async create(dto: CreateProductTypeDto) {
-        const existingProductType =
-            await this.productTypeRepository.findByName(dto.name);
+        const existingProductType = await this.productTypeRepository.findByName(dto.name);
 
         if (existingProductType) {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
@@ -47,16 +36,10 @@ export class ProductTypesService {
         await this.findById(id);
 
         if (dto.name) {
-            const existingProductType =
-                await this.productTypeRepository.findByName(
-                    dto.name,
-                    id,
-                );
+            const existingProductType = await this.productTypeRepository.findByName(dto.name, id);
 
             if (existingProductType) {
-                throw new ConflictException(
-                    MESSAGES.ERROR.ALREADY_EXISTS,
-                );
+                throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
             }
         }
 
