@@ -110,4 +110,14 @@ export class BranchesService {
             message: MESSAGES.SUCCESS.DELETED,
         };
     }
+
+    async findById(id: string) {
+        const branch = await this.branchesRepository.findById(id);
+
+        if (!branch) {
+            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+        }
+
+        return branch;
+    }
 }

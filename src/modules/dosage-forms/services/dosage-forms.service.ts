@@ -49,7 +49,6 @@ export class DosageFormsService {
     async delete(id: string) {
         await this.findById(id);
 
-        // TODO:
         // Prevent deletion if products reference this dosage form.
         // Example:
         //

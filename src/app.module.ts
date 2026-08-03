@@ -19,6 +19,7 @@ import { RetailCategoriesModule } from './modules/retail-categories/retail-categ
 import { ProductTypesModule } from './modules/product-types/product-types.module';
 import { DosageFormsModule } from './modules/dosage-forms/dosage-forms.module';
 import { ProductsModule } from './modules/products/products.module';
+import { BranchProductsModule } from './modules/branch-products/branch-products.module';
 
 @Module({
     imports: [
@@ -42,6 +43,7 @@ import { ProductsModule } from './modules/products/products.module';
         ProductTypesModule,
         DosageFormsModule,
         ProductsModule,
+        BranchProductsModule,
     ],
     providers: [
         {
