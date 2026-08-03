@@ -14,6 +14,10 @@ export class BranchProductsRepository {
         product: true,
     };
 
+    private getClient(tx?: Prisma.TransactionClient) {
+        return tx ?? this.prisma;
+    }
+
     private buildWhere(query: BranchProductQueryDto): Prisma.BranchProductWhereInput {
         const { search, branch_id, product_id, is_controlled_drug, is_active } = query;
 
@@ -110,8 +114,8 @@ export class BranchProductsRepository {
         };
     }
 
-    findById(id: string) {
-        return this.prisma.branchProduct.findFirst({
+    findById(id: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).branchProduct.findFirst({
             where: {
                 id,
                 deleted_at: null,
@@ -120,8 +124,13 @@ export class BranchProductsRepository {
         });
     }
 
-    findByBranchAndProduct(branchId: string, productId: string, excludeId?: string) {
-        return this.prisma.branchProduct.findFirst({
+    findByBranchAndProduct(
+        branchId: string,
+        productId: string,
+        excludeId?: string,
+        tx?: Prisma.TransactionClient,
+    ) {
+        return this.getClient(tx).branchProduct.findFirst({
             where: {
                 branch_id: branchId,
                 product_id: productId,
@@ -136,15 +145,15 @@ export class BranchProductsRepository {
         });
     }
 
-    create(data: CreateBranchProductDto) {
-        return this.prisma.branchProduct.create({
+    create(data: CreateBranchProductDto, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).branchProduct.create({
             data,
             include: this.branchProductRelations,
         });
     }
 
-    update(id: string, data: UpdateBranchProductDto) {
-        return this.prisma.branchProduct.update({
+    update(id: string, data: UpdateBranchProductDto, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).branchProduct.update({
             where: {
                 id,
             },
@@ -166,8 +175,8 @@ export class BranchProductsRepository {
         });
     }
 
-    delete(id: string) {
-        return this.prisma.branchProduct.update({
+    delete(id: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).branchProduct.update({
             where: {
                 id,
             },

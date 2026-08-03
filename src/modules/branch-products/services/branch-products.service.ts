@@ -1,10 +1,17 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { MESSAGES } from '../constants/messages.constants';
-import { BranchProductQueryDto, CreateBranchProductDto, UpdateBranchProductDto } from '../dtos';
+import {
+    BranchProductQueryDto,
+    CreateBranchProductDto,
+    OnboardBranchProductDto,
+    UpdateBranchProductDto,
+} from '../dtos';
 import { BranchProductsRepository } from '../repositories/branch-products.repository';
 import { BranchesService } from '@/modules/branches/services/branches.service';
 import { ProductsService } from '@/modules/products/services/products.service';
+import { Prisma } from '@prisma/client';
+import { OnboardBranchProductService } from './onboard-branch-products.service';
 
 @Injectable()
 export class BranchProductsService {
@@ -14,6 +21,7 @@ export class BranchProductsService {
         private readonly branchesService: BranchesService,
 
         private readonly productsService: ProductsService,
+        private readonly onboardBranchProductService: OnboardBranchProductService,
     ) {}
 
     findMany(query: BranchProductQueryDto) {
@@ -75,5 +83,9 @@ export class BranchProductsService {
         await this.findById(id);
 
         return this.branchProductsRepository.delete(id);
+    }
+
+    onboard(dto: OnboardBranchProductDto) {
+        return this.onboardBranchProductService.execute(dto);
     }
 }

@@ -16,6 +16,9 @@ export class ProductsRepository {
         dosage_form: true,
     };
 
+    private getClient(tx?: Prisma.TransactionClient) {
+        return tx ?? this.prisma;
+    }
     async findMany(query: ProductQueryDto) {
         const {
             search,
@@ -128,8 +131,8 @@ export class ProductsRepository {
         });
     }
 
-    findByBarcode(barcode: string, excludeId?: string) {
-        return this.prisma.product.findFirst({
+    findByBarcode(barcode: string, excludeId?: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).product.findFirst({
             where: {
                 barcode,
                 deleted_at: null,
@@ -143,15 +146,15 @@ export class ProductsRepository {
         });
     }
 
-    create(data: CreateProductDto) {
-        return this.prisma.product.create({
+    create(data: CreateProductDto, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).product.create({
             data,
             include: this.productRelations,
         });
     }
 
-    update(id: string, data: UpdateProductDto) {
-        return this.prisma.product.update({
+    update(id: string, data: UpdateProductDto, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).product.update({
             where: {
                 id,
             },
@@ -162,8 +165,8 @@ export class ProductsRepository {
         });
     }
 
-    delete(id: string) {
-        return this.prisma.product.update({
+    delete(id: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).product.update({
             where: {
                 id,
             },

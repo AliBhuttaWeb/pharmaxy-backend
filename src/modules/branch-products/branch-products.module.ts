@@ -12,6 +12,8 @@ import { ManufacturersRepository } from '../manufacturers/repositories/manufactu
 import { ProductTypesRepository } from '../product-types/repositories/product-types.repository';
 import { RetailCategoriesRepository } from '../retail-categories/repositories/retail-categories.repository';
 import { DosageFormsRepository } from '../dosage-forms/repositories/dosage-forms.repository';
+import { ProductBatchesRepository } from './repositories/product-batches.repository';
+import { OnboardBranchProductService } from './services/onboard-branch-products.service';
 
 @Module({
     imports: [BranchesModule, ProductsModule],
@@ -29,6 +31,8 @@ import { DosageFormsRepository } from '../dosage-forms/repositories/dosage-forms
         BranchProductsService,
         BranchesService,
         ProductsService,
+        ProductBatchesRepository,
+        OnboardBranchProductService
     ],
 
     exports: [],
