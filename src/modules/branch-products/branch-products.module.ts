@@ -32,7 +32,7 @@ import { OnboardBranchProductService } from './services/onboard-branch-products.
         BranchesService,
         ProductsService,
         ProductBatchesRepository,
-        OnboardBranchProductService
+        OnboardBranchProductService,
     ],
 
     exports: [],
