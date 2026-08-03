@@ -217,4 +217,16 @@ export class BranchProductsRepository {
             },
         });
     }
+
+    findBatches(branchProductId: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).productBatch.findMany({
+            where: {
+                branch_product_id: branchProductId,
+                deleted_at: null,
+            },
+            orderBy: {
+                expiry_date: 'asc',
+            },
+        });
+    }
 }

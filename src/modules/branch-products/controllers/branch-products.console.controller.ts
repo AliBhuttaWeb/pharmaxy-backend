@@ -56,4 +56,10 @@ export class BranchProductsConsoleController {
     receiveStock(@Param('id') id: string, @Body() dto: ReceiveStockDto) {
         return this.branchProductsService.receiveStock(id, dto);
     }
+
+    @Get(':id/batches')
+    @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_DETAIL.name)
+    findBatches(@Param('id') id: string) {
+        return this.branchProductsService.findBatches(id);
+    }
 }

@@ -100,4 +100,10 @@ export class BranchProductsService {
             batch,
         };
     }
+
+    async findBatches(id: string) {
+        await this.findById(id);
+
+        return this.branchProductsRepository.findBatches(id);
+    }
 }
