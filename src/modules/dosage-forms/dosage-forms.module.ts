@@ -8,6 +8,6 @@ import { DosageFormsConsoleController } from './controllers/dosage-forms.console
 
     providers: [DosageFormsRepository, DosageFormsService],
 
-    exports: [],
+    exports: [DosageFormsRepository],
 })
 export class DosageFormsModule {}

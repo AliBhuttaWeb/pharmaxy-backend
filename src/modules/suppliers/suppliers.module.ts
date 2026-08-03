@@ -6,6 +6,6 @@ import { SuppliersConsoleController } from './controllers/suppliers.console.cont
 @Module({
     controllers: [SuppliersConsoleController],
     providers: [SuppliersService, SuppliersRepository],
-    exports: [],
+    exports: [SuppliersService],
 })
 export class SuppliersModule {}

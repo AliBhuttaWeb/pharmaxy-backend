@@ -7,6 +7,6 @@ import { RetailCategoriesRepository } from './repositories/retail-categories.rep
     imports: [],
     controllers: [RetailCategoriesConsoleController],
     providers: [RetailCategoriesService, RetailCategoriesRepository],
-    exports: [],
+    exports: [RetailCategoriesRepository],
 })
 export class RetailCategoriesModule {}

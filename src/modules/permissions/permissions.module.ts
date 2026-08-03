@@ -11,6 +11,6 @@ import { PermissionResolverService } from './services/permissions-resolver.servi
     imports: [PrismaModule],
     controllers: [PermissionsConsoleController],
     providers: [PermissionsService, PermissionsRepository, PermissionResolverService],
-    exports: [PermissionsService],
+    exports: [PermissionsService, PermissionResolverService],
 })
 export class PermissionsModule {}
