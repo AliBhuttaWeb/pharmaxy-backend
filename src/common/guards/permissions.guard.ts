@@ -12,13 +12,14 @@ import type { AuthenticatedUser } from '@/modules/auth/types';
 
 import { MESSAGES } from '@/common/constants';
 import { IS_PUBLIC_KEY, PERMISSIONS_KEY } from '../decorators';
+import { PermissionResolverService } from '@/modules/permissions/services/permissions-resolver.service';
 // import { PermissionResolverService } from '@/modules/permissions/services';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
-        // private readonly permissionResolver: PermissionResolverService,
+        private readonly permissionResolver: PermissionResolverService,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -58,27 +59,9 @@ export class PermissionsGuard implements CanActivate {
             throw new UnauthorizedException(MESSAGES.ERROR.UNAUTHORIZED);
         }
 
-        /**
-         * TODO:
-         *
-         * Replace this placeholder with:
-         *
-         * const hasPermissions =
-         *     await this.permissionResolver.hasPermissions(
-         *         user.id,
-         *         requiredPermissions,
-         *     );
-         *
-         * if (!hasPermissions) {
-         *     throw new ForbiddenException(
-         *         MESSAGES.AUTH.ERROR.FORBIDDEN,
-         *     );
-         * }
-         */
-
-        // Temporary implementation
-        const hasPermissions = requiredPermissions.every((permission) =>
-            user.permissions.includes(permission),
+        const hasPermissions = await this.permissionResolver.hasPermissions(
+            user.id,
+            requiredPermissions,
         );
 
         if (!hasPermissions) {

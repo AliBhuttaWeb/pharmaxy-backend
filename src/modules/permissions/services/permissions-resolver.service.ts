@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PermissionEffect } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { ROLE_HIERARCHY } from '@/modules/roles/policies/role-hierarchy.policy';
@@ -27,6 +28,12 @@ export class PermissionResolverService {
                         },
                     },
                 },
+
+                user_permissions: {
+                    include: {
+                        permission: true,
+                    },
+                },
             },
         });
 
@@ -34,21 +41,59 @@ export class PermissionResolverService {
             return new Set();
         }
 
-        const permissions = new Set<string>();
+        const roleNames = new Set<string>();
 
         for (const userRole of user.user_roles) {
-            const roles = this.resolveRoleHierarchy(userRole.role.name);
+            for (const role of this.resolveRoleHierarchy(userRole.role.name)) {
+                roleNames.add(role);
+            }
+        }
 
-            for (const role of roles) {
-                const rolePermissions = await this.getRolePermissions(role);
+        const roles = await this.prisma.role.findMany({
+            where: {
+                name: {
+                    in: [...roleNames],
+                },
+            },
 
-                for (const permission of rolePermissions) {
-                    permissions.add(permission);
-                }
+            include: {
+                role_permissions: {
+                    include: {
+                        permission: true,
+                    },
+                },
+            },
+        });
+
+        const permissions = new Set<string>();
+
+        for (const role of roles) {
+            for (const rolePermission of role.role_permissions) {
+                permissions.add(rolePermission.permission.name);
+            }
+        }
+
+        for (const override of user.user_permissions) {
+            if (override.effect === PermissionEffect.ALLOW) {
+                permissions.add(override.permission.name);
+            } else {
+                permissions.delete(override.permission.name);
             }
         }
 
         return permissions;
+    }
+
+    async hasPermission(userId: string, permission: string): Promise<boolean> {
+        const permissions = await this.getUserPermissions(userId);
+
+        return permissions.has(permission);
+    }
+
+    async hasPermissions(userId: string, requiredPermissions: string[]): Promise<boolean> {
+        const permissions = await this.getUserPermissions(userId);
+
+        return requiredPermissions.every((permission) => permissions.has(permission));
     }
 
     private resolveRoleHierarchy(roleName: string): string[] {
@@ -68,28 +113,6 @@ export class PermissionResolverService {
 
         visit(roleName);
 
-        return Array.from(roles);
-    }
-
-    private async getRolePermissions(roleName: string): Promise<string[]> {
-        const role = await this.prisma.role.findUnique({
-            where: {
-                name: roleName,
-            },
-
-            include: {
-                role_permissions: {
-                    include: {
-                        permission: true,
-                    },
-                },
-            },
-        });
-
-        if (!role) {
-            return [];
-        }
-
-        return role.role_permissions.map(({ permission }) => permission.name);
+        return [...roles];
     }
 }
