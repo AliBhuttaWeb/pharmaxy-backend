@@ -2,6 +2,7 @@ import {
     BranchProductQueryDto,
     CreateBranchProductDto,
     OnboardBranchProductDto,
+    ReceiveStockDto,
     UpdateBranchProductDto,
 } from '../dtos';
 
@@ -48,5 +49,11 @@ export class BranchProductsConsoleController {
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_DELETE.name)
     delete(@Param('id') id: string) {
         return this.branchProductsService.delete(id);
+    }
+
+    @Post(':id/receive-stock')
+    @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_UPDATE.name)
+    receiveStock(@Param('id') id: string, @Body() dto: ReceiveStockDto) {
+        return this.branchProductsService.receiveStock(id, dto);
     }
 }

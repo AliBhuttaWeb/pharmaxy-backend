@@ -5,6 +5,7 @@ import {
     BranchProductQueryDto,
     CreateBranchProductDto,
     OnboardBranchProductDto,
+    ReceiveStockDto,
     UpdateBranchProductDto,
 } from '../dtos';
 import { BranchProductsRepository } from '../repositories/branch-products.repository';
@@ -87,5 +88,16 @@ export class BranchProductsService {
 
     onboard(dto: OnboardBranchProductDto) {
         return this.onboardBranchProductService.execute(dto);
+    }
+
+    async receiveStock(id: string, dto: ReceiveStockDto) {
+        await this.findById(id);
+
+        const batch = await this.branchProductsRepository.createBatch(id, dto);
+
+        return {
+            message: MESSAGES.SUCCESS.STOCK_RECEIVED,
+            batch,
+        };
     }
 }

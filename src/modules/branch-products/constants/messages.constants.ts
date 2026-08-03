@@ -5,6 +5,7 @@ export const MESSAGES = {
         CREATED: 'Branch product created successfully.',
         UPDATED: 'Branch product updated successfully.',
         DELETED: 'Branch product deleted successfully.',
+        STOCK_RECEIVED: 'Stock received successfully',
     },
 
     ERROR: {
