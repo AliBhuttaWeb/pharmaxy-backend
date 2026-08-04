@@ -11,9 +11,15 @@ export class ProductBatchesRepository {
         return tx ?? this.prisma;
     }
 
+    private readonly productBatchRelations: Prisma.ProductBatchInclude = {
+        branch_product: true,
+        purchase_order_item: true,
+    };
+
     create(data: Prisma.ProductBatchUncheckedCreateInput, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).productBatch.create({
             data,
+            include: this.productBatchRelations,
         });
     }
 
@@ -47,6 +53,33 @@ export class ProductBatchesRepository {
 
             orderBy: {
                 expiry_date: 'asc',
+            },
+        });
+    }
+    findByBranchProductAndBatch(
+        branchProductId: string,
+        batchNumber: string,
+        tx?: Prisma.TransactionClient,
+    ) {
+        return this.getClient(tx).productBatch.findFirst({
+            where: {
+                branch_product_id: branchProductId,
+                batch_number: batchNumber,
+                deleted_at: null,
+            },
+        });
+    }
+
+    findByBranchProductAndBatchNumber(
+        branchProductId: string,
+        batchNumber: string,
+        tx?: Prisma.TransactionClient,
+    ) {
+        return this.getClient(tx).productBatch.findFirst({
+            where: {
+                branch_product_id: branchProductId,
+                batch_number: batchNumber,
+                deleted_at: null,
             },
         });
     }

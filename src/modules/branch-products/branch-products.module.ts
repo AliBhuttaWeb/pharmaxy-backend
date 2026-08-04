@@ -19,6 +19,6 @@ import { OnboardBranchProductService } from './services/onboard-branch-products.
         OnboardBranchProductService,
     ],
 
-    exports: [],
+    exports: [BranchProductsRepository, ProductBatchesRepository],
 })
 export class BranchProductsModule {}

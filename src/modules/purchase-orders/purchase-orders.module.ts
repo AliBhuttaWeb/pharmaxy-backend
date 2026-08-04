@@ -7,9 +7,11 @@ import { SuppliersModule } from '@/modules/suppliers/suppliers.module';
 import { PurchaseOrdersService } from './services/purchase-orders.service';
 import { PurchaseOrdersRepository } from './repositories/purchase-orders-repository';
 import { PurchaseOrdersConsoleController } from './controllers/purchase-orders.console.controller';
+import { BranchProductsRepository } from '../branch-products/repositories/branch-products.repository';
+import { BranchProductsModule } from '../branch-products/branch-products.module';
 
 @Module({
-    imports: [BranchesModule, ProductsModule, SuppliersModule],
+    imports: [BranchesModule, ProductsModule, SuppliersModule, BranchProductsModule],
 
     controllers: [PurchaseOrdersConsoleController],
 

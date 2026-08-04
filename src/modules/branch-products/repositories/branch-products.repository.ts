@@ -168,15 +168,14 @@ export class BranchProductsRepository {
     }
 
     updateQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        const client = tx ?? this.prisma;
-
-        return client.branchProduct.update({
+        return this.getClient(tx).branchProduct.update({
             where: {
                 id,
             },
             data: {
                 quantity,
             },
+            include: this.branchProductRelations,
         });
     }
 
@@ -192,7 +191,7 @@ export class BranchProductsRepository {
     }
 
     findByBranchAndProductOrFail(branchId: string, productId: string) {
-        return this.prisma.branchProduct.findFirst({
+        return this.prisma.branchProduct.findFirstOrThrow({
             where: {
                 branch_id: branchId,
                 product_id: productId,
@@ -201,6 +200,7 @@ export class BranchProductsRepository {
             include: this.branchProductRelations,
         });
     }
+
     createBatch(branchProductId: string, data: ReceiveStockDto, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).productBatch.create({
             data: {

@@ -45,7 +45,7 @@ import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.
         DosageFormsModule,
         ProductsModule,
         BranchProductsModule,
-        PurchaseOrdersModule
+        PurchaseOrdersModule,
     ],
     providers: [
         {

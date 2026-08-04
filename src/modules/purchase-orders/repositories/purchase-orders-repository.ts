@@ -195,4 +195,35 @@ export class PurchaseOrdersRepository {
             },
         });
     }
+
+    findPurchaseOrderItemById(id: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).purchaseOrderItem.findUnique({
+            where: {
+                id,
+            },
+            include: {
+                product: true,
+                purchase_order: true,
+                product_batches: true,
+            },
+        });
+    }
+
+    updatePurchaseOrderItem(
+        id: string,
+        data: Prisma.PurchaseOrderItemUpdateInput,
+        tx?: Prisma.TransactionClient,
+    ) {
+        return this.getClient(tx).purchaseOrderItem.update({
+            where: {
+                id,
+            },
+            data,
+            include: {
+                product: true,
+                purchase_order: true,
+                product_batches: true,
+            },
+        });
+    }
 }
