@@ -30,3 +30,4 @@ export * from './nearby-inventories.permissions';
 export * from './retail-categories.permissions';
 export * from './product-types.permissions';
 export * from './dosage-forms.permissions';
+export * from './branch-products.permissions';

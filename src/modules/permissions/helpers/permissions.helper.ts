@@ -21,3 +21,11 @@ export function getAllPermissions() {
         .filter(([key]) => key.endsWith('_PERMISSIONS'))
         .flatMap(([, value]) => Object.values(value));
 }
+
+export function getPermissionNames(...permissionGroups: Record<string, { name: string }>[]) {
+    return permissionGroups.map((permission) => permission.name);
+}
+
+export function getSpecificPermissions(...permissionList: { name: string }[]) {
+    return permissionList;
+}

@@ -1,86 +1,178 @@
 import { ROLES } from '@/common/constants';
+
+import * as permissions from '@/common/constants/permissions';
+
 import {
-    getAllPermissions,
-    getPermissions,
+    getSpecificPermissions,
 } from '@/modules/permissions/helpers/permissions.helper';
 
 export const DEFAULT_ROLE_PERMISSIONS = {
-    [ROLES.SUPER_ADMIN.name]: getPermissions(
+    // =====================================================
+    // SUPER ADMIN
+    // =====================================================
+
+    [ROLES.SUPER_ADMIN.name]: getSpecificPermissions(
+        // Dashboard
+        ...Object.values(permissions.DASHBOARD_PERMISSIONS),
+
         // Platform management
-        'DASHBOARD',
+        ...Object.values(permissions.PHARMACIES_PERMISSIONS),
+        ...Object.values(permissions.BRANCHES_PERMISSIONS),
+        ...Object.values(permissions.USERS_PERMISSIONS),
 
-        'PHARMACIES',
-        'BRANCHES',
+        // Subscription
+        ...Object.values(permissions.SUBSCRIPTION_PLANS_PERMISSIONS),
 
-        'USERS',
+        permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_LIST,
+        permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_DETAIL,
 
-        // Subscription & billing
-        'SUBSCRIPTION_PLANS',
-        'SUBSCRIPTIONS',
-        'SUBSCRIPTION_PAYMENTS',
+        permissions.SUBSCRIPTION_PAYMENTS_PERMISSIONS.SUBSCRIPTION_PAYMENT_VIEW_LIST,
 
-        // Catalog control (platform level)
-        'PRODUCTS',
-        'PRODUCT_BATCHES',
-        'RETAIL_CATEGORIES',
-        'PRODUCT_TYPES',
-        'DOSAGE_FORMS',
-        'MANUFACTURERS',
+        permissions.SUBSCRIPTION_PAYMENTS_PERMISSIONS.SUBSCRIPTION_PAYMENT_VIEW_DETAIL,
+
+        // Product catalog
+        ...Object.values(permissions.PRODUCTS_PERMISSIONS),
+
+        permissions.PRODUCT_BATCHES_PERMISSIONS.PRODUCT_BATCH_VIEW_LIST,
+        permissions.PRODUCT_BATCHES_PERMISSIONS.PRODUCT_BATCH_VIEW_DETAIL,
+
+        ...Object.values(permissions.RETAIL_CATEGORIES_PERMISSIONS),
+        ...Object.values(permissions.PRODUCT_TYPES_PERMISSIONS  ),
+        ...Object.values(permissions.DOSAGE_FORMS_PERMISSIONS),
+        ...Object.values(permissions.MANUFACTURERS_PERMISSIONS),
 
         // Support
-        'SUPPORT_TICKETS',
-        'SUPPORT_TICKET_MESSAGES',
-        'SUPPORT_TICKET_ATTACHMENTS',
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_VIEW_LIST,
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_VIEW_DETAIL,
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_ASSIGN,
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_CLOSE,
 
-        // Platform monitoring
-        'SYSTEM_LOGS',
+        ...Object.values(permissions.SUPPORT_TICKET_MESSAGES_PERMISSIONS),
 
-        // Communication
-        'NOTIFICATIONS',
+        permissions.SUPPORT_TICKET_ATTACHMENTS_PERMISSIONS.SUPPORT_TICKET_ATTACHMENT_VIEW,
+
+        // Logs
+        ...Object.values(permissions.SYSTEM_LOGS_PERMISSIONS),
+
+        // Notifications
+        ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
     ),
 
-    [ROLES.PHARMACY_ADMIN.name]: getPermissions(
-        'BRANCHES',
+    // =====================================================
+    // PHARMACY ADMIN
+    // =====================================================
 
-        'PRODUCTS',
-        'PRODUCT_BATCHES',
-        'STOCK_ADJUSTMENTS',
+    [ROLES.PHARMACY_ADMIN.name]: getSpecificPermissions(
+        ...Object.values(permissions.DASHBOARD_PERMISSIONS),
 
-        'CUSTOMERS',
-        'SUPPLIERS',
+        // Branch
+        ...Object.values(permissions.BRANCHES_PERMISSIONS),
 
-        'PURCHASE_ORDERS',
-        'PURCHASE_ORDER_WORKFLOW',
+        // Inventory
+        ...Object.values(permissions.BRANCH_PRODUCTS_PERMISSIONS),
 
-        'POS',
-        'SALES',
-        'RETURNS',
+        ...Object.values(permissions.PRODUCT_BATCHES_PERMISSIONS),
 
-        'NEARBY_INVENTORIES',
+        ...Object.values(permissions.STOCK_ADJUSTMENTS_PERMISSIONS),
 
-        'REPORTS',
-        'SETTINGS',
+        // Customers
+        ...Object.values(permissions.CUSTOMERS_PERMISSIONS),
 
-        'NOTIFICATIONS',
+        // Suppliers
+        ...Object.values(permissions.SUPPLIERS_PERMISSIONS),
 
-        'SUPPORT_TICKETS',
-        'SUPPORT_TICKET_MESSAGES',
-        'SUPPORT_TICKET_ATTACHMENTS',
+        // Purchase orders
+        ...Object.values(permissions.PURCHASE_ORDERS_PERMISSIONS),
+
+        // POS
+        ...Object.values(permissions.POS_PERMISSIONS),
+
+        // Sales
+        ...Object.values(permissions.SALES_PERMISSIONS),
+
+        // Returns
+        ...Object.values(permissions.RETURNS_PERMISSIONS),
+
+        // Nearby inventory
+        ...Object.values(permissions.NEARBY_INVENTORIES_PERMISSIONS),
+
+        // Reports
+        ...Object.values(permissions.REPORTS_PERMISSIONS),
+
+        // Settings
+        ...Object.values(permissions.SETTINGS_PERMISSIONS),
+
+        // Support
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_VIEW_LIST,
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_VIEW_DETAIL,
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_CREATE,
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_UPDATE,
+
+        ...Object.values(permissions.SUPPORT_TICKET_MESSAGES_PERMISSIONS),
+
+        ...Object.values(permissions.SUPPORT_TICKET_ATTACHMENTS_PERMISSIONS),
+
+        ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
     ),
 
-    [ROLES.CASHIER.name]: getPermissions(
-        'POS',
-        'SALES',
-        'RETURNS',
+    // =====================================================
+    // CASHIER
+    // =====================================================
 
-        'CUSTOMERS',
+    [ROLES.CASHIER.name]: getSpecificPermissions(
+        ...Object.values(permissions.DASHBOARD_PERMISSIONS),
 
-        'NEARBY_INVENTORIES',
+        // POS
+        ...Object.values(permissions.POS_PERMISSIONS),
 
-        'NOTIFICATIONS',
+        // Sales
+        permissions.SALES_PERMISSIONS.SALE_VIEW_LIST,
+        permissions.SALES_PERMISSIONS.SALE_VIEW_DETAIL,
+
+        // Customers
+        ...Object.values(permissions.CUSTOMERS_PERMISSIONS),
+
+        // Returns
+        ...Object.values(permissions.RETURNS_PERMISSIONS),
+
+        // Inventory view
+        permissions.BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_LIST,
+
+        permissions.BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_DETAIL,
+
+        // Stock adjustment
+        permissions.STOCK_ADJUSTMENTS_PERMISSIONS.STOCK_ADJUSTMENT_CREATE,
+
+        permissions.STOCK_ADJUSTMENTS_PERMISSIONS.STOCK_ADJUSTMENT_VIEW_LIST,
+
+        permissions.STOCK_ADJUSTMENTS_PERMISSIONS.STOCK_ADJUSTMENT_VIEW_DETAIL,
+
+        ...Object.values(permissions.NEARBY_INVENTORIES_PERMISSIONS),
+
+        ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
     ),
 
-    [ROLES.SUPPLIER.name]: getPermissions('PURCHASE_ORDER_WORKFLOW', 'NOTIFICATIONS'),
+    // =====================================================
+    // SUPPLIER
+    // =====================================================
 
-    [ROLES.USER.name]: getPermissions('NOTIFICATIONS'),
+    [ROLES.SUPPLIER.name]: getSpecificPermissions(
+        ...Object.values(permissions.DASHBOARD_PERMISSIONS),
+
+        ...Object.values(permissions.PURCHASE_ORDER_WORKFLOW_PERMISSIONS),
+
+        ...Object.values(permissions.REPORTS_PERMISSIONS),
+
+        ...Object.values(permissions.SETTINGS_PERMISSIONS),
+
+        ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
+    ),
+
+    // =====================================================
+    // USER
+    // =====================================================
+
+    [ROLES.USER.name]: getSpecificPermissions(
+        ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
+    ),
 } as const;
