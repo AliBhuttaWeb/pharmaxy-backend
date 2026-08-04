@@ -7,7 +7,12 @@ import { HoldOrdersConsoleController } from './controllers/hold-orders-console.c
 
 @Module({
     controllers: [HoldOrdersConsoleController],
-    providers: [HoldOrdersService, HoldOrdersRepository, BranchProductsRepository, BranchContextService],
+    providers: [
+        HoldOrdersService,
+        HoldOrdersRepository,
+        BranchProductsRepository,
+        BranchContextService,
+    ],
     exports: [HoldOrdersService],
 })
 export class HoldOrdersModule {}

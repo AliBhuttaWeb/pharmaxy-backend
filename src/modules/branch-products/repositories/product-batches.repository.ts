@@ -118,4 +118,18 @@ export class ProductBatchesRepository {
             ],
         });
     }
+
+    decreaseBatchQuantity(batchId: string, quantity: number, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).productBatch.update({
+            where: {
+                id: batchId,
+            },
+
+            data: {
+                quantity: {
+                    decrement: quantity,
+                },
+            },
+        });
+    }
 }

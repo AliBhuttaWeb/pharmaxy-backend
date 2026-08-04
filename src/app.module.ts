@@ -24,6 +24,7 @@ import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.
 import { CustomersModule } from './modules/customers/customers.module';
 import { PosModule } from './modules/pos/pos.module';
 import { HoldOrdersModule } from './modules/hold-orders/hold-orders.module';
+import { ReturnsModule } from './modules/returns/returns.module';
 
 @Module({
     imports: [
@@ -51,7 +52,8 @@ import { HoldOrdersModule } from './modules/hold-orders/hold-orders.module';
         PurchaseOrdersModule,
         CustomersModule,
         PosModule,
-        HoldOrdersModule
+        HoldOrdersModule,
+        ReturnsModule,
     ],
     providers: [
         {
