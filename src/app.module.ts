@@ -21,6 +21,8 @@ import { DosageFormsModule } from './modules/dosage-forms/dosage-forms.module';
 import { ProductsModule } from './modules/products/products.module';
 import { BranchProductsModule } from './modules/branch-products/branch-products.module';
 import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.module';
+import { CustomersModule } from './modules/customers/customers.module';
+import { PosModule } from './modules/pos/pos.module';
 
 @Module({
     imports: [
@@ -46,6 +48,8 @@ import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.
         ProductsModule,
         BranchProductsModule,
         PurchaseOrdersModule,
+        CustomersModule,
+        PosModule,
     ],
     providers: [
         {

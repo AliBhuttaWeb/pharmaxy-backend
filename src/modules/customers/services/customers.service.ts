@@ -197,4 +197,8 @@ export class CustomersService {
 
         return `CUS-${String(lastNumber + 1).padStart(6, '0')}`;
     }
+
+    async getOrCreateWalkInCustomer(pharmacyId: string) {
+        return this.customersRepository.findOrCreateWalkIn(pharmacyId);
+    }
 }

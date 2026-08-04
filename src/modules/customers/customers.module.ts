@@ -15,6 +15,6 @@ import { CustomersService } from './services/customers.service';
 
     providers: [CustomersRepository, CustomersService],
 
-    exports: [CustomersRepository],
+    exports: [CustomersService],
 })
 export class CustomersModule {}

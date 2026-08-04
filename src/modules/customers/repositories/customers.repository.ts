@@ -233,4 +233,29 @@ export class CustomersRepository {
             },
         });
     }
+
+    findOrCreateWalkIn(pharmacyId: string) {
+        return this.prisma.customer.upsert({
+            where: {
+                pharmacy_id_customer_code: {
+                    pharmacy_id: pharmacyId,
+                    customer_code: 'WALK-IN',
+                },
+            },
+
+            update: {},
+
+            create: {
+                pharmacy_id: pharmacyId,
+
+                customer_code: 'WALK-IN',
+
+                first_name: 'Walk-in',
+
+                last_name: 'Customer',
+
+                is_walk_in: true,
+            },
+        });
+    }
 }
