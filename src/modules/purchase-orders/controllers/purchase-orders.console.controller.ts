@@ -4,7 +4,12 @@ import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators
 
 import { PURCHASE_ORDERS_PERMISSIONS } from '@/common/constants';
 
-import { CreatePurchaseOrderDto, PurchaseOrderQueryDto, ReceivePurchaseOrderDto, UpdatePurchaseOrderDto } from '../dtos';
+import {
+    CreatePurchaseOrderDto,
+    PurchaseOrderQueryDto,
+    ReceivePurchaseOrderDto,
+    UpdatePurchaseOrderDto,
+} from '../dtos';
 
 import { PurchaseOrdersService } from '../services/purchase-orders.service';
 import { AuthenticatedUser } from '@/modules/auth/types';

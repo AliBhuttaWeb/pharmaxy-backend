@@ -83,4 +83,16 @@ export class ProductBatchesRepository {
             },
         });
     }
+
+    updateQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).productBatch.update({
+            where: {
+                id,
+            },
+
+            data: {
+                quantity,
+            },
+        });
+    }
 }

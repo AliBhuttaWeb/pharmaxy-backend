@@ -916,6 +916,8 @@ model Customer {
   returns                     Return[]
 
   @@unique([pharmacy_id, customer_code])
+  @@unique([pharmacy_id, phone])
+  @@unique([pharmacy_id, email])
 
   @@index([pharmacy_id])
   @@index([phone])
