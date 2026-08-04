@@ -29,5 +29,6 @@ export const MESSAGES = Object.freeze({
         REFRESH_TOKEN_EXPIRED: 'Your session has expired. Please sign in again.',
         SESSION_NOT_FOUND: 'Session not found.',
         SESSION_REVOKED: 'Your session has expired or has been revoked.',
+        NO_ACTIVE_BRANCH: 'No active branch selected.',
     },
 } as const);

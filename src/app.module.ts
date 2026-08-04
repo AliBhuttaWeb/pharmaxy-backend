@@ -23,6 +23,7 @@ import { BranchProductsModule } from './modules/branch-products/branch-products.
 import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.module';
 import { CustomersModule } from './modules/customers/customers.module';
 import { PosModule } from './modules/pos/pos.module';
+import { HoldOrdersModule } from './modules/hold-orders/hold-orders.module';
 
 @Module({
     imports: [
@@ -50,6 +51,7 @@ import { PosModule } from './modules/pos/pos.module';
         PurchaseOrdersModule,
         CustomersModule,
         PosModule,
+        HoldOrdersModule
     ],
     providers: [
         {
