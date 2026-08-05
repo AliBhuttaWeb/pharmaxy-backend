@@ -260,26 +260,19 @@ export class BranchesRepository {
         return this.prisma.branch.findMany({
             where: {
                 is_active: true,
-
-                user_roles: {
+                user_branches: {
                     some: {
                         user_id: userId,
-
-                        branch_id: {
-                            not: null,
-                        },
                     },
                 },
             },
-
             select: {
                 id: true,
+                pharmacy_id: true,
                 name: true,
                 address: true,
                 is_main: true,
-                pharmacy_id: true,
             },
-
             orderBy: [
                 {
                     is_main: 'desc',
@@ -288,6 +281,30 @@ export class BranchesRepository {
                     name: 'asc',
                 },
             ],
+        });
+    }
+
+    findByPharmacyId(pharmacyId: string) {
+        return this.prisma.branch.findMany({
+            where: {
+                pharmacy_id: pharmacyId,
+                is_active: true,
+            },
+            orderBy: [{ is_main: 'desc' }, { name: 'asc' }],
+        });
+    }
+
+    findByUserId(userId: string) {
+        return this.prisma.branch.findMany({
+            where: {
+                is_active: true,
+                user_branches: {
+                    some: {
+                        user_id: userId,
+                    },
+                },
+            },
+            orderBy: [{ is_main: 'desc' }, { name: 'asc' }],
         });
     }
 }

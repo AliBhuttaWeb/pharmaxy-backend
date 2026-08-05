@@ -4,7 +4,6 @@ export const userWithPermissionsQuery = {
     include: {
         user_roles: {
             include: {
-                branch: true,
                 role: {
                     include: {
                         role_permissions: {
@@ -19,6 +18,11 @@ export const userWithPermissionsQuery = {
         user_permissions: {
             include: {
                 permission: true,
+            },
+        },
+        user_branches: {
+            include: {
+                branch: true,
             },
         },
     },

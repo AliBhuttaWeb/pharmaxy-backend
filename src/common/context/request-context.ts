@@ -50,12 +50,4 @@ export class RequestContext {
         if (!store) return null;
         return store.activeBranchId ?? store.user?.activeBranchId ?? null;
     }
-
-    /**
-     * Checks if the current request user is a Super Admin.
-     */
-    static isSuperAdmin(): boolean {
-        const user = this.currentUser();
-        return user ? checkIsSuperAdmin(user) : false;
-    }
 }

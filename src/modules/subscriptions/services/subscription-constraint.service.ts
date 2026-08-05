@@ -44,7 +44,7 @@ export class SubscriptionConstraintService {
      * SUPER_ADMIN bypasses all limit checks automatically.
      */
     async validateBranchLimit(user: AuthenticatedUser, currentBranchCount: number): Promise<void> {
-        if (isSuperAdmin(user)) {
+        if (isSuperAdmin(user.roles)) {
             return;
         }
 
@@ -70,7 +70,7 @@ export class SubscriptionConstraintService {
         targetPharmacyId: string,
         currentUserCount: number,
     ): Promise<void> {
-        if (isSuperAdmin(user)) {
+        if (isSuperAdmin(user.roles)) {
             return;
         }
 
@@ -90,7 +90,7 @@ export class SubscriptionConstraintService {
         user: AuthenticatedUser,
         feature: 'allow_quick_sale' | 'allow_nearby_inventory',
     ): Promise<void> {
-        if (isSuperAdmin(user)) {
+        if (isSuperAdmin(user.roles)) {
             return;
         }
 

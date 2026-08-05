@@ -32,7 +32,7 @@ export class UsersService {
     }
 
     async create(dto: CreateUserDto, currentUser: AuthenticatedUser) {
-        const targetPharmacyId = isSuperAdmin(currentUser)
+        const targetPharmacyId = isSuperAdmin(currentUser.roles)
             ? (dto.pharmacy_id ?? currentUser.pharmacyId)
             : currentUser.pharmacyId;
 

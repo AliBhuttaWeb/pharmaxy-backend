@@ -61,7 +61,6 @@ export async function seedUsers({ prisma }: SeedContext): Promise<void> {
         where: {
             user_id: user.id,
             role_id: role.id,
-            branch_id: null,
         },
     });
 

@@ -26,13 +26,18 @@ import {
 } from '../dtos';
 import { MESSAGES } from '../constants';
 import { RefreshTokenService } from './refresh-token.service';
-import { isBranchScopedRole, isNonBranchScopedRole } from '@/common/helpers';
+import {
+    isBranchScopedRole,
+    isNonBranchScopedRole,
+    isPharmacyAdmin,
+    isSuperAdmin,
+} from '@/common/helpers';
 import { Role, Permission } from '@/common/types';
 import { AUTH_FLOW_STATUS } from '../constants';
 import { AuthRepository } from '../repositories/auth.repository';
-import { SubscriptionsService } from '@/modules/subscriptions/services/subscriptions.service';
 import { BranchesService } from '@/modules/branches/services/branches.service';
 import { PharmaciesService } from '@/modules/pharmacies/services/pharmacies.services';
+import { MESSAGES as BRANCH_MESSAGES } from '@modules/branches/constants';
 
 @Injectable()
 export class AuthService {
@@ -199,20 +204,7 @@ export class AuthService {
         return user.user_roles.map((userRole) => ({
             id: userRole.id,
             name: userRole.role.name as Role,
-            branchId: userRole.branch_id,
         }));
-    }
-
-    private extractPharmacyId(user: UserWithPermissions): string | null {
-        for (const userRole of user.user_roles) {
-            if (userRole.pharmacy_id) {
-                return userRole.pharmacy_id;
-            }
-            if (userRole.branch?.pharmacy_id) {
-                return userRole.branch.pharmacy_id;
-            }
-        }
-        return null;
     }
 
     private buildAuthenticatedUser(
@@ -225,7 +217,7 @@ export class AuthService {
             firstName: user.first_name,
             lastName: user.last_name,
             status: user.status,
-            pharmacyId: this.extractPharmacyId(user),
+            pharmacyId: user.pharmacy_id,
             activeBranchId,
             roles: this.buildAuthenticatedRoles(user),
             permissions: this.getUserPermissions(user),
@@ -238,7 +230,7 @@ export class AuthService {
 
         const roles = this.buildAuthenticatedRoles(user);
         const permissions = this.getUserPermissions(user);
-        const pharmacyId = this.extractPharmacyId(user);
+        const pharmacyId = user.pharmacy_id;
 
         let pharmacyDto: PharmacyContextDto | null = null;
         let availableBranchesDto: BranchContextDto[] = [];
@@ -290,7 +282,7 @@ export class AuthService {
         this.ensureUserCanAuthenticate(user);
 
         const authenticatedUser = this.buildLoginUser(user);
-        const pharmacyId = this.extractPharmacyId(user);
+        const pharmacyId = user.pharmacy_id;
 
         const tokens = await this.createSessionTokens(user.id, pharmacyId, payload.activeBranchId);
         await this.refreshTokenService.rotateRefreshToken(
@@ -340,32 +332,39 @@ export class AuthService {
 
         const loginUser = this.buildLoginUser(user);
 
-        const nonBranchRole = this.getNonBranchUserRole(user);
+        const pharmacyId = user.pharmacy_id;
 
         let activeBranchId: string | null = null;
-
         let authStatus: AuthFlowStatus;
+        const roles = user.user_roles.map((userRole) => ({
+            name: userRole.role.name,
+        }));
 
-        if (nonBranchRole) {
+        if (isSuperAdmin(roles)) {
             authStatus = AUTH_FLOW_STATUS.COMPLETE;
         } else {
-            const branchRoles = this.getBranchScopedUserRoles(user);
+            const roleNames = user.user_roles.map((userRole) => ({
+                name: userRole.role.name,
+            }));
+            const branches = await this.branchesService.findAvailableBranchesForUser(
+                user.id,
+                user.pharmacy_id,
+                isSuperAdmin(roleNames),
+                isPharmacyAdmin(roleNames),
+            );
 
-            if (!branchRoles.length) {
-                throw new UnauthorizedException(MESSAGES.ERROR.NO_ROLE_ASSIGNED);
+            if (!branches.length) {
+                throw new UnauthorizedException(BRANCH_MESSAGES.ERROR.NO_BRANCH_ASSIGNED);
             }
 
-            if (branchRoles.length === 1) {
-                // Only one branch so make it selected
-                activeBranchId = branchRoles[0].branch_id;
-
+            if (branches.length === 1) {
+                activeBranchId = branches[0].id;
                 authStatus = AUTH_FLOW_STATUS.COMPLETE;
             } else {
                 authStatus = AUTH_FLOW_STATUS.BRANCH_SELECTION_REQUIRED;
             }
         }
 
-        const pharmacyId = this.extractPharmacyId(user);
         const tokens = await this.createSessionTokens(user.id, pharmacyId, activeBranchId);
 
         await this.refreshTokenService.createRefreshToken(
@@ -377,12 +376,13 @@ export class AuthService {
 
         await this.updateLastLogin(user.id);
 
-        let context: AuthContextDto =  await this.getAuthContext(user.id, activeBranchId);
+        const context = await this.getAuthContext(user.id, activeBranchId);
+
         return {
             authStatus,
             user: loginUser,
             ...tokens,
-            ...context
+            ...context,
         };
     }
 
@@ -429,10 +429,8 @@ export class AuthService {
 
         this.ensureUserCanAuthenticate(user);
 
-        const hasBranchAccess = user.user_roles.some(
-            (userRole) =>
-                userRole.branch_id === dto.branchId &&
-                isBranchScopedRole(userRole.role.name as Role),
+        const hasBranchAccess = user.user_branches.some(
+            (userBranch) => userBranch.branch_id === dto.branchId,
         );
 
         if (!hasBranchAccess) {
@@ -441,7 +439,7 @@ export class AuthService {
 
         const loginUser = this.buildLoginUser(user);
 
-        const pharmacyId = this.extractPharmacyId(user);
+        const pharmacyId = user.pharmacy_id;
         const tokens = await this.createSessionTokens(user.id, pharmacyId, dto.branchId);
 
         await this.refreshTokenService.createRefreshToken(

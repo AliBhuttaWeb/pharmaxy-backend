@@ -76,11 +76,15 @@ export class UsersRepository {
                 orderBy,
                 include: {
                     user_roles: {
-                        include: {
-                            role: true,
-                            branch: true,
-                        },
-                    },
+    include: {
+        role: true,
+    },
+},
+user_branches: {
+    include: {
+        branch: true,
+    },
+},
                 },
             });
         }
@@ -93,11 +97,15 @@ export class UsersRepository {
                 take: limit,
                 include: {
                     user_roles: {
-                        include: {
-                            role: true,
-                            branch: true,
-                        },
-                    },
+    include: {
+        role: true,
+    },
+},
+user_branches: {
+    include: {
+        branch: true,
+    },
+},
                 },
             }),
             this.prisma.user.count({
@@ -118,11 +126,15 @@ export class UsersRepository {
             },
             include: {
                 user_roles: {
-                    include: {
-                        role: true,
-                        branch: true,
-                    },
-                },
+    include: {
+        role: true,
+    },
+},
+user_branches: {
+    include: {
+        branch: true,
+    },
+},
             },
         });
     }
@@ -148,11 +160,15 @@ export class UsersRepository {
             data,
             include: {
                 user_roles: {
-                    include: {
-                        role: true,
-                        branch: true,
-                    },
-                },
+    include: {
+        role: true,
+    },
+},
+user_branches: {
+    include: {
+        branch: true,
+    },
+},
             },
         });
     }
@@ -165,11 +181,15 @@ export class UsersRepository {
             data,
             include: {
                 user_roles: {
-                    include: {
-                        role: true,
-                        branch: true,
-                    },
-                },
+    include: {
+        role: true,
+    },
+},
+user_branches: {
+    include: {
+        branch: true,
+    },
+},
             },
         });
     }
@@ -193,15 +213,14 @@ export class UsersRepository {
         });
     }
 
-    countByPharmacyId(pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).user.count({
-            where: {
-                user_roles: {
-                    some: {
-                        pharmacy_id: pharmacyId,
-                    },
-                },
-            },
-        });
-    }
+    countByPharmacyId(
+    pharmacyId: string,
+    tx?: Prisma.TransactionClient,
+) {
+    return this.getClient(tx).user.count({
+        where: {
+            pharmacy_id: pharmacyId,
+        },
+    });
+}
 }

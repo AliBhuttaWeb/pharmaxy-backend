@@ -7,11 +7,12 @@ import {
     UpdateBranchStatusDto,
 } from '../dtos';
 
-import { MESSAGES } from '../constants/branches.constants';
+import { MESSAGES } from '../constants/messages.constants';
 import { BranchesRepository } from '../repositories/branches.repository';
 import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
-import { isSuperAdmin } from '@/common/helpers';
+import { isPharmacyAdmin, isSuperAdmin } from '@/common/helpers';
+import { Branch } from '@prisma/client';
 
 @Injectable()
 export class BranchesService {
@@ -35,7 +36,7 @@ export class BranchesService {
     }
 
     async create(dto: CreateBranchDto, currentUser: AuthenticatedUser) {
-        const targetPharmacyId = isSuperAdmin(currentUser)
+        const targetPharmacyId = isSuperAdmin(currentUser.roles)
             ? dto.pharmacy_id
             : (currentUser.pharmacyId ?? dto.pharmacy_id);
 
@@ -149,5 +150,22 @@ export class BranchesService {
 
     async findAvailableForUser(userId: string) {
         return this.branchesRepository.findAvailableForUser(userId);
+    }
+
+    async findAvailableBranchesForUser(
+        userId: string,
+        pharmacyId: string | null,
+        isSuperAdmin: boolean,
+        isPharmacyAdmin: boolean,
+    ): Promise<Branch[]> {
+        if (isSuperAdmin || !pharmacyId) {
+            return [];
+        }
+
+        if (isPharmacyAdmin) {
+            return this.branchesRepository.findByPharmacyId(pharmacyId);
+        }
+
+        return this.branchesRepository.findByUserId(userId);
     }
 }

@@ -4,7 +4,7 @@ import type { AuthFlowStatus } from '../types/auth-flow-status.type';
 import { AuthContextDto } from './auth-context.dto';
 import { LoginUserDto } from './login-user.dto';
 
-export class LoginResultDto extends AuthContextDto{
+export class LoginResultDto extends AuthContextDto {
     @ApiProperty({
         example: 'COMPLETE',
     })
