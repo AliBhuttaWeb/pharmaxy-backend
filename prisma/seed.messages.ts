@@ -9,11 +9,11 @@ export const MESSAGES = {
         PRODUCT_TYPES_SEEDED: 'Product types seeded successfully.',
         MANUFACTURERS_SEEDED: 'Manufacturers seeded successfully.',
         DOSAGE_FORMS_SEEDED: 'Dosage forms seeded successfully.',
+        SUBSCRIPTION_PLANS_SEEDED: 'Subscription Plans seeded successfully.',
     },
 
     ERROR: {
         SUPER_ADMIN_ENV_MISSING: 'Missing Super Admin environment variables.',
-
         SUPER_ADMIN_ROLE_NOT_FOUND: 'SUPER_ADMIN role not found. Seed roles before users.',
     },
 } as const;

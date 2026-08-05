@@ -9,6 +9,10 @@ import { CreateBranchDto, FindBranchesQueryDto } from '../dtos';
 export class BranchesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
+    private getClient(tx?: Prisma.TransactionClient) {
+        return tx ?? this.prisma;
+    }
+
     async findMany(query: FindBranchesQueryDto) {
         const { search, pharmacy_id, is_active, is_main, page, limit, sort_by, sort_order } = query;
 
@@ -195,6 +199,14 @@ export class BranchesRepository {
             },
             data: {
                 deleted_at: new Date(),
+            },
+        });
+    }
+
+    countByPharmacyId(pharmacyId: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).branch.count({
+            where: {
+                pharmacy_id: pharmacyId,
             },
         });
     }

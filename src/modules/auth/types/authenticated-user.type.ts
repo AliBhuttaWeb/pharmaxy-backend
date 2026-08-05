@@ -23,6 +23,12 @@ export class AuthenticatedUser {
 
     @ApiProperty({
         nullable: true,
+        example: 'pharmacy-uuid',
+    })
+    // pharmacyId!: string | null;
+
+    @ApiProperty({
+        nullable: true,
         example: 'branch-uuid',
     })
     activeBranchId!: string | null;

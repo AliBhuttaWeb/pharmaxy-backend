@@ -9,6 +9,10 @@ import { FindUsersQueryDto } from '../dtos';
 export class UsersRepository {
     constructor(private readonly prisma: PrismaService) {}
 
+    private getClient(tx?: Prisma.TransactionClient) {
+        return tx ?? this.prisma;
+    }
+
     async findMany(query: FindUsersQueryDto) {
         const { search, status, page, limit, sort_by, sort_order } = query;
 
@@ -185,6 +189,18 @@ export class UsersRepository {
         return this.prisma.user.delete({
             where: {
                 id,
+            },
+        });
+    }
+
+    countByPharmacyId(pharmacyId: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).user.count({
+            where: {
+                user_roles: {
+                    some: {
+                        pharmacy_id: pharmacyId,
+                    },
+                },
             },
         });
     }

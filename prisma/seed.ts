@@ -13,6 +13,7 @@ import { seedDosageForms } from './seeds/dosage-form.seed';
 import { seedManufacturers } from './seeds/manufacturers.seed';
 import { seedProductTypes } from './seeds/product-type.seed';
 import { seedRetailCategories } from './seeds/retail-category.seed';
+import { seedSubscriptionPlans } from './seeds/subscription-plans.seed';
 // import { seedRolePermissions } from './seeds/role-permissions.seed.ts';
 
 async function main() {
@@ -46,6 +47,7 @@ async function main() {
     seedManufacturers(ctx);
     seedProductTypes(ctx);
     seedRetailCategories(ctx);
+    seedSubscriptionPlans(ctx);
 
     await prisma.$disconnect();
 }

@@ -380,58 +380,71 @@ enum BillingCycle {
   @@map("billing_cycle")
 }
 
-
 model SubscriptionPlan {
-  id                   String              @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  name                 String              @unique @db.VarChar(100)
-  description          String?             @db.Text
+  name String @unique @db.VarChar(100)
+  description String? @db.Text
 
-  billing_cycle        BillingCycle
+  billing_cycle BillingCycle
+  price Decimal @db.Decimal(12, 2)
 
-  price                Decimal             @db.Decimal(12, 2)
+  // Limits
+  max_branches Int?
+  max_users Int?
 
-  max_branches         Int?
-  max_users            Int?
+  // Report access
+  report_history_months Int?
 
-  is_active            Boolean             @default(true)
+  // Premium features
+  allow_nearby_inventory Boolean @default(false)
+  allow_quick_sale Boolean @default(false)
 
-  created_at           DateTime            @default(now())
-  updated_at           DateTime            @updatedAt
+  // Trial
+  trial_days Int @default(0)
 
-  subscriptions        Subscription[]
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  subscriptions Subscription[]
 
   @@index([is_active])
   @@map("subscription_plans")
 }
 
-
 model Subscription {
-  id                   String              @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id          String              @db.Uuid
-  plan_id              String              @db.Uuid
+  pharmacy_id String @db.Uuid
+  plan_id      String @db.Uuid
 
-  status               SubscriptionStatus @default(TRIAL)
+  // Current subscription state
+  status SubscriptionStatus @default(TRIAL)
 
-  started_at           DateTime
-  expires_at           DateTime
+  // Subscription period
+  started_at DateTime
+  expires_at DateTime
 
-  trial_started_at     DateTime?
-  trial_ends_at        DateTime?
+  // Trial period
+  trial_started_at DateTime?
+  trial_expires_at DateTime?
 
-  cancelled_at         DateTime?
+  // Cancellation
+  cancelled_at DateTime?
+  cancellation_reason String? @db.VarChar(500)
 
-  auto_renew           Boolean             @default(true)
+  // Renewal
+  auto_renew Boolean @default(true)
 
-  created_at           DateTime            @default(now())
-  updated_at           DateTime            @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  pharmacy             Pharmacy            @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  plan SubscriptionPlan @relation(fields: [plan_id], references: [id], onDelete: Restrict)
 
-  plan                 SubscriptionPlan    @relation(fields: [plan_id], references: [id], onDelete: Restrict)
-
-  payments             SubscriptionPayment[]
+  payments SubscriptionPayment[]
 
   @@index([pharmacy_id])
   @@index([plan_id])

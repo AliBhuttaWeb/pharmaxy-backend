@@ -52,6 +52,9 @@ importers:
             cookie-parser:
                 specifier: ^1.4.7
                 version: 1.4.7
+            date-fns:
+                specifier: ^4.4.0
+                version: 4.4.0
             dotenv:
                 specifier: ^17.4.2
                 version: 17.4.2
@@ -3172,6 +3175,12 @@ packages:
         resolution:
             {
                 integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==,
+            }
+
+    date-fns@4.4.0:
+        resolution:
+            {
+                integrity: sha512-+1UMbeh68lH1SegH83CGWwpb6OHHbpSgr3+s5Eww5M4CAgswBpoWS0AjTOfEJ33HiYKz1hdj/KTFprzXHmq/6w==,
             }
 
     debug@2.6.9:
@@ -8437,6 +8446,8 @@ snapshots:
             which: 2.0.2
 
     csstype@3.2.3: {}
+
+    date-fns@4.4.0: {}
 
     debug@2.6.9:
         dependencies:

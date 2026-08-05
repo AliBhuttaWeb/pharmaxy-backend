@@ -67,13 +67,9 @@ export class AuthService {
     private buildLoginUser(user: UserWithPermissions): LoginUserDto {
         return {
             id: user.id,
-
             email: user.email,
-
             firstName: user.first_name,
-
             lastName: user.last_name,
-
             status: user.status,
         };
     }
@@ -105,7 +101,6 @@ export class AuthService {
     }> {
         const payload: SessionTokenPayload = {
             sub: userId,
-
             activeBranchId,
         };
 

@@ -26,6 +26,8 @@ import { PosModule } from './modules/pos/pos.module';
 import { HoldOrdersModule } from './modules/hold-orders/hold-orders.module';
 import { ReturnsModule } from './modules/returns/returns.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { SubscriptionPlansModule } from './modules/subscription-plans/subscription-plans.module';
+import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
 
 @Module({
     imports: [
@@ -56,6 +58,8 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
         HoldOrdersModule,
         ReturnsModule,
         DashboardModule,
+        SubscriptionPlansModule,
+        SubscriptionsModule
     ],
     providers: [
         {

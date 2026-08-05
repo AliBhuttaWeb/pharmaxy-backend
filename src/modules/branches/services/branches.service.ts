@@ -9,10 +9,31 @@ import {
 
 import { MESSAGES } from '../constants/branches.constants';
 import { BranchesRepository } from '../repositories/branches.repository';
+import { SubscriptionsService } from '@/modules/subscriptions/services/subscriptions.service';
+import { MESSAGES as SUBSCRIPTION_MESSAGES } from '@modules/subscriptions/constants';
 
 @Injectable()
 export class BranchesService {
-    constructor(private readonly branchesRepository: BranchesRepository) {}
+    constructor(
+        private readonly branchesRepository: BranchesRepository,
+        private readonly subscriptionsService: SubscriptionsService,
+    ) {}
+
+    private async validateBranchLimit(pharmacyId: string) {
+        const subscription = await this.subscriptionsService.ensureActiveSubscription(pharmacyId);
+
+        const maxBranches = subscription.plan.max_branches;
+
+        if (maxBranches == null) {
+            return;
+        }
+
+        const totalBranches = await this.branchesRepository.countByPharmacyId(pharmacyId);
+
+        if (totalBranches >= maxBranches) {
+            throw new ConflictException(SUBSCRIPTION_MESSAGES.ERROR.BRANCH_LIMIT_REACHED);
+        }
+    }
 
     async list(query: FindBranchesQueryDto) {
         return this.branchesRepository.findMany(query);
@@ -42,6 +63,8 @@ export class BranchesService {
                 throw new ConflictException(MESSAGES.ERROR.MAIN_BRANCH_ALREADY_EXISTS);
             }
         }
+
+        await this.validateBranchLimit(dto.pharmacy_id);
 
         await this.branchesRepository.create(dto);
 
@@ -119,5 +142,9 @@ export class BranchesService {
         }
 
         return branch;
+    }
+
+    async countByPharmacyId(pharmacyId: string) {
+        return this.branchesRepository.countByPharmacyId(pharmacyId);
     }
 }

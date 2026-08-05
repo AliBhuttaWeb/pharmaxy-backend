@@ -9,6 +9,11 @@ export const SUBSCRIPTIONS_PERMISSIONS = {
         description: 'View subscription details',
     },
 
+    SUBSCRIPTION_ASSIGN: {
+        name: 'subscriptions.manual.assign',
+        description: 'Assign subscriptions manually to pharmacies',
+    },
+
     SUBSCRIPTION_CREATE: {
         name: 'subscriptions.create',
         description: 'Create subscriptions',

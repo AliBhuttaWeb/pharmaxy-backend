@@ -6,10 +6,15 @@ import { MESSAGES } from '../constants';
 
 import { CreateUserDto, FindUsersQueryDto, UpdateUserDto, UpdateUserStatusDto } from '../dtos';
 import { UsersRepository } from '../repositories/users.repository';
+import { MESSAGES as SUBSCRIPTION_MESSAGES } from '@modules/subscriptions/constants';
+import { SubscriptionsService } from '@/modules/subscriptions/services/subscriptions.service';
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly usersRepository: UsersRepository) {}
+    constructor(
+        private readonly usersRepository: UsersRepository,
+        private readonly subscriptionsService: SubscriptionsService,
+    ) {}
 
     async list(query: FindUsersQueryDto) {
         return this.usersRepository.findMany(query);
@@ -94,5 +99,21 @@ export class UsersService {
         }
 
         return this.usersRepository.delete(id);
+    }
+
+    private async validateUserLimit(pharmacyId: string) {
+        const subscription = await this.subscriptionsService.ensureActiveSubscription(pharmacyId);
+
+        const maxUsers = subscription.plan.max_users;
+
+        if (maxUsers == null) {
+            return;
+        }
+
+        const totalUsers = await this.usersRepository.countByPharmacyId(pharmacyId);
+
+        if (totalUsers >= maxUsers) {
+            throw new ConflictException(SUBSCRIPTION_MESSAGES.ERROR.USER_LIMIT_REACHED);
+        }
     }
 }
