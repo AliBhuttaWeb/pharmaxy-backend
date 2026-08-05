@@ -9,6 +9,7 @@ import { CreateCustomerDto, CustomerQueryDto, UpdateCustomerDto } from '../dtos'
 import { BranchesService } from '@/modules/branches/services/branches.service';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
+import { MESSAGES } from '../constants';
 
 @Injectable()
 export class CustomersService {
@@ -28,7 +29,7 @@ export class CustomersService {
         const customer = await this.customersRepository.findById(id);
 
         if (!customer) {
-            throw new NotFoundException('Customer not found');
+            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
         return customer;
@@ -39,7 +40,7 @@ export class CustomersService {
             const exists = await this.customersRepository.findByPhone(pharmacyId, dto.phone);
 
             if (exists) {
-                throw new ConflictException('Customer phone already exists');
+                throw new ConflictException(MESSAGES.ERROR.PHONE_ALREADY_EXISTS);
             }
         }
 
@@ -47,7 +48,7 @@ export class CustomersService {
             const exists = await this.customersRepository.findByEmail(pharmacyId, dto.email);
 
             if (exists) {
-                throw new ConflictException('Customer email already exists');
+                throw new ConflictException(MESSAGES.ERROR.EMAIL_ALREADY_EXISTS);
             }
         }
 
@@ -105,7 +106,7 @@ export class CustomersService {
             );
 
             if (exists) {
-                throw new ConflictException('Customer phone already exists');
+                throw new ConflictException(MESSAGES.ERROR.PHONE_ALREADY_EXISTS);
             }
         }
 
@@ -117,7 +118,7 @@ export class CustomersService {
             );
 
             if (exists) {
-                throw new ConflictException('Customer email already exists');
+                throw new ConflictException(MESSAGES.ERROR.EMAIL_ALREADY_EXISTS);
             }
         }
 

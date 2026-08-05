@@ -38,4 +38,8 @@ export class CreatePosSaleDto {
     @ApiPropertyOptional()
     @IsOptional()
     notes?: string;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    hold_order_id?: string;
 }

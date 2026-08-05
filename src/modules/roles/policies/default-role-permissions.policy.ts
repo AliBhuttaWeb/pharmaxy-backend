@@ -2,9 +2,7 @@ import { ROLES } from '@/common/constants';
 
 import * as permissions from '@/common/constants/permissions';
 
-import {
-    getSpecificPermissions,
-} from '@/modules/permissions/helpers/permissions.helper';
+import { getSpecificPermissions } from '@/modules/permissions/helpers/permissions.helper';
 
 export const DEFAULT_ROLE_PERMISSIONS = {
     // =====================================================
@@ -37,7 +35,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         permissions.PRODUCT_BATCHES_PERMISSIONS.PRODUCT_BATCH_VIEW_DETAIL,
 
         ...Object.values(permissions.RETAIL_CATEGORIES_PERMISSIONS),
-        ...Object.values(permissions.PRODUCT_TYPES_PERMISSIONS  ),
+        ...Object.values(permissions.PRODUCT_TYPES_PERMISSIONS),
         ...Object.values(permissions.DOSAGE_FORMS_PERMISSIONS),
         ...Object.values(permissions.MANUFACTURERS_PERMISSIONS),
 

@@ -13,16 +13,17 @@ import { PosRepository } from '../repositories/pos.repository';
 
 import { allocateStock } from '../helpers/allocate-stock';
 import { generateInvoiceNumber } from '../helpers/generate-invoice-number';
+import { MESSAGES as CUSTOMER_MESSAGES } from '@modules/customers/constants';
+import { getActiveBranchId } from '@/common/helpers';
+import { MESSAGES as PRODUCT_MESSAGES } from '@modules/products/constants';
+import { MESSAGES as BRANCH_MESSAGES } from '@modules/branch-products/constants';
+import { HoldOrdersService } from '@/modules/hold-orders/services/hold-orders.service';
 
 type PreparedSaleItem = {
     branchProduct: any;
-
     quantity: number;
-
     unitPrice: number;
-
     lineTotal: number;
-
     allocations: {
         product_batch_id: string;
         quantity: number;
@@ -41,17 +42,15 @@ export class PosService {
         private readonly productBatchesRepository: ProductBatchesRepository,
 
         private readonly customersService: CustomersService,
+
+        private readonly holdOrdersService: HoldOrdersService,
     ) {}
     private async processSale(
         dto: CreatePosSaleDto,
 
         user: AuthenticatedUser,
     ) {
-        if (!user.activeBranchId) {
-            throw new ConflictException('No active branch selected');
-        }
-
-        const branchId = user.activeBranchId;
+        const branchId = getActiveBranchId(user);
         return this.prisma.$transaction(async (tx) => {
             const preparedItems: PreparedSaleItem[] = [];
 
@@ -64,13 +63,13 @@ export class PosService {
                 );
 
                 if (!branchProduct) {
-                    throw new NotFoundException('Product not found');
+                    throw new NotFoundException(PRODUCT_MESSAGES.ERROR.NOT_FOUND);
                 }
 
                 const quantity = Number(item.quantity);
 
                 if (Number(branchProduct.quantity) < quantity) {
-                    throw new ConflictException('Insufficient stock');
+                    throw new ConflictException(PRODUCT_MESSAGES.ERROR.INSUFFIENT_STOCK);
                 }
 
                 const batches = await this.productBatchesRepository.findAvailableForSale(
@@ -113,7 +112,7 @@ export class PosService {
                 : await this.customersService.getOrCreateWalkInCustomer(pharmacyId);
 
             if (!customer) {
-                throw new NotFoundException('Customer not found');
+                throw new NotFoundException(CUSTOMER_MESSAGES.ERROR.NOT_FOUND);
             }
 
             const latestInvoice = await this.posRepository.findLatestInvoice(branchId, tx);
@@ -149,7 +148,6 @@ export class PosService {
                     },
 
                     subtotal,
-
                     grand_total: subtotal,
 
                     items: {
@@ -167,9 +165,7 @@ export class PosService {
                             },
 
                             quantity: item.quantity,
-
                             unit_price: item.unitPrice,
-
                             line_total: item.lineTotal,
 
                             batches: {
@@ -193,11 +189,8 @@ export class PosService {
                                     id: payment.payment_method_id,
                                 },
                             },
-
                             amount: payment.amount,
-
                             status: 'SUCCESS',
-
                             paid_at: new Date(),
                         })),
                     },
@@ -214,25 +207,25 @@ export class PosService {
                     );
 
                     if (!batch) {
-                        throw new NotFoundException('Batch not found');
+                        throw new NotFoundException(BRANCH_MESSAGES.ERROR.BATCH_NOT_FOUND);
                     }
 
                     await this.productBatchesRepository.updateQuantity(
                         batch.id,
-
                         Number(batch.quantity) - allocation.quantity,
-
                         tx,
                     );
                 }
 
                 await this.branchProductsRepository.updateQuantity(
                     item.branchProduct.id,
-
                     Number(item.branchProduct.quantity) - item.quantity,
-
                     tx,
                 );
+            }
+
+            if (dto.hold_order_id) {
+                await this.holdOrdersService.delete(dto.hold_order_id, tx);
             }
 
             return invoice;
@@ -245,7 +238,7 @@ export class PosService {
         user: AuthenticatedUser,
     ) {
         if (!dto.customer_id) {
-            throw new ConflictException('Customer is required');
+            throw new ConflictException(CUSTOMER_MESSAGES.ERROR.CUSTOMER_REQUIRED);
         }
 
         return this.processSale(dto, user);

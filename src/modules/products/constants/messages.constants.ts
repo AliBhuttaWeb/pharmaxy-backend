@@ -14,5 +14,6 @@ export const MESSAGES = {
         PRODUCT_TYPE_NOT_FOUND: 'Product type not found.',
         RETAIL_CATEGORY_NOT_FOUND: 'Retail category not found.',
         DOSAGE_FORM_NOT_FOUND: 'Dosage form not found.',
+        INSUFFIENT_STOCK: 'Insufficient stock.',
     },
 } as const;

@@ -14,5 +14,6 @@ export const MESSAGES = {
         BRANCH_NOT_FOUND: 'Branch not found.',
         PRODUCT_NOT_FOUND: 'Product not found.',
         PRODUCT_REQUIRED: 'Product details are required when no product is selected.',
+        BATCH_NOT_FOUND: 'No batch found.',
     },
 } as const;

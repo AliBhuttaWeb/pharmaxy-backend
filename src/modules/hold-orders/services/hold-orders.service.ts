@@ -15,16 +15,13 @@ import { HoldOrdersRepository } from '../repositories/hold-orders.repository';
 import { MESSAGES } from '../constants';
 
 import { generateHoldNumber } from '../helpers/generate-hold-number';
+import { Prisma } from '@prisma/client';
 
 type PreparedHoldItem = {
     branch_product_id: string;
-
     quantity: number;
-
     unit_price: number;
-
     subtotal: number;
-
     notes?: string;
 };
 
@@ -168,10 +165,9 @@ export class HoldOrdersService {
         return hold;
     }
 
-    async delete(id: string) {
+    async delete(id: string, tx?: Prisma.TransactionClient) {
         await this.findById(id);
-
-        return this.holdOrdersRepository.delete(id);
+        return this.holdOrdersRepository.delete(id, tx);
     }
 
     cancel(id: string) {
