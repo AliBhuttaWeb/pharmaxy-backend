@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PharmacyStatus, SubscriptionStatus } from '@prisma/client';
+import { PharmacyStatus } from '@prisma/client';
 import { AuthenticatedRole } from '../types';
-import { LoginUserDto } from './login-user.dto';
 
 export class PharmacyContextDto {
     @ApiProperty()
@@ -11,7 +10,7 @@ export class PharmacyContextDto {
     name!: string;
 
     @ApiProperty({ nullable: true })
-    logoUrl!: string | null;
+    logo_url!: string | null;
 
     @ApiProperty({ enum: PharmacyStatus })
     status!: PharmacyStatus;
@@ -28,39 +27,10 @@ export class BranchContextDto {
     address!: string | null;
 
     @ApiProperty()
-    isMain!: boolean;
-}
-
-export class SubscriptionCapabilityDto {
-    @ApiProperty({ enum: SubscriptionStatus })
-    status!: SubscriptionStatus;
-
-    @ApiProperty()
-    planName!: string;
-
-    @ApiProperty()
-    expiresAt!: Date;
-
-    @ApiProperty({ nullable: true })
-    maxBranches!: number | null;
-
-    @ApiProperty({ nullable: true })
-    maxUsers!: number | null;
-
-    @ApiProperty()
-    allowQuickSale!: boolean;
-
-    @ApiProperty()
-    allowNearbyInventory!: boolean;
-
-    @ApiProperty({ nullable: true })
-    reportHistoryMonths!: number | null;
+    is_main!: boolean;
 }
 
 export class AuthContextDto {
-    @ApiProperty({ type: LoginUserDto })
-    user!: LoginUserDto;
-
     @ApiProperty({ type: PharmacyContextDto, nullable: true })
     pharmacy!: PharmacyContextDto | null;
 
@@ -75,7 +45,4 @@ export class AuthContextDto {
 
     @ApiProperty({ type: [String] })
     permissions!: string[];
-
-    @ApiProperty({ type: SubscriptionCapabilityDto, nullable: true })
-    subscription!: SubscriptionCapabilityDto | null;
 }

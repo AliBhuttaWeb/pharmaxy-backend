@@ -8,9 +8,7 @@ import { MESSAGES } from '../constants';
 
 @Injectable()
 export class SubscriptionConstraintService {
-    constructor(
-        private readonly subscriptionsRepository: SubscriptionsRepository,
-    ) {}
+    constructor(private readonly subscriptionsRepository: SubscriptionsRepository) {}
 
     /**
      * Internal assertion helper to verify active subscription status.

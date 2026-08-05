@@ -59,7 +59,7 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
         ReturnsModule,
         DashboardModule,
         SubscriptionPlansModule,
-        SubscriptionsModule
+        SubscriptionsModule,
     ],
     providers: [
         {

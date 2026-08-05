@@ -11,6 +11,9 @@ import { PrismaModule } from '@database/prisma/prisma.module';
 import { RefreshTokenService } from './services/refresh-token.service';
 import { AuthRepository } from './repositories/auth.repository';
 import { RefreshTokenRepository } from './repositories/refresh-token.repository';
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
+import { BranchesModule } from '../branches/branches.module';
+import { PharmaciesModule } from '../pharmacies/pharmacies.module';
 
 @Module({
     imports: [
@@ -26,6 +29,8 @@ import { RefreshTokenRepository } from './repositories/refresh-token.repository'
                 },
             }),
         }),
+        BranchesModule,
+        PharmaciesModule,
     ],
     controllers: [AuthConsoleController],
     providers: [

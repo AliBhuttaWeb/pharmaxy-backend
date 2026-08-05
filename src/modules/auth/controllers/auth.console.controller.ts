@@ -3,7 +3,13 @@ import { Body, Get, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import type { Request } from 'express';
 
 import { AuthService } from '../services/auth.service';
-import { AuthContextDto, LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
+import {
+    AuthContextDto,
+    LoginDto,
+    LoginResultDto,
+    RefreshTokenDto,
+    SwitchBranchDto,
+} from '../dtos';
 import type { AuthenticatedUser, SessionMetadata } from '../types';
 
 import { ConsoleController, CurrentUser, Public } from '@/common/decorators';

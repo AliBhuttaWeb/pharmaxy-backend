@@ -39,10 +39,14 @@ export class BranchesService {
             ? dto.pharmacy_id
             : (currentUser.pharmacyId ?? dto.pharmacy_id);
 
-        const currentBranchCount = await this.branchesRepository.countByPharmacyId(targetPharmacyId);
+        const currentBranchCount =
+            await this.branchesRepository.countByPharmacyId(targetPharmacyId);
 
         // Enforce subscription branch limit (SUPER_ADMIN is automatically bypassed)
-        await this.subscriptionConstraintService.validateBranchLimit(currentUser, currentBranchCount);
+        await this.subscriptionConstraintService.validateBranchLimit(
+            currentUser,
+            currentBranchCount,
+        );
 
         const existingBranch = await this.branchesRepository.findByName(targetPharmacyId, dto.name);
 
@@ -141,5 +145,9 @@ export class BranchesService {
 
     async countByPharmacyId(pharmacyId: string) {
         return this.branchesRepository.countByPharmacyId(pharmacyId);
+    }
+
+    async findAvailableForUser(userId: string) {
+        return this.branchesRepository.findAvailableForUser(userId);
     }
 }

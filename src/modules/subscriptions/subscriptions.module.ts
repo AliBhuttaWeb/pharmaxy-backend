@@ -14,15 +14,8 @@ import { SubscriptionPlansModule } from '@/modules/subscription-plans/subscripti
 
     controllers: [SubscriptionsConsoleController],
 
-    providers: [
-        SubscriptionsRepository,
-        SubscriptionsService,
-        SubscriptionConstraintService,
-    ],
+    providers: [SubscriptionsRepository, SubscriptionsService, SubscriptionConstraintService],
 
-    exports: [
-        SubscriptionsService,
-        SubscriptionConstraintService,
-    ],
+    exports: [SubscriptionsService, SubscriptionConstraintService],
 })
 export class SubscriptionsModule {}

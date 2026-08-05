@@ -255,4 +255,39 @@ export class BranchesRepository {
             orderBy: [{ is_main: 'desc' }, { name: 'asc' }],
         });
     }
+
+    async findAvailableForUser(userId: string) {
+        return this.prisma.branch.findMany({
+            where: {
+                is_active: true,
+
+                user_roles: {
+                    some: {
+                        user_id: userId,
+
+                        branch_id: {
+                            not: null,
+                        },
+                    },
+                },
+            },
+
+            select: {
+                id: true,
+                name: true,
+                address: true,
+                is_main: true,
+                pharmacy_id: true,
+            },
+
+            orderBy: [
+                {
+                    is_main: 'desc',
+                },
+                {
+                    name: 'asc',
+                },
+            ],
+        });
+    }
 }

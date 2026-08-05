@@ -154,4 +154,8 @@ export class SubscriptionsService {
 
         return subscription;
     }
+
+    async findActiveSubscriptionByPharmacyId(pharmacyId: string) {
+        return this.subscriptionsRepository.findActiveSubscriptionByPharmacyId(pharmacyId);
+    }
 }

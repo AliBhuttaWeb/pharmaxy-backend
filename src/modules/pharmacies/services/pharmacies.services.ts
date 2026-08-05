@@ -90,4 +90,8 @@ export class PharmaciesService {
             message: MESSAGES.SUCCESS.DELETED,
         };
     }
+
+    async findById(id: string) {
+        return this.pharmaciesRepository.findById(id);
+    }
 }

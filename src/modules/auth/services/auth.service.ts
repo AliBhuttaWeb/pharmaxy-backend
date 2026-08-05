@@ -22,7 +22,6 @@ import {
     LoginResultDto,
     PharmacyContextDto,
     RefreshTokenDto,
-    SubscriptionCapabilityDto,
     SwitchBranchDto,
 } from '../dtos';
 import { MESSAGES } from '../constants';
@@ -31,6 +30,9 @@ import { isBranchScopedRole, isNonBranchScopedRole } from '@/common/helpers';
 import { Role, Permission } from '@/common/types';
 import { AUTH_FLOW_STATUS } from '../constants';
 import { AuthRepository } from '../repositories/auth.repository';
+import { SubscriptionsService } from '@/modules/subscriptions/services/subscriptions.service';
+import { BranchesService } from '@/modules/branches/services/branches.service';
+import { PharmaciesService } from '@/modules/pharmacies/services/pharmacies.services';
 
 @Injectable()
 export class AuthService {
@@ -39,6 +41,8 @@ export class AuthService {
         private readonly config: ConfigService,
         private readonly refreshTokenService: RefreshTokenService,
         private readonly authRepository: AuthRepository,
+        private readonly branchesService: BranchesService,
+        private readonly pharmacesService: PharmaciesService,
     ) {}
 
     private extractRoles(user: UserWithPermissions): string[] {
@@ -232,73 +236,40 @@ export class AuthService {
         const user = await this.authRepository.findUserById(userId);
         this.ensureUserCanAuthenticate(user);
 
-        const loginUser = this.buildLoginUser(user);
         const roles = this.buildAuthenticatedRoles(user);
         const permissions = this.getUserPermissions(user);
         const pharmacyId = this.extractPharmacyId(user);
 
         let pharmacyDto: PharmacyContextDto | null = null;
-        let subscriptionDto: SubscriptionCapabilityDto | null = null;
         let availableBranchesDto: BranchContextDto[] = [];
         let activeBranchDto: BranchContextDto | null = null;
 
         if (pharmacyId) {
-            const [pharmacy, availableBranches, subscription] = await Promise.all([
-                this.authRepository.findPharmacyById(pharmacyId),
-                this.authRepository.findAvailableBranchesForUser(userId, pharmacyId),
-                this.authRepository.findActiveSubscriptionByPharmacyId(pharmacyId),
+            const [pharmacy, availableBranches] = await Promise.all([
+                this.pharmacesService.findById(pharmacyId),
+                this.branchesService.findAvailableForUser(userId),
             ]);
 
             if (pharmacy) {
-                pharmacyDto = {
-                    id: pharmacy.id,
-                    name: pharmacy.name,
-                    logoUrl: pharmacy.logo_url,
-                    status: pharmacy.status,
-                };
+                pharmacyDto = pharmacy;
             }
 
-            availableBranchesDto = availableBranches.map((b) => ({
-                id: b.id,
-                name: b.name,
-                address: b.address,
-                isMain: b.is_main,
-            }));
-
-            if (subscription) {
-                subscriptionDto = {
-                    status: subscription.status,
-                    planName: subscription.plan.name,
-                    expiresAt: subscription.expires_at,
-                    maxBranches: subscription.plan.max_branches,
-                    maxUsers: subscription.plan.max_users,
-                    allowQuickSale: subscription.plan.allow_quick_sale,
-                    allowNearbyInventory: subscription.plan.allow_nearby_inventory,
-                    reportHistoryMonths: subscription.plan.report_history_months,
-                };
-            }
+            availableBranchesDto = availableBranches.map((b) => b);
         }
 
         if (activeBranchId) {
-            const activeBranch = await this.authRepository.findBranchById(activeBranchId);
+            const activeBranch = await this.branchesService.findById(activeBranchId);
             if (activeBranch) {
-                activeBranchDto = {
-                    id: activeBranch.id,
-                    name: activeBranch.name,
-                    address: activeBranch.address,
-                    isMain: activeBranch.is_main,
-                };
+                activeBranchDto = activeBranch;
             }
         }
 
         return {
-            user: loginUser,
             pharmacy: pharmacyDto,
             activeBranch: activeBranchDto,
             availableBranches: availableBranchesDto,
             roles,
             permissions,
-            subscription: subscriptionDto,
         };
     }
 
@@ -336,7 +307,7 @@ export class AuthService {
             authStatus: AUTH_FLOW_STATUS.COMPLETE,
             user: authenticatedUser,
             ...tokens,
-            context,
+            ...context,
         };
     }
 
@@ -406,16 +377,12 @@ export class AuthService {
 
         await this.updateLastLogin(user.id);
 
-        let context: AuthContextDto | undefined;
-        if (authStatus === AUTH_FLOW_STATUS.COMPLETE) {
-            context = await this.getAuthContext(user.id, activeBranchId);
-        }
-
+        let context: AuthContextDto =  await this.getAuthContext(user.id, activeBranchId);
         return {
             authStatus,
             user: loginUser,
             ...tokens,
-            context,
+            ...context
         };
     }
 
@@ -490,7 +457,7 @@ export class AuthService {
             authStatus: AUTH_FLOW_STATUS.COMPLETE,
             user: loginUser,
             ...tokens,
-            context,
+            ...context,
         };
     }
 }
