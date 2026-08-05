@@ -25,7 +25,7 @@ export class AuthenticatedUser {
         nullable: true,
         example: 'pharmacy-uuid',
     })
-    // pharmacyId!: string | null;
+    pharmacyId!: string | null;
 
     @ApiProperty({
         nullable: true,

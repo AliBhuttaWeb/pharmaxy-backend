@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import type { AuthFlowStatus } from '../types/auth-flow-status.type';
-
+import { AuthContextDto } from './auth-context.dto';
 import { LoginUserDto } from './login-user.dto';
 
 export class LoginResultDto {
@@ -20,4 +20,10 @@ export class LoginResultDto {
 
     @ApiProperty()
     refreshToken!: string;
+
+    @ApiProperty({
+        type: AuthContextDto,
+        required: false,
+    })
+    context?: AuthContextDto;
 }

@@ -15,7 +15,16 @@ import {
     UserWithPermissions,
 } from '../types';
 import { PermissionEffect, RefreshTokenRevocationReason, UserStatus } from '@prisma/client';
-import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
+import {
+    AuthContextDto,
+    BranchContextDto,
+    LoginDto,
+    LoginResultDto,
+    PharmacyContextDto,
+    RefreshTokenDto,
+    SubscriptionCapabilityDto,
+    SwitchBranchDto,
+} from '../dtos';
 import { MESSAGES } from '../constants';
 import { RefreshTokenService } from './refresh-token.service';
 import { isBranchScopedRole, isNonBranchScopedRole } from '@/common/helpers';
@@ -77,7 +86,6 @@ export class AuthService {
     private async generateAccessToken(payload: SessionTokenPayload): Promise<string> {
         return this.jwtService.signAsync(payload, {
             secret: this.config.getOrThrow('jwt.accessSecret'),
-
             expiresIn: this.config.getOrThrow('jwt.accessTokenTtl'),
         });
     }
@@ -85,47 +93,30 @@ export class AuthService {
     private async generateRefreshToken(payload: SessionTokenPayload): Promise<string> {
         return this.jwtService.signAsync(payload, {
             secret: this.config.getOrThrow('jwt.refreshSecret'),
-
             expiresIn: this.config.getOrThrow('jwt.refreshTokenTtl'),
         });
     }
 
     private async createSessionTokens(
         userId: string,
-
+        pharmacyId: string | null,
         activeBranchId: string | null,
     ): Promise<{
         accessToken: string;
-
         refreshToken: string;
     }> {
         const payload: SessionTokenPayload = {
             sub: userId,
+            pharmacyId,
             activeBranchId,
         };
 
         const [accessToken, refreshToken] = await Promise.all([
             this.generateAccessToken(payload),
-
             this.generateRefreshToken(payload),
         ]);
 
         return {
-            accessToken,
-
-            refreshToken,
-        };
-    }
-
-    private buildLoginResult(
-        authStatus: AuthFlowStatus,
-        user: LoginUserDto,
-        accessToken: string,
-        refreshToken: string,
-    ): LoginResultDto {
-        return {
-            authStatus,
-            user,
             accessToken,
             refreshToken,
         };
@@ -187,21 +178,7 @@ export class AuthService {
     private getBranchScopedUserRoles(user: UserWithPermissions): UserRole[] {
         return user.user_roles.filter(({ role }) => isBranchScopedRole(role.name as Role));
     }
-    private getDefaultUserRole(user: UserWithPermissions): UserRole | null {
-        const nonBranchRole = this.getNonBranchUserRole(user);
 
-        if (nonBranchRole) {
-            return nonBranchRole;
-        }
-
-        const branchRoles = this.getBranchScopedUserRoles(user);
-
-        if (branchRoles.length === 1) {
-            return branchRoles[0];
-        }
-
-        return null;
-    }
     private getUserPermissions(user: UserWithPermissions): Permission[] {
         const rolePermissions = user.user_roles.flatMap(({ role }) =>
             role.role_permissions.map(({ permission }) => permission.name as Permission),
@@ -217,11 +194,21 @@ export class AuthService {
     private buildAuthenticatedRoles(user: UserWithPermissions): AuthenticatedRole[] {
         return user.user_roles.map((userRole) => ({
             id: userRole.id,
-
             name: userRole.role.name as Role,
-
             branchId: userRole.branch_id,
         }));
+    }
+
+    private extractPharmacyId(user: UserWithPermissions): string | null {
+        for (const userRole of user.user_roles) {
+            if (userRole.pharmacy_id) {
+                return userRole.pharmacy_id;
+            }
+            if (userRole.branch?.pharmacy_id) {
+                return userRole.branch.pharmacy_id;
+            }
+        }
+        return null;
     }
 
     private buildAuthenticatedUser(
@@ -230,20 +217,88 @@ export class AuthService {
     ): AuthenticatedUser {
         return {
             id: user.id,
-
             email: user.email,
-
             firstName: user.first_name,
-
             lastName: user.last_name,
-
             status: user.status,
-
+            pharmacyId: this.extractPharmacyId(user),
             activeBranchId,
-
             roles: this.buildAuthenticatedRoles(user),
-
             permissions: this.getUserPermissions(user),
+        };
+    }
+
+    async getAuthContext(userId: string, activeBranchId: string | null): Promise<AuthContextDto> {
+        const user = await this.authRepository.findUserById(userId);
+        this.ensureUserCanAuthenticate(user);
+
+        const loginUser = this.buildLoginUser(user);
+        const roles = this.buildAuthenticatedRoles(user);
+        const permissions = this.getUserPermissions(user);
+        const pharmacyId = this.extractPharmacyId(user);
+
+        let pharmacyDto: PharmacyContextDto | null = null;
+        let subscriptionDto: SubscriptionCapabilityDto | null = null;
+        let availableBranchesDto: BranchContextDto[] = [];
+        let activeBranchDto: BranchContextDto | null = null;
+
+        if (pharmacyId) {
+            const [pharmacy, availableBranches, subscription] = await Promise.all([
+                this.authRepository.findPharmacyById(pharmacyId),
+                this.authRepository.findAvailableBranchesForUser(userId, pharmacyId),
+                this.authRepository.findActiveSubscriptionByPharmacyId(pharmacyId),
+            ]);
+
+            if (pharmacy) {
+                pharmacyDto = {
+                    id: pharmacy.id,
+                    name: pharmacy.name,
+                    logoUrl: pharmacy.logo_url,
+                    status: pharmacy.status,
+                };
+            }
+
+            availableBranchesDto = availableBranches.map((b) => ({
+                id: b.id,
+                name: b.name,
+                address: b.address,
+                isMain: b.is_main,
+            }));
+
+            if (subscription) {
+                subscriptionDto = {
+                    status: subscription.status,
+                    planName: subscription.plan.name,
+                    expiresAt: subscription.expires_at,
+                    maxBranches: subscription.plan.max_branches,
+                    maxUsers: subscription.plan.max_users,
+                    allowQuickSale: subscription.plan.allow_quick_sale,
+                    allowNearbyInventory: subscription.plan.allow_nearby_inventory,
+                    reportHistoryMonths: subscription.plan.report_history_months,
+                };
+            }
+        }
+
+        if (activeBranchId) {
+            const activeBranch = await this.authRepository.findBranchById(activeBranchId);
+            if (activeBranch) {
+                activeBranchDto = {
+                    id: activeBranch.id,
+                    name: activeBranch.name,
+                    address: activeBranch.address,
+                    isMain: activeBranch.is_main,
+                };
+            }
+        }
+
+        return {
+            user: loginUser,
+            pharmacy: pharmacyDto,
+            activeBranch: activeBranchDto,
+            availableBranches: availableBranchesDto,
+            roles,
+            permissions,
+            subscription: subscriptionDto,
         };
     }
 
@@ -264,8 +319,9 @@ export class AuthService {
         this.ensureUserCanAuthenticate(user);
 
         const authenticatedUser = this.buildLoginUser(user);
+        const pharmacyId = this.extractPharmacyId(user);
 
-        const tokens = await this.createSessionTokens(user.id, payload.activeBranchId);
+        const tokens = await this.createSessionTokens(user.id, pharmacyId, payload.activeBranchId);
         await this.refreshTokenService.rotateRefreshToken(
             storedRefreshToken.id,
             user.id,
@@ -274,10 +330,13 @@ export class AuthService {
             session,
         );
 
+        const context = await this.getAuthContext(user.id, payload.activeBranchId);
+
         return {
             authStatus: AUTH_FLOW_STATUS.COMPLETE,
             user: authenticatedUser,
             ...tokens,
+            context,
         };
     }
 
@@ -296,6 +355,7 @@ export class AuthService {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
         }
     }
+
     async login(loginDto: LoginDto, session: SessionMetadata): Promise<LoginResultDto> {
         const user = await this.authRepository.findUserByEmail(loginDto.email);
 
@@ -334,7 +394,8 @@ export class AuthService {
             }
         }
 
-        const tokens = await this.createSessionTokens(user.id, activeBranchId);
+        const pharmacyId = this.extractPharmacyId(user);
+        const tokens = await this.createSessionTokens(user.id, pharmacyId, activeBranchId);
 
         await this.refreshTokenService.createRefreshToken(
             user.id,
@@ -345,12 +406,16 @@ export class AuthService {
 
         await this.updateLastLogin(user.id);
 
+        let context: AuthContextDto | undefined;
+        if (authStatus === AUTH_FLOW_STATUS.COMPLETE) {
+            context = await this.getAuthContext(user.id, activeBranchId);
+        }
+
         return {
             authStatus,
-
             user: loginUser,
-
             ...tokens,
+            context,
         };
     }
 
@@ -409,7 +474,8 @@ export class AuthService {
 
         const loginUser = this.buildLoginUser(user);
 
-        const tokens = await this.createSessionTokens(user.id, dto.branchId);
+        const pharmacyId = this.extractPharmacyId(user);
+        const tokens = await this.createSessionTokens(user.id, pharmacyId, dto.branchId);
 
         await this.refreshTokenService.createRefreshToken(
             user.id,
@@ -418,12 +484,13 @@ export class AuthService {
             session,
         );
 
+        const context = await this.getAuthContext(user.id, dto.branchId);
+
         return {
             authStatus: AUTH_FLOW_STATUS.COMPLETE,
-
             user: loginUser,
-
             ...tokens,
+            context,
         };
     }
 }

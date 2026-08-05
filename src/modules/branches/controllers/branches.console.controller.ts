@@ -1,6 +1,7 @@
 import { Body, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 
-import { ConsoleController, Permissions } from '@/common/decorators';
+import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
+import type { AuthenticatedUser } from '@/modules/auth/types';
 
 import {
     CreateBranchDto,
@@ -30,8 +31,8 @@ export class BranchesConsoleController {
 
     @Post()
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_CREATE.name)
-    create(@Body() dto: CreateBranchDto) {
-        return this.branchesService.create(dto);
+    create(@Body() dto: CreateBranchDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.branchesService.create(dto, user);
     }
 
     @Put(':id')

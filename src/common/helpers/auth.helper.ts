@@ -11,6 +11,10 @@ export function getActiveBranchId(user: AuthenticatedUser): string {
     return user.activeBranchId;
 }
 
+export function getPharmacyId(user: AuthenticatedUser): string | null {
+    return user.pharmacyId;
+}
+
 export function isSuperAdmin(user: AuthenticatedUser): boolean {
     return user.roles.some((role) => role.name === ROLES.SUPER_ADMIN.name);
 }

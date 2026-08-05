@@ -3,7 +3,7 @@ import { Body, Get, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import type { Request } from 'express';
 
 import { AuthService } from '../services/auth.service';
-import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
+import { AuthContextDto, LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
 import type { AuthenticatedUser, SessionMetadata } from '../types';
 
 import { ConsoleController, CurrentUser, Public } from '@/common/decorators';
@@ -17,9 +17,7 @@ export class AuthConsoleController {
     private buildSessionMetadata(request: Request): SessionMetadata {
         return {
             ipAddress: request.ip ?? request.socket.remoteAddress ?? null,
-
             userAgent: request.get('user-agent') ?? null,
-
             deviceName: null,
         };
     }
@@ -51,8 +49,8 @@ export class AuthConsoleController {
     }
 
     @Get('me')
-    me(@CurrentUser() user: AuthenticatedUser): AuthenticatedUser {
-        return user;
+    me(@CurrentUser() user: AuthenticatedUser): Promise<AuthContextDto> {
+        return this.authService.getAuthContext(user.id, user.activeBranchId);
     }
 
     @Post('switch-branch')

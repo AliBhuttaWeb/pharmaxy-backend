@@ -1,8 +1,9 @@
 import { Body, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
-import { ConsoleController, Permissions } from '@/common/decorators';
+import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 import { USERS_PERMISSIONS } from '@/common/constants';
 import { PermissionsGuard } from '@/common/guards';
+import type { AuthenticatedUser } from '@/modules/auth/types';
 
 import { CreateUserDto, FindUsersQueryDto, UpdateUserDto } from '../dtos';
 import { UsersService } from '../services/users.service';
@@ -20,8 +21,8 @@ export class UsersConsoleController {
 
     @Post()
     @Permissions(USERS_PERMISSIONS.USER_CREATE.name)
-    create(@Body() dto: CreateUserDto) {
-        return this.usersService.create(dto);
+    create(@Body() dto: CreateUserDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.usersService.create(dto, user);
     }
 
     @Get(':id')
