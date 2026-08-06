@@ -6,11 +6,13 @@ import { PermissionsConsoleController } from './controllers/permissions.console.
 import { PermissionsService } from './services/permissions.service';
 import { PermissionsRepository } from './repositories/permissions.repository';
 import { PermissionResolverService } from './services/permissions-resolver.service';
+import { UserPermissionsService } from './services/user-permissions.service';
+import { UserPermissionsRepository } from './repositories/user-permissions.repository';
 
 @Module({
     imports: [PrismaModule],
     controllers: [PermissionsConsoleController],
-    providers: [PermissionsService, PermissionsRepository, PermissionResolverService],
+    providers: [PermissionsService, PermissionsRepository, PermissionResolverService, UserPermissionsService, UserPermissionsRepository],
     exports: [PermissionsService, PermissionResolverService],
 })
 export class PermissionsModule {}

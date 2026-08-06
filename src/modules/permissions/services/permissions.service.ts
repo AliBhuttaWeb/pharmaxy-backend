@@ -6,12 +6,14 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 import { PermissionsRepository } from '../repositories/permissions.repository';
 import { MESSAGES } from '../constants/messages.constants';
 import { FindPermissionsQueryDto } from '../dtos';
+import { UserPermissionsService } from './user-permissions.service';
 
 @Injectable()
 export class PermissionsService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly permissionsRepository: PermissionsRepository,
+        private readonly userPermissionsService: UserPermissionsService,
     ) {}
 
     async syncUserPermissionOverrides(
@@ -142,5 +144,11 @@ export class PermissionsService {
         }
 
         return permission;
+    }
+
+    async getUserPermissions(userId: string): Promise<string[]> {
+        const userPermissions = await this.userPermissionsService.findUserPermissions(userId);
+
+        return userPermissions.map(({ permission }) => permission.name);
     }
 }

@@ -40,7 +40,7 @@ import { RolesRepository } from './repositories/roles.repository';
         AuthRepository,
         RefreshTokenRepository,
         RolesService,
-        RolesRepository
+        RolesRepository,
     ],
     exports: [AuthService, JwtModule],
 })
