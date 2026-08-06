@@ -23,6 +23,7 @@ import { RefreshTokenService } from './refresh-token.service';
 import { AuthRepository } from '../repositories/auth.repository';
 import { buildAuthenticatedUser, hashPassword } from '../helpers';
 import { ensureSignupRole } from '../helpers/ensure-signup-role.helper';
+import { RolesService } from './roles.service';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +32,7 @@ export class AuthService {
         private readonly config: ConfigService,
         private readonly refreshTokenService: RefreshTokenService,
         private readonly authRepository: AuthRepository,
+        private readonly roleService: RolesService,
     ) {}
 
     private async generateAccessToken(payload: SessionTokenPayload): Promise<string> {
@@ -255,7 +257,7 @@ export class AuthService {
         await this.ensureEmailAvailable(dto.email);
         await this.ensurePhoneAvailable(dto.phone);
 
-        const role = await this.authRepository.findSignupRole(dto.role_id);
+        const role = await this.roleService.findById(dto.role_id);
 
         ensureSignupRole(role, dto.signup_scope);
 

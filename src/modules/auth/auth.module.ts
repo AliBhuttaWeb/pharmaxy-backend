@@ -14,6 +14,8 @@ import { RefreshTokenRepository } from './repositories/refresh-token.repository'
 import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
 import { BranchesModule } from '../branches/branches.module';
 import { PharmaciesModule } from '../pharmacies/pharmacies.module';
+import { RolesService } from './services/roles.service';
+import { RolesRepository } from './repositories/roles.repository';
 
 @Module({
     imports: [
@@ -37,6 +39,8 @@ import { PharmaciesModule } from '../pharmacies/pharmacies.module';
         RefreshTokenService,
         AuthRepository,
         RefreshTokenRepository,
+        RolesService,
+        RolesRepository
     ],
     exports: [AuthService, JwtModule],
 })
