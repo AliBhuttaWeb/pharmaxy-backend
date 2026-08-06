@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PermissionEffect } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
-import { ROLE_HIERARCHY } from '@/modules/roles/policies/role-hierarchy.policy';
 
 @Injectable()
 export class PermissionResolverService {
@@ -13,7 +12,6 @@ export class PermissionResolverService {
             where: {
                 id: userId,
             },
-
             include: {
                 user_roles: {
                     include: {
@@ -28,7 +26,6 @@ export class PermissionResolverService {
                         },
                     },
                 },
-
                 user_permissions: {
                     include: {
                         permission: true,
@@ -41,38 +38,16 @@ export class PermissionResolverService {
             return new Set();
         }
 
-        const roleNames = new Set<string>();
-
-        for (const userRole of user.user_roles) {
-            for (const role of this.resolveRoleHierarchy(userRole.role.name)) {
-                roleNames.add(role);
-            }
-        }
-
-        const roles = await this.prisma.role.findMany({
-            where: {
-                name: {
-                    in: [...roleNames],
-                },
-            },
-
-            include: {
-                role_permissions: {
-                    include: {
-                        permission: true,
-                    },
-                },
-            },
-        });
-
         const permissions = new Set<string>();
 
-        for (const role of roles) {
-            for (const rolePermission of role.role_permissions) {
+        // Role permissions
+        for (const userRole of user.user_roles) {
+            for (const rolePermission of userRole.role.role_permissions) {
                 permissions.add(rolePermission.permission.name);
             }
         }
 
+        // User overrides
         for (const override of user.user_permissions) {
             if (override.effect === PermissionEffect.ALLOW) {
                 permissions.add(override.permission.name);
@@ -94,25 +69,5 @@ export class PermissionResolverService {
         const permissions = await this.getUserPermissions(userId);
 
         return requiredPermissions.every((permission) => permissions.has(permission));
-    }
-
-    private resolveRoleHierarchy(roleName: string): string[] {
-        const roles = new Set<string>();
-
-        const visit = (role: string) => {
-            if (roles.has(role)) {
-                return;
-            }
-
-            roles.add(role);
-
-            for (const child of ROLE_HIERARCHY[role] ?? []) {
-                visit(child);
-            }
-        };
-
-        visit(roleName);
-
-        return [...roles];
     }
 }

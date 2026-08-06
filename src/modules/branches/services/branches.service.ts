@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 
 import {
     CreateBranchDto,
@@ -38,7 +43,7 @@ export class BranchesService {
     async create(dto: CreateBranchDto, currentUser: AuthenticatedUser) {
         const targetPharmacyId = isSuperAdmin(currentUser.roles)
             ? dto.pharmacy_id
-            : (currentUser.pharmacyId ?? dto.pharmacy_id);
+            : (currentUser.pharmacy_id ?? dto.pharmacy_id);
 
         const currentBranchCount =
             await this.branchesRepository.countByPharmacyId(targetPharmacyId);
@@ -167,5 +172,17 @@ export class BranchesService {
         }
 
         return this.branchesRepository.findByUserId(userId);
+    }
+
+    async ensureUserHasAccess(user: AuthenticatedUser, branchId: string): Promise<void> {
+        if (isSuperAdmin(user.roles)) {
+            return;
+        }
+
+        const hasAccess = await this.branchesRepository.userHasAccessToBranch(user, branchId);
+
+        if (!hasAccess) {
+            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ACCESS_DENIED);
+        }
     }
 }

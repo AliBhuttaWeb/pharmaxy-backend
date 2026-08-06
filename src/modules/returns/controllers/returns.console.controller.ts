@@ -31,7 +31,7 @@ export class ReturnsConsoleController {
 
         @CurrentUser() user: AuthenticatedUser,
     ) {
-        return this.returnsService.findMany(user.activeBranchId!, query);
+        return this.returnsService.findMany(user.branch_id!, query);
     }
 
     @Get(':id')

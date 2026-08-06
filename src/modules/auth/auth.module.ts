@@ -29,8 +29,6 @@ import { PharmaciesModule } from '../pharmacies/pharmacies.module';
                 },
             }),
         }),
-        BranchesModule,
-        PharmaciesModule,
     ],
     controllers: [AuthConsoleController],
     providers: [

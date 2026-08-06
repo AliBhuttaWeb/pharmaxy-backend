@@ -10,13 +10,13 @@ export class BranchContextService {
     constructor(private readonly prisma: PrismaService) {}
 
     async get(user: AuthenticatedUser) {
-        if (!user.activeBranchId) {
+        if (!user.branch_id) {
             throw new ConflictException(MESSAGES.ERROR.NO_ACTIVE_BRANCH);
         }
 
         const branch = await this.prisma.branch.findUnique({
             where: {
-                id: user.activeBranchId,
+                id: user.branch_id,
             },
 
             select: {

@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@/database/prisma/prisma.service';
-import { isNonBranchScopedRole } from '@/common/helpers';
+import { isNonBranchScopedRole, isPharmacyAdmin } from '@/common/helpers';
 import { Role } from '@/common/types';
 
 import { CreateBranchDto, FindBranchesQueryDto } from '../dtos';
+import { AuthenticatedUser } from '@/modules/auth/types';
 
 @Injectable()
 export class BranchesRepository {
@@ -306,5 +307,31 @@ export class BranchesRepository {
             },
             orderBy: [{ is_main: 'desc' }, { name: 'asc' }],
         });
+    }
+
+    async userHasAccessToBranch(user: AuthenticatedUser, branchId: string): Promise<boolean> {
+        if (isPharmacyAdmin(user.roles)) {
+            const count = await this.prisma.branch.count({
+                where: {
+                    id: branchId,
+                    pharmacy_id: user.pharmacy_id!,
+                    is_active: true,
+                },
+            });
+
+            return count > 0;
+        }
+
+        const count = await this.prisma.userBranch.count({
+            where: {
+                user_id: user.id,
+                branch_id: branchId,
+                branch: {
+                    is_active: true,
+                },
+            },
+        });
+
+        return count > 0;
     }
 }

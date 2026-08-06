@@ -48,7 +48,7 @@ export class SubscriptionConstraintService {
             return;
         }
 
-        const pharmacyId = user.pharmacyId;
+        const pharmacyId = user.pharmacy_id;
         if (!pharmacyId) {
             throw new ConflictException(MESSAGES.ERROR.NO_ACTIVE_SUBSCRIPTION);
         }
@@ -94,11 +94,11 @@ export class SubscriptionConstraintService {
             return;
         }
 
-        if (!user.pharmacyId) {
+        if (!user.pharmacy_id) {
             throw new ConflictException(MESSAGES.ERROR.NO_ACTIVE_SUBSCRIPTION);
         }
 
-        const subscription = await this.ensureActiveSubscription(user.pharmacyId);
+        const subscription = await this.ensureActiveSubscription(user.pharmacy_id);
 
         if (feature === 'allow_quick_sale' && !subscription.plan.allow_quick_sale) {
             throw new ConflictException(MESSAGES.ERROR.QUICK_SALE_NOT_ALLOWED);

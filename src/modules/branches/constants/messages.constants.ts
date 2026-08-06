@@ -13,5 +13,6 @@ export const MESSAGES = {
         NAME_ALREADY_EXISTS: 'A branch with this name already exists in the pharmacy.',
         MAIN_BRANCH_ALREADY_EXISTS: 'A main branch already exists for this pharmacy.',
         NO_BRANCH_ASSIGNED: 'No branch assigned, contact your admin.',
+        BRANCH_ACCESS_DENIED: "You don't have permissions to access this branch.",
     },
 } as const;
