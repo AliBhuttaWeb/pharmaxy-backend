@@ -30,5 +30,9 @@ export const MESSAGES = {
         REFRESH_TOKEN_EXPIRED: 'Your session has expired. Please sign in again.',
         SESSION_NOT_FOUND: 'Session not found.',
         SESSION_REVOKED: 'Your session has expired or has been revoked.',
+        EMAIL_ALREADY_EXISTS: 'Email is already registered.',
+        PHONE_ALREADY_EXISTS: 'Phone number is already registered.',
+        INVALID_ROLE: 'Invalid role selected.',
+        ROLE_NOT_ALLOWED_FOR_SIGNUP: 'Selected role cannot be registered from this platform.',
     },
 } as const;

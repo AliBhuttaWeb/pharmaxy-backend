@@ -11,3 +11,4 @@ export * from './session-token-payload.type';
 export * from './user-role.type';
 export * from './authenticated-role.type';
 export * from './user-with-permissions.type';
+export * from './signup-scopes.type';

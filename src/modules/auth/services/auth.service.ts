@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
@@ -11,11 +11,18 @@ import {
     UserWithPermissions,
 } from '../types';
 import { RefreshTokenRevocationReason, UserStatus } from '@prisma/client';
-import { LoginDto, LoginResultDto, RefreshTokenDto, RefreshTokenResultDto } from '../dtos';
+import {
+    LoginDto,
+    LoginResultDto,
+    RefreshTokenDto,
+    RefreshTokenResultDto,
+    SignupDto,
+} from '../dtos';
 import { MESSAGES } from '../constants';
 import { RefreshTokenService } from './refresh-token.service';
 import { AuthRepository } from '../repositories/auth.repository';
-import { buildAuthenticatedUser } from '../helpers';
+import { buildAuthenticatedUser, hashPassword } from '../helpers';
+import { ensureSignupRole } from '../helpers/ensure-signup-role.helper';
 
 @Injectable()
 export class AuthService {
@@ -222,5 +229,43 @@ export class AuthService {
         }
 
         return buildAuthenticatedUser(dbUser, user.branch_id);
+    }
+
+    private async ensureEmailAvailable(email: string): Promise<void> {
+        const exists = await this.authRepository.findUserByEmail(email);
+
+        if (exists) {
+            throw new ConflictException(MESSAGES.ERROR.EMAIL_ALREADY_EXISTS);
+        }
+    }
+
+    private async ensurePhoneAvailable(phone?: string): Promise<void> {
+        if (!phone) {
+            return;
+        }
+
+        const exists = await this.authRepository.findUserByPhone(phone);
+
+        if (exists) {
+            throw new ConflictException(MESSAGES.ERROR.PHONE_ALREADY_EXISTS);
+        }
+    }
+
+    async signup(dto: SignupDto): Promise<AuthenticatedUser> {
+        await this.ensureEmailAvailable(dto.email);
+        await this.ensurePhoneAvailable(dto.phone);
+
+        const role = await this.authRepository.findSignupRole(dto.role_id);
+
+        ensureSignupRole(role, dto.signup_scope);
+
+        const password = await hashPassword(dto.password);
+
+        const user = await this.authRepository.createSignupAccount({
+            ...dto,
+            password,
+        });
+
+        return buildAuthenticatedUser(user);
     }
 }
