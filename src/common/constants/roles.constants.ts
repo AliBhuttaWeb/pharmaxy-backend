@@ -32,7 +32,7 @@ export const ROLES: Record<string, RoleDefinition> = {
         description: 'Supplier portal user',
 
         roleScope: ROLE_SCOPES.SUPPLIER,
-        signupScopes: [SIGNUP_SCOPES.SUPPLIER],
+        signupScopes: [SIGNUP_SCOPES.CONSOLE],
     },
 
     USER: {

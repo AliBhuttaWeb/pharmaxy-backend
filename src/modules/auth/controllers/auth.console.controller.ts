@@ -48,8 +48,11 @@ export class AuthConsoleController {
 
     @Post('logout-all')
     @HttpCode(HttpStatus.NO_CONTENT)
-    logoutAll(@CurrentUser() user: AuthenticatedUser): Promise<void> {
-        return this.authService.logoutAll(user.id);
+    logoutAll(
+        @CurrentUser() user: AuthenticatedUser,
+        @Body() refreshTokenDto: RefreshTokenDto,
+    ): Promise<void> {
+        return this.authService.logoutAll(user.id, refreshTokenDto);
     }
 
     @Get('me')

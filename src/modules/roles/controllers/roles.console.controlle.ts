@@ -1,6 +1,6 @@
 import { Body, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
 
-import { ConsoleController, Permissions } from '@/common/decorators';
+import { ConsoleController, Permissions, Public } from '@/common/decorators';
 
 import { PermissionsGuard } from '@/common/guards';
 
@@ -16,7 +16,7 @@ export class RolesConsoleController {
     constructor(private readonly rolesService: RolesService) {}
 
     @Get()
-    @Permissions(ROLES_PERMISSIONS.ROLE_VIEW_LIST.name)
+    @Public()
     list(@Query() query: FindRolesQueryDto) {
         return this.rolesService.list(query);
     }

@@ -4,31 +4,49 @@ import { Prisma } from '@gen/prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { FindRolesQueryDto, UpdateRolePermissionsDto } from '../dtos';
+import { getSignupRoles } from '@/common/helpers';
 
 @Injectable()
 export class RolesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMany(query?: FindRolesQueryDto) {
-        const { page, limit, search, sort_by = 'name', sort_order = 'asc' } = query ?? {};
+        const {
+            page,
+            limit,
+            search,
+            signup_scope,
+            sort_by = 'name',
+            sort_order = 'asc',
+        } = query ?? {};
 
         const where: Prisma.RoleWhereInput = {};
 
+        if (signup_scope) {
+            where.name = {
+                in: getSignupRoles(signup_scope),
+            };
+        }
+
         if (search) {
-            where.OR = [
-                {
-                    name: {
-                        contains: search,
-                        mode: 'insensitive',
+            const searchFilter: Prisma.RoleWhereInput = {
+                OR: [
+                    {
+                        name: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
                     },
-                },
-                {
-                    description: {
-                        contains: search,
-                        mode: 'insensitive',
+                    {
+                        description: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
                     },
-                },
-            ];
+                ],
+            };
+
+            where.AND = [searchFilter];
         }
 
         const isPaginated = page !== undefined && limit !== undefined;
@@ -47,9 +65,7 @@ export class RolesRepository {
         });
 
         if (!isPaginated) {
-            return {
-                records,
-            };
+            return { records };
         }
 
         const totalRecords = await this.prisma.role.count({
