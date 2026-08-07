@@ -13,7 +13,10 @@ export async function seedRoles({ prisma }: SeedContext) {
                 description: role.description,
             },
 
-            create: role,
+            create: {
+                name: role.name,
+                description: role.description
+            },
         });
     }
 
