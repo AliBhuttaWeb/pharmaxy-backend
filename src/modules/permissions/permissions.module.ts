@@ -8,11 +8,21 @@ import { PermissionsRepository } from './repositories/permissions.repository';
 import { PermissionResolverService } from './services/permissions-resolver.service';
 import { UserPermissionsService } from './services/user-permissions.service';
 import { UserPermissionsRepository } from './repositories/user-permissions.repository';
+import { RolePermissionsService } from './services/role-permissions.service';
+import { RolePermissionsRepository } from './repositories/role-permissions.repository';
 
 @Module({
     imports: [PrismaModule],
     controllers: [PermissionsConsoleController],
-    providers: [PermissionsService, PermissionsRepository, PermissionResolverService, UserPermissionsService, UserPermissionsRepository],
+    providers: [
+        PermissionsService,
+        PermissionsRepository,
+        PermissionResolverService,
+        UserPermissionsService,
+        UserPermissionsRepository,
+        RolePermissionsService,
+        RolePermissionsRepository,
+    ],
     exports: [PermissionsService, PermissionResolverService],
 })
 export class PermissionsModule {}

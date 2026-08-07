@@ -31,12 +31,6 @@ export class LoginResultDto {
     })
     roles!: AuthenticatedRole[];
 
-    @ApiProperty({
-        type: [String],
-        example: ['USERS_CREATE', 'USERS_UPDATE'],
-    })
-    permissions!: string[];
-
     @ApiProperty()
     accessToken!: string;
 

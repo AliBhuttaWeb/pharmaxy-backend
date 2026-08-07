@@ -1,9 +1,8 @@
-import { AuthenticatedUser, UserWithPermissions } from '../types';
+import { AuthenticatedUser, UserWithRolesAndBranchesQuery } from '../types';
 import { buildAuthenticatedRoles } from './build-authenticated-roles.helper';
-import { resolveEffectivePermissions } from './resovle-effective-permissions.helper';
 
 export function buildAuthenticatedUser(
-    user: UserWithPermissions,
+    user: UserWithRolesAndBranchesQuery,
     branchId: string | null = null,
 ): AuthenticatedUser {
     return {
@@ -18,6 +17,5 @@ export function buildAuthenticatedUser(
         branch_id: branchId,
         status: user.status,
         roles: buildAuthenticatedRoles(user),
-        permissions: resolveEffectivePermissions(user),
     };
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
-import { userWithPermissionsQuery } from '../queries';
+import { userWithRolesAndBranchesQuery } from '../queries';
 
 @Injectable()
 export class AuthRepository {
@@ -10,14 +10,25 @@ export class AuthRepository {
     async findUserById(id: string) {
         return this.prisma.user.findUnique({
             where: { id },
-            ...userWithPermissionsQuery,
+            ...userWithRolesAndBranchesQuery,
         });
     }
 
     async findUserByEmail(email: string) {
         return this.prisma.user.findUnique({
             where: { email },
-            ...userWithPermissionsQuery,
+            include: {
+                user_roles: {
+                    include: {
+                        role: true,
+                    },
+                },
+                user_branches: {
+                    include: {
+                        branch: true,
+                    },
+                },
+            },
         });
     }
 
@@ -58,7 +69,7 @@ export class AuthRepository {
                 where: {
                     id: user.id,
                 },
-                ...userWithPermissionsQuery,
+                ...userWithRolesAndBranchesQuery,
             });
         });
     }
@@ -68,7 +79,7 @@ export class AuthRepository {
             where: {
                 phone,
             },
-            ...userWithPermissionsQuery,
+            ...userWithRolesAndBranchesQuery,
         });
     }
 }

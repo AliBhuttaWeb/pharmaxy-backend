@@ -46,10 +46,4 @@ export class AuthenticatedUser {
         type: () => [AuthenticatedRole],
     })
     roles!: AuthenticatedRole[];
-
-    @ApiProperty({
-        type: [String],
-        example: ['CREATE_INVOICE', 'VIEW_STOCK'],
-    })
-    permissions!: string[];
 }

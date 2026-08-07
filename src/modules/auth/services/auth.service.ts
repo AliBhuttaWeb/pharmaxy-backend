@@ -8,7 +8,7 @@ import {
     RefreshTokenRecord,
     SessionMetadata,
     SessionTokenPayload,
-    UserWithPermissions,
+    UserWithRolesAndBranchesQuery,
 } from '../types';
 import { RefreshTokenRevocationReason, UserStatus } from '@prisma/client';
 import {
@@ -134,8 +134,8 @@ export class AuthService {
     }
 
     private ensureUserCanAuthenticate(
-        user: UserWithPermissions | null,
-    ): asserts user is UserWithPermissions {
+        user: UserWithRolesAndBranchesQuery | null,
+    ): asserts user is UserWithRolesAndBranchesQuery {
         if (!user) {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
         }
