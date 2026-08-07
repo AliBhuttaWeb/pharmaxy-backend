@@ -37,3 +37,9 @@ export function hasRoleScope(roles: AuthenticatedRole[], scope: RoleScope): bool
 export function requiresBranchContext(roles: AuthenticatedRole[]): boolean {
     return hasRoleScope(roles, ROLE_SCOPES.PHARMACY);
 }
+
+export function getSignupRoles(scope: SignupScope): Role[] {
+    return Object.values(ROLES)
+        .filter((role) => role.signupScopes.includes(scope))
+        .map((role) => role.name as Role);
+}

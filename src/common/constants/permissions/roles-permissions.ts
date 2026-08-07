@@ -1,9 +1,4 @@
 export const ROLES_PERMISSIONS = {
-    ROLE_VIEW_LIST: {
-        name: 'roles.view.list',
-        description: 'View roles listing',
-    },
-
     ROLE_VIEW_DETAIL: {
         name: 'roles.view.detail',
         description: 'View role details',

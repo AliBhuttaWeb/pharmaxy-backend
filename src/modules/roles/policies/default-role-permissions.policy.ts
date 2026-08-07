@@ -21,6 +21,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         // Subscription
         ...Object.values(permissions.SUBSCRIPTION_PLANS_PERMISSIONS),
 
+        //Role
+        ...Object.values(permissions.ROLES_PERMISSIONS),
+
         permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_LIST,
         permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_DETAIL,
         permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_ASSIGN,

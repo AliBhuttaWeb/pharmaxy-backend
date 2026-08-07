@@ -15,7 +15,7 @@ export async function seedRoles({ prisma }: SeedContext) {
 
             create: {
                 name: role.name,
-                description: role.description
+                description: role.description,
             },
         });
     }
