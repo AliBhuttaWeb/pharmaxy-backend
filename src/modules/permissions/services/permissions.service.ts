@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { PermissionEffect } from '@prisma/client';
+import { PermissionEffect } from '@gen/prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 

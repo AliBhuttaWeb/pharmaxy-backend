@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserStatus } from '@prisma/client';
+import { UserStatus } from '@gen/prisma/client';
 
 import { AuthenticatedRole } from './authenticated-role.type';
 

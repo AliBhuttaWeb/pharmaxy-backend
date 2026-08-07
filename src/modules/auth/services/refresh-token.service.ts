@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RefreshTokenRevocationReason } from '@prisma/client';
+import { RefreshTokenRevocationReason } from '@gen/prisma/client';
 import { createHash } from 'node:crypto';
 import { SessionMetadata } from '../types';
 import { RefreshTokenRecord } from '../types';

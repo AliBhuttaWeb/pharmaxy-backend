@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PermissionEffect, Prisma, UserPermission } from '@prisma/client';
+import { PermissionEffect, Prisma, UserPermission } from '@gen/prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { FindPermissionsQueryDto } from '../dtos';

@@ -10,7 +10,7 @@ import {
     SessionTokenPayload,
     UserWithRolesAndBranchesQuery,
 } from '../types';
-import { RefreshTokenRevocationReason, UserStatus } from '@prisma/client';
+import { RefreshTokenRevocationReason, UserStatus } from '@gen/prisma/client';
 import {
     LoginDto,
     LoginResultDto,

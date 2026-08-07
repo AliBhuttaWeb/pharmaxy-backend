@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma, PharmacyStatus } from '@prisma/client';
+import { Prisma, PharmacyStatus } from '@gen/prisma/client';
 import { PrismaService } from '@/database/prisma/prisma.service';
 
 import { FindPharmaciesQueryDto } from '../dtos';

@@ -1,4 +1,4 @@
-import { PermissionEffect } from '@prisma/client';
+import { PermissionEffect } from '@gen/prisma/client';
 
 export type PermissionOverrideAction =
     | {

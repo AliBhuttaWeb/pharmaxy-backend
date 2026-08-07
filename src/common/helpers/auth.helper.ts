@@ -2,7 +2,7 @@ import { ConflictException } from '@nestjs/common';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { MESSAGES, ROLES } from '../constants';
-import { Role } from '@prisma/client';
+import { Role } from '@gen/prisma/client';
 import { RoleLike } from '../types/role-like.type';
 
 export function getActiveBranchId(user: AuthenticatedUser): string {

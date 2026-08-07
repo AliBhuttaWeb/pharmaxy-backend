@@ -17,7 +17,7 @@ import { BranchesRepository } from '../repositories/branches.repository';
 import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { isPharmacyAdmin, isSuperAdmin } from '@/common/helpers';
-import { Branch } from '@prisma/client';
+import { Branch } from '@gen/prisma/client';
 
 @Injectable()
 export class BranchesService {

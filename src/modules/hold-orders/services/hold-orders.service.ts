@@ -15,7 +15,7 @@ import { HoldOrdersRepository } from '../repositories/hold-orders.repository';
 import { MESSAGES } from '../constants';
 
 import { generateHoldNumber } from '../helpers/generate-hold-number';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@gen/prisma/client';
 
 type PreparedHoldItem = {
     branch_product_id: string;

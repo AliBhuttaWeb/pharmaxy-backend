@@ -1,5 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { SubscriptionStatus } from '@prisma/client';
+import { SubscriptionStatus } from '@gen/prisma/client';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { isSuperAdmin } from '@/common/helpers';

@@ -1,4 +1,4 @@
-import { BillingCycle, PrismaClient } from '@prisma/client';
+import { BillingCycle, PrismaClient } from '@gen/prisma/client';
 import { MESSAGES } from 'prisma/seed.messages';
 import { SeedContext } from 'prisma/seed.type';
 

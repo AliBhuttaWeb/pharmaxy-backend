@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { BatchSourceType, Prisma, PurchaseOrderStatus } from '@prisma/client';
+import { BatchSourceType, Prisma, PurchaseOrderStatus } from '@gen/prisma/client';
 
 import { BranchesService } from '@/modules/branches/services/branches.service';
 import { ProductsService } from '@/modules/products/services/products.service';

@@ -1,5 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { BatchSourceType, Prisma } from '@prisma/client';
+import { BatchSourceType, Prisma } from '@gen/prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 
