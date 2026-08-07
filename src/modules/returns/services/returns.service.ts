@@ -13,7 +13,7 @@ import { ReturnsRepository } from '../repositories/returns.repository';
 import { MESSAGES } from '../constants';
 
 import { PreparedReturnBatch, PreparedReturnItem } from '../types';
-import { ReturnStatus } from '@prisma/enums';
+import { ReturnStatus } from '@gen/prisma/enums';
 
 @Injectable()
 export class ReturnsService {

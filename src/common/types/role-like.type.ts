@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client';
+import { Role } from '@gen/prisma/client';
 
 export type RoleLike = {
     name: Role | string;

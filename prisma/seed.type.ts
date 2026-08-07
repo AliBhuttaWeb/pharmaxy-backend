@@ -1,4 +1,4 @@
-import { PrismaClient, Permission, Role } from '@prisma/client';
+import { PrismaClient, Permission, Role } from '@gen/prisma/client';
 
 export interface SeedContext {
     prisma: PrismaClient;

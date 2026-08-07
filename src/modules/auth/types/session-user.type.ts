@@ -1,4 +1,4 @@
-import { UserStatus } from '@prisma/client';
+import { UserStatus } from '@gen/prisma/client';
 
 export interface SessionUser {
     id: string;

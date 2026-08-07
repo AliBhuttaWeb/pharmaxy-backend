@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@gen/prisma/client';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { isNonBranchScopedRole, isPharmacyAdmin } from '@/common/helpers';
 import { Role } from '@/common/types';

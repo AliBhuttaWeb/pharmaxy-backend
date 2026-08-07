@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@gen/prisma/client';
 
 import { CustomersRepository } from '../repositories/customers.repository';
 

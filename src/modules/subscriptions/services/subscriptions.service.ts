@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { Prisma, SubscriptionStatus } from '@prisma/client';
+import { Prisma, SubscriptionStatus } from '@gen/prisma/client';
 
 import { addDays, addMonths, addYears } from 'date-fns';
 

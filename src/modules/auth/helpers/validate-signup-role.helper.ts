@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 
-import { Role } from '@prisma/client';
+import { Role } from '@gen/prisma/client';
 
 import { SignupScope } from '../types';
 import { canSignup } from '@common/helpers';

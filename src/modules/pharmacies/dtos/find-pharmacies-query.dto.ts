@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional } from 'class-validator';
 
-import { PharmacyStatus } from '@prisma/client';
+import { PharmacyStatus } from '@gen/prisma/client';
 
 import { BaseQueryDto } from '@/common/dtos';
 

@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import { SupplierStatus } from '@prisma/client';
+import { SupplierStatus } from '@gen/prisma/client';
 
 export class SupplierDto {
     @ApiProperty()

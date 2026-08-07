@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { IsDateString, IsEnum, IsOptional, IsUUID } from 'class-validator';
 
-import { PurchaseOrderStatus } from '@prisma/client';
+import { PurchaseOrderStatus } from '@gen/prisma/client';
 import { PaginationQueryDto } from '@/common/pagination';
 
 export class PurchaseOrderQueryDto extends PaginationQueryDto {

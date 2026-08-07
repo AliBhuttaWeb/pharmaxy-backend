@@ -20,7 +20,7 @@
             "@config/*": ["src/config/*"],
             "@database/*": ["src/database/*"],
             "@modules/*": ["src/modules/*"],
-            "@prisma/*": ["generated/prisma/*"]
+            "@gen/prisma/*": ["generated/prisma/*"]
         },
         "incremental": true,
         "skipLibCheck": true,

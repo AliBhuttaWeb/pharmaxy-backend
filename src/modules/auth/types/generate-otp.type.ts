@@ -1,4 +1,4 @@
-import { OtpChannel, OtpType } from '@prisma/enums';
+import { OtpChannel, OtpType } from '@gen/prisma/enums';
 
 export type GenerateOtpInput = {
     userId?: string;

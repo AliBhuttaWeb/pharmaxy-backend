@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import { PrismaClient, Permission, Role } from '@prisma/client';
+import { PrismaClient, Permission, Role } from '@gen/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 import { SeedContext } from './seed.type';

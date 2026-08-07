@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { IsDateString, IsEmail, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 
-import { Gender } from '@prisma/client';
+import { Gender } from '@gen/prisma/client';
 
 export class CreateCustomerDto {
     @IsString()

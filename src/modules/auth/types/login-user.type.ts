@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { UserStatus } from '@prisma/client';
+import { UserStatus } from '@gen/prisma/client';
 
 export class LoginUserDto {
     @ApiProperty()

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { UserStatus } from '@prisma/enums';
+import { UserStatus } from '@gen/prisma/enums';
 
 import {
     IsEmail,

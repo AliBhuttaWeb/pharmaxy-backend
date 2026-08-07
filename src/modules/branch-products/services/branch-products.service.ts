@@ -11,7 +11,7 @@ import {
 import { BranchProductsRepository } from '../repositories/branch-products.repository';
 import { BranchesService } from '@/modules/branches/services/branches.service';
 import { ProductsService } from '@/modules/products/services/products.service';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@gen/prisma/client';
 import { OnboardBranchProductService } from './onboard-branch-products.service';
 
 @Injectable()

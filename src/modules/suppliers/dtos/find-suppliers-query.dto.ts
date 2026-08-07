@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsUUID } from 'class-validator';
 
 import { BaseQueryDto } from '@/common/dtos';
-import { SupplierStatus } from '@prisma/client';
+import { SupplierStatus } from '@gen/prisma/client';
 
 export class FindSuppliersQueryDto extends BaseQueryDto {
     @ApiPropertyOptional()
