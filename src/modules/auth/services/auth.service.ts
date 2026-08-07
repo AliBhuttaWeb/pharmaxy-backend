@@ -124,12 +124,23 @@ export class AuthService {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
         }
 
-        if (refreshToken.revoked_at) {
+        if (refreshToken.expires_at <= new Date()) {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
         }
 
-        if (refreshToken.expires_at <= new Date()) {
-            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
+        if (!refreshToken.revoked_at) {
+            return;
+        }
+
+        switch (refreshToken.revoked_reason) {
+            case RefreshTokenRevocationReason.ADMIN_REVOKED:
+            case RefreshTokenRevocationReason.ACCOUNT_DISABLED:
+            case RefreshTokenRevocationReason.SECURITY:
+            case RefreshTokenRevocationReason.TOKEN_REUSED:
+                throw new UnauthorizedException(MESSAGES.ERROR.SESSION_REVOKED);
+
+            default:
+                throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
         }
     }
 
@@ -194,6 +205,8 @@ export class AuthService {
             refreshTokenDto.refreshToken,
         );
 
+        this.ensureRefreshTokenIsValid(storedRefreshToken);
+
         if (!storedRefreshToken) {
             throw new UnauthorizedException(MESSAGES.ERROR.SESSION_REVOKED);
         }
@@ -208,7 +221,13 @@ export class AuthService {
         );
     }
 
-    async logoutAll(userId: string): Promise<void> {
+    async logoutAll(userId: string, dto: RefreshTokenDto): Promise<void> {
+        const storedRefreshToken = await this.refreshTokenService.findRefreshToken(
+            dto.refreshToken,
+        );
+
+        this.ensureRefreshTokenIsValid(storedRefreshToken);
+
         await this.refreshTokenService.revokeAllRefreshTokens(
             userId,
             RefreshTokenRevocationReason.LOGOUT,
