@@ -7,6 +7,7 @@ import {
     IsOptional,
     IsPhoneNumber,
     IsString,
+    IsUUID,
     MaxLength,
     MinLength,
 } from 'class-validator';
@@ -46,4 +47,11 @@ export class CreateUserDto {
     @IsOptional()
     @IsEnum(UserStatus)
     status?: UserStatus;
+
+    @ApiPropertyOptional({
+        description: 'Optional pharmacy ID for Super Admin creation context',
+    })
+    @IsOptional()
+    @IsUUID()
+    pharmacy_id?: string;
 }

@@ -10,5 +10,6 @@ import { PharmaciesConsoleController } from './controllers/phrmacies.console.con
     imports: [PermissionsModule],
     controllers: [PharmaciesConsoleController],
     providers: [PharmaciesService, PharmaciesRepository, PermissionsGuard],
+    exports: [PharmaciesService, PharmaciesRepository],
 })
 export class PharmaciesModule {}

@@ -78,6 +78,10 @@ export class UsersRepository {
                     user_roles: {
                         include: {
                             role: true,
+                        },
+                    },
+                    user_branches: {
+                        include: {
                             branch: true,
                         },
                     },
@@ -95,6 +99,10 @@ export class UsersRepository {
                     user_roles: {
                         include: {
                             role: true,
+                        },
+                    },
+                    user_branches: {
+                        include: {
                             branch: true,
                         },
                     },
@@ -120,6 +128,10 @@ export class UsersRepository {
                 user_roles: {
                     include: {
                         role: true,
+                    },
+                },
+                user_branches: {
+                    include: {
                         branch: true,
                     },
                 },
@@ -150,6 +162,10 @@ export class UsersRepository {
                 user_roles: {
                     include: {
                         role: true,
+                    },
+                },
+                user_branches: {
+                    include: {
                         branch: true,
                     },
                 },
@@ -167,6 +183,10 @@ export class UsersRepository {
                 user_roles: {
                     include: {
                         role: true,
+                    },
+                },
+                user_branches: {
+                    include: {
                         branch: true,
                     },
                 },
@@ -196,11 +216,7 @@ export class UsersRepository {
     countByPharmacyId(pharmacyId: string, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).user.count({
             where: {
-                user_roles: {
-                    some: {
-                        pharmacy_id: pharmacyId,
-                    },
-                },
+                pharmacy_id: pharmacyId,
             },
         });
     }

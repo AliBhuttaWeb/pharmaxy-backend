@@ -31,7 +31,7 @@ export class HoldOrdersConsoleController {
 
         @CurrentUser() user: AuthenticatedUser,
     ) {
-        return this.holdOrdersService.findMany(user.activeBranchId!, query);
+        return this.holdOrdersService.findMany(user.branch_id!, query);
     }
 
     @Get(':id')

@@ -1,1 +1,1 @@
-export * from './user-with-permissions.query';
+export * from './user-with-role-and-branches.query';

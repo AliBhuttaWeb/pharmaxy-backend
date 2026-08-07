@@ -1,19 +1,35 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-import type { AuthFlowStatus } from '../types/auth-flow-status.type';
-
-import { LoginUserDto } from './login-user.dto';
+import { AuthenticatedRole } from '../types';
 
 export class LoginResultDto {
-    @ApiProperty({
-        example: 'COMPLETE',
-    })
-    authStatus!: AuthFlowStatus;
+    @ApiProperty()
+    id!: string;
+
+    @ApiProperty()
+    first_name!: string;
+
+    @ApiProperty({ nullable: true })
+    last_name!: string | null;
+
+    @ApiProperty()
+    email!: string;
+
+    @ApiProperty({ nullable: true })
+    phone!: string | null;
+
+    @ApiProperty()
+    is_email_verified!: boolean;
+
+    @ApiProperty()
+    is_phone_verified!: boolean;
+
+    @ApiProperty({ nullable: true })
+    pharmacy_id!: string | null;
 
     @ApiProperty({
-        type: LoginUserDto,
+        type: [AuthenticatedRole],
     })
-    user!: LoginUserDto;
+    roles!: AuthenticatedRole[];
 
     @ApiProperty()
     accessToken!: string;

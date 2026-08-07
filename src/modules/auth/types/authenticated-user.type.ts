@@ -10,11 +10,14 @@ export class AuthenticatedUser {
     @ApiProperty()
     email!: string;
 
+    @ApiProperty({ nullable: true })
+    phone!: string | null;
+
     @ApiProperty()
-    firstName!: string;
+    first_name!: string;
 
     @ApiProperty({ nullable: true })
-    lastName!: string | null;
+    last_name!: string | null;
 
     @ApiProperty({
         enum: UserStatus,
@@ -25,22 +28,22 @@ export class AuthenticatedUser {
         nullable: true,
         example: 'pharmacy-uuid',
     })
-    // pharmacyId!: string | null;
+    pharmacy_id!: string | null;
 
     @ApiProperty({
         nullable: true,
         example: 'branch-uuid',
     })
-    activeBranchId!: string | null;
+    branch_id!: string | null;
+
+    @ApiProperty()
+    is_email_verified!: boolean;
+
+    @ApiProperty()
+    is_phone_verified!: boolean;
 
     @ApiProperty({
         type: () => [AuthenticatedRole],
     })
     roles!: AuthenticatedRole[];
-
-    @ApiProperty({
-        type: [String],
-        example: ['CREATE_INVOICE', 'VIEW_STOCK'],
-    })
-    permissions!: string[];
 }

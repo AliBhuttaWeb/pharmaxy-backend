@@ -1,7 +1,5 @@
 import { UserStatus } from '@prisma/client';
 
-import { Permission } from '@/common/types';
-
 export interface SessionUser {
     id: string;
 
@@ -13,11 +11,11 @@ export interface SessionUser {
 
     status: UserStatus;
 
-    activeBranchId: string | null;
+    branch_id: string | null;
 
     roleId: string;
 
     roleName: string;
 
-    permissions: Permission[];
+    permissions: string[];
 }

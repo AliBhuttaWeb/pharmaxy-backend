@@ -6,12 +6,16 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 import { PermissionsRepository } from '../repositories/permissions.repository';
 import { MESSAGES } from '../constants/messages.constants';
 import { FindPermissionsQueryDto } from '../dtos';
+import { UserPermissionsService } from './user-permissions.service';
+import { RolePermissionsService } from './role-permissions.service';
 
 @Injectable()
 export class PermissionsService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly permissionsRepository: PermissionsRepository,
+        private readonly userPermissionsService: UserPermissionsService,
+        private readonly rolePermissionsService: RolePermissionsService,
     ) {}
 
     async syncUserPermissionOverrides(
@@ -142,5 +146,36 @@ export class PermissionsService {
         }
 
         return permission;
+    }
+
+    async getUserPermissions(userId: string): Promise<string[]> {
+        const [rolePermissions, userPermissions] = await Promise.all([
+            this.rolePermissionsService.findUserRolePermissions(userId),
+            this.userPermissionsService.findUserPermissions(userId),
+        ]);
+
+        const permissions = new Set<string>();
+
+        // Inherited permissions
+        for (const userRole of rolePermissions) {
+            for (const rolePermission of userRole.role.role_permissions) {
+                permissions.add(rolePermission.permission.name);
+            }
+        }
+
+        // Direct overrides
+        for (const userPermission of userPermissions) {
+            switch (userPermission.effect) {
+                case PermissionEffect.ALLOW:
+                    permissions.add(userPermission.permission.name);
+                    break;
+
+                case PermissionEffect.DENY:
+                    permissions.delete(userPermission.permission.name);
+                    break;
+            }
+        }
+
+        return [...permissions];
     }
 }

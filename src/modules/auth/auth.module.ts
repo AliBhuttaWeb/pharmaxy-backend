@@ -11,6 +11,11 @@ import { PrismaModule } from '@database/prisma/prisma.module';
 import { RefreshTokenService } from './services/refresh-token.service';
 import { AuthRepository } from './repositories/auth.repository';
 import { RefreshTokenRepository } from './repositories/refresh-token.repository';
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
+import { BranchesModule } from '../branches/branches.module';
+import { PharmaciesModule } from '../pharmacies/pharmacies.module';
+import { RolesService } from './services/roles.service';
+import { RolesRepository } from './repositories/roles.repository';
 
 @Module({
     imports: [
@@ -34,6 +39,8 @@ import { RefreshTokenRepository } from './repositories/refresh-token.repository'
         RefreshTokenService,
         AuthRepository,
         RefreshTokenRepository,
+        RolesService,
+        RolesRepository,
     ],
     exports: [AuthService, JwtModule],
 })

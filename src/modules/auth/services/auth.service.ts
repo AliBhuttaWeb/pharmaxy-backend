@@ -1,27 +1,29 @@
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
 import {
-    AuthenticatedRole,
     AuthenticatedUser,
-    AuthFlowStatus,
-    LoginUserDto,
     RefreshTokenRecord,
     SessionMetadata,
     SessionTokenPayload,
-    UserRole,
-    UserWithPermissions,
+    UserWithRolesAndBranchesQuery,
 } from '../types';
-import { PermissionEffect, RefreshTokenRevocationReason, UserStatus } from '@prisma/client';
-import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
+import { RefreshTokenRevocationReason, UserStatus } from '@prisma/client';
+import {
+    LoginDto,
+    LoginResultDto,
+    RefreshTokenDto,
+    RefreshTokenResultDto,
+    SignupDto,
+} from '../dtos';
 import { MESSAGES } from '../constants';
 import { RefreshTokenService } from './refresh-token.service';
-import { isBranchScopedRole, isNonBranchScopedRole } from '@/common/helpers';
-import { Role, Permission } from '@/common/types';
-import { AUTH_FLOW_STATUS } from '../constants';
 import { AuthRepository } from '../repositories/auth.repository';
+import { buildAuthenticatedUser, hashPassword } from '../helpers';
+import { ensureSignupRole } from '../helpers/ensure-signup-role.helper';
+import { RolesService } from './roles.service';
 
 @Injectable()
 export class AuthService {
@@ -30,54 +32,12 @@ export class AuthService {
         private readonly config: ConfigService,
         private readonly refreshTokenService: RefreshTokenService,
         private readonly authRepository: AuthRepository,
+        private readonly roleService: RolesService,
     ) {}
-
-    private extractRoles(user: UserWithPermissions): string[] {
-        return user.user_roles.map(({ role }) => role.name);
-    }
-
-    private extractPermissions(user: UserWithPermissions): string[] {
-        const permissions = new Set<string>();
-
-        // Permissions inherited from roles
-        for (const { role } of user.user_roles) {
-            for (const { permission } of role.role_permissions) {
-                permissions.add(permission.name);
-            }
-        }
-
-        // User-specific permission overrides
-        for (const userPermission of user.user_permissions) {
-            const permissionName = userPermission.permission.name;
-
-            switch (userPermission.effect) {
-                case PermissionEffect.ALLOW:
-                    permissions.add(permissionName);
-                    break;
-
-                case PermissionEffect.DENY:
-                    permissions.delete(permissionName);
-                    break;
-            }
-        }
-
-        return [...permissions];
-    }
-
-    private buildLoginUser(user: UserWithPermissions): LoginUserDto {
-        return {
-            id: user.id,
-            email: user.email,
-            firstName: user.first_name,
-            lastName: user.last_name,
-            status: user.status,
-        };
-    }
 
     private async generateAccessToken(payload: SessionTokenPayload): Promise<string> {
         return this.jwtService.signAsync(payload, {
             secret: this.config.getOrThrow('jwt.accessSecret'),
-
             expiresIn: this.config.getOrThrow('jwt.accessTokenTtl'),
         });
     }
@@ -85,74 +45,12 @@ export class AuthService {
     private async generateRefreshToken(payload: SessionTokenPayload): Promise<string> {
         return this.jwtService.signAsync(payload, {
             secret: this.config.getOrThrow('jwt.refreshSecret'),
-
             expiresIn: this.config.getOrThrow('jwt.refreshTokenTtl'),
         });
     }
 
-    private async createSessionTokens(
-        userId: string,
-
-        activeBranchId: string | null,
-    ): Promise<{
-        accessToken: string;
-
-        refreshToken: string;
-    }> {
-        const payload: SessionTokenPayload = {
-            sub: userId,
-            activeBranchId,
-        };
-
-        const [accessToken, refreshToken] = await Promise.all([
-            this.generateAccessToken(payload),
-
-            this.generateRefreshToken(payload),
-        ]);
-
-        return {
-            accessToken,
-
-            refreshToken,
-        };
-    }
-
-    private buildLoginResult(
-        authStatus: AuthFlowStatus,
-        user: LoginUserDto,
-        accessToken: string,
-        refreshToken: string,
-    ): LoginResultDto {
-        return {
-            authStatus,
-            user,
-            accessToken,
-            refreshToken,
-        };
-    }
-
     private async updateLastLogin(userId: string): Promise<void> {
         await this.authRepository.updateLastLogin(userId);
-    }
-
-    private ensureUserCanAuthenticate(
-        user: UserWithPermissions | null,
-    ): asserts user is UserWithPermissions {
-        if (!user) {
-            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
-        }
-
-        if (user.status !== UserStatus.ACTIVE) {
-            throw new UnauthorizedException(MESSAGES.ERROR.ACCOUNT_DISABLED);
-        }
-
-        if (!user.is_email_verified) {
-            throw new UnauthorizedException(MESSAGES.ERROR.EMAIL_NOT_VERIFIED);
-        }
-
-        if (user.phone && !user.is_phone_verified) {
-            throw new UnauthorizedException(MESSAGES.ERROR.PHONE_NOT_VERIFIED);
-        }
     }
 
     private async validatePassword(
@@ -180,77 +78,10 @@ export class AuthService {
         return new Date(payload.exp * 1000);
     }
 
-    private getNonBranchUserRole(user: UserWithPermissions): UserRole | null {
-        return user.user_roles.find(({ role }) => isNonBranchScopedRole(role.name as Role)) ?? null;
-    }
-
-    private getBranchScopedUserRoles(user: UserWithPermissions): UserRole[] {
-        return user.user_roles.filter(({ role }) => isBranchScopedRole(role.name as Role));
-    }
-    private getDefaultUserRole(user: UserWithPermissions): UserRole | null {
-        const nonBranchRole = this.getNonBranchUserRole(user);
-
-        if (nonBranchRole) {
-            return nonBranchRole;
-        }
-
-        const branchRoles = this.getBranchScopedUserRoles(user);
-
-        if (branchRoles.length === 1) {
-            return branchRoles[0];
-        }
-
-        return null;
-    }
-    private getUserPermissions(user: UserWithPermissions): Permission[] {
-        const rolePermissions = user.user_roles.flatMap(({ role }) =>
-            role.role_permissions.map(({ permission }) => permission.name as Permission),
-        );
-
-        const directPermissions = user.user_permissions.map(
-            ({ permission }) => permission.name as Permission,
-        );
-
-        return [...new Set([...rolePermissions, ...directPermissions])];
-    }
-
-    private buildAuthenticatedRoles(user: UserWithPermissions): AuthenticatedRole[] {
-        return user.user_roles.map((userRole) => ({
-            id: userRole.id,
-
-            name: userRole.role.name as Role,
-
-            branchId: userRole.branch_id,
-        }));
-    }
-
-    private buildAuthenticatedUser(
-        user: UserWithPermissions,
-        activeBranchId: string | null,
-    ): AuthenticatedUser {
-        return {
-            id: user.id,
-
-            email: user.email,
-
-            firstName: user.first_name,
-
-            lastName: user.last_name,
-
-            status: user.status,
-
-            activeBranchId,
-
-            roles: this.buildAuthenticatedRoles(user),
-
-            permissions: this.getUserPermissions(user),
-        };
-    }
-
     async refreshToken(
         refreshTokenDto: RefreshTokenDto,
         session: SessionMetadata,
-    ): Promise<LoginResultDto> {
+    ): Promise<RefreshTokenResultDto> {
         const payload = await this.verifyRefreshTokenJwt(refreshTokenDto.refreshToken);
 
         const storedRefreshToken = await this.refreshTokenService.findRefreshToken(
@@ -263,21 +94,26 @@ export class AuthService {
 
         this.ensureUserCanAuthenticate(user);
 
-        const authenticatedUser = this.buildLoginUser(user);
+        const tokenPayload: SessionTokenPayload = {
+            sub: user.id,
+        };
 
-        const tokens = await this.createSessionTokens(user.id, payload.activeBranchId);
+        const [accessToken, refreshToken] = await Promise.all([
+            this.generateAccessToken(tokenPayload),
+            this.generateRefreshToken(tokenPayload),
+        ]);
+
         await this.refreshTokenService.rotateRefreshToken(
             storedRefreshToken.id,
             user.id,
-            tokens.refreshToken,
-            this.getTokenExpirationDate(tokens.refreshToken),
+            refreshToken,
+            this.getTokenExpirationDate(refreshToken),
             session,
         );
 
         return {
-            authStatus: AUTH_FLOW_STATUS.COMPLETE,
-            user: authenticatedUser,
-            ...tokens,
+            accessToken,
+            refreshToken,
         };
     }
 
@@ -296,6 +132,27 @@ export class AuthService {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_REFRESH_TOKEN);
         }
     }
+
+    private ensureUserCanAuthenticate(
+        user: UserWithRolesAndBranchesQuery | null,
+    ): asserts user is UserWithRolesAndBranchesQuery {
+        if (!user) {
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
+        }
+
+        if (user.status !== UserStatus.ACTIVE) {
+            throw new UnauthorizedException(MESSAGES.ERROR.ACCOUNT_DISABLED);
+        }
+
+        if (!user.is_email_verified) {
+            throw new UnauthorizedException(MESSAGES.ERROR.EMAIL_NOT_VERIFIED);
+        }
+
+        if (user.phone && !user.is_phone_verified) {
+            throw new UnauthorizedException(MESSAGES.ERROR.PHONE_NOT_VERIFIED);
+        }
+    }
+
     async login(loginDto: LoginDto, session: SessionMetadata): Promise<LoginResultDto> {
         const user = await this.authRepository.findUserByEmail(loginDto.email);
 
@@ -307,50 +164,28 @@ export class AuthService {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
         }
 
-        const loginUser = this.buildLoginUser(user);
+        const payload: SessionTokenPayload = {
+            sub: user.id,
+        };
 
-        const nonBranchRole = this.getNonBranchUserRole(user);
-
-        let activeBranchId: string | null = null;
-
-        let authStatus: AuthFlowStatus;
-
-        if (nonBranchRole) {
-            authStatus = AUTH_FLOW_STATUS.COMPLETE;
-        } else {
-            const branchRoles = this.getBranchScopedUserRoles(user);
-
-            if (!branchRoles.length) {
-                throw new UnauthorizedException(MESSAGES.ERROR.NO_ROLE_ASSIGNED);
-            }
-
-            if (branchRoles.length === 1) {
-                // Only one branch so make it selected
-                activeBranchId = branchRoles[0].branch_id;
-
-                authStatus = AUTH_FLOW_STATUS.COMPLETE;
-            } else {
-                authStatus = AUTH_FLOW_STATUS.BRANCH_SELECTION_REQUIRED;
-            }
-        }
-
-        const tokens = await this.createSessionTokens(user.id, activeBranchId);
+        const [accessToken, refreshToken] = await Promise.all([
+            this.generateAccessToken(payload),
+            this.generateRefreshToken(payload),
+        ]);
 
         await this.refreshTokenService.createRefreshToken(
             user.id,
-            tokens.refreshToken,
-            this.getTokenExpirationDate(tokens.refreshToken),
+            refreshToken,
+            this.getTokenExpirationDate(refreshToken),
             session,
         );
 
         await this.updateLastLogin(user.id);
 
         return {
-            authStatus,
-
-            user: loginUser,
-
-            ...tokens,
+            ...buildAuthenticatedUser(user),
+            accessToken,
+            refreshToken,
         };
     }
 
@@ -385,45 +220,54 @@ export class AuthService {
 
         this.ensureUserCanAuthenticate(user);
 
-        return this.buildAuthenticatedUser(user, payload.activeBranchId);
+        return buildAuthenticatedUser(user);
     }
 
-    async switchBranch(
-        userId: string,
-        dto: SwitchBranchDto,
-        session: SessionMetadata,
-    ): Promise<LoginResultDto> {
-        const user = await this.authRepository.findUserById(userId);
+    async getProfile(user: AuthenticatedUser): Promise<AuthenticatedUser> {
+        const dbUser = await this.authRepository.findUserById(user.id);
 
-        this.ensureUserCanAuthenticate(user);
-
-        const hasBranchAccess = user.user_roles.some(
-            (userRole) =>
-                userRole.branch_id === dto.branchId &&
-                isBranchScopedRole(userRole.role.name as Role),
-        );
-
-        if (!hasBranchAccess) {
-            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ACCESS_DENIED);
+        if (!dbUser) {
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
         }
 
-        const loginUser = this.buildLoginUser(user);
+        return buildAuthenticatedUser(dbUser, user.branch_id);
+    }
 
-        const tokens = await this.createSessionTokens(user.id, dto.branchId);
+    private async ensureEmailAvailable(email: string): Promise<void> {
+        const exists = await this.authRepository.findUserByEmail(email);
 
-        await this.refreshTokenService.createRefreshToken(
-            user.id,
-            tokens.refreshToken,
-            this.getTokenExpirationDate(tokens.refreshToken),
-            session,
-        );
+        if (exists) {
+            throw new ConflictException(MESSAGES.ERROR.EMAIL_ALREADY_EXISTS);
+        }
+    }
 
-        return {
-            authStatus: AUTH_FLOW_STATUS.COMPLETE,
+    private async ensurePhoneAvailable(phone?: string): Promise<void> {
+        if (!phone) {
+            return;
+        }
 
-            user: loginUser,
+        const exists = await this.authRepository.findUserByPhone(phone);
 
-            ...tokens,
-        };
+        if (exists) {
+            throw new ConflictException(MESSAGES.ERROR.PHONE_ALREADY_EXISTS);
+        }
+    }
+
+    async signup(dto: SignupDto): Promise<AuthenticatedUser> {
+        await this.ensureEmailAvailable(dto.email);
+        await this.ensurePhoneAvailable(dto.phone);
+
+        const role = await this.roleService.findById(dto.role_id);
+
+        ensureSignupRole(role, dto.signup_scope);
+
+        const password = await hashPassword(dto.password);
+
+        const user = await this.authRepository.createSignupAccount({
+            ...dto,
+            password,
+        });
+
+        return buildAuthenticatedUser(user);
     }
 }

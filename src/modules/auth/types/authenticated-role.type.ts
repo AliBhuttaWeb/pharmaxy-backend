@@ -11,9 +11,4 @@ export class AuthenticatedRole {
         enum: ROLES,
     })
     name!: Role;
-
-    @ApiProperty({
-        nullable: true,
-    })
-    branchId!: string | null;
 }

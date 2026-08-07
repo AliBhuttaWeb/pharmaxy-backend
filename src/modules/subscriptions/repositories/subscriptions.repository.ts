@@ -150,4 +150,21 @@ export class SubscriptionsRepository {
             include: this.subscriptionRelations,
         });
     }
+
+    async findActiveSubscriptionByPharmacyId(pharmacyId: string) {
+        return this.prisma.subscription.findFirst({
+            where: {
+                pharmacy_id: pharmacyId,
+                status: {
+                    in: ['ACTIVE', 'TRIAL'],
+                },
+            },
+            include: {
+                plan: true,
+            },
+            orderBy: {
+                created_at: 'desc',
+            },
+        });
+    }
 }

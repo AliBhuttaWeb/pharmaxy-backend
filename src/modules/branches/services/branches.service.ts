@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 
 import {
     CreateBranchDto,
@@ -7,33 +12,19 @@ import {
     UpdateBranchStatusDto,
 } from '../dtos';
 
-import { MESSAGES } from '../constants/branches.constants';
+import { MESSAGES } from '../constants/messages.constants';
 import { BranchesRepository } from '../repositories/branches.repository';
-import { SubscriptionsService } from '@/modules/subscriptions/services/subscriptions.service';
-import { MESSAGES as SUBSCRIPTION_MESSAGES } from '@modules/subscriptions/constants';
+import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
+import { AuthenticatedUser } from '@/modules/auth/types';
+import { isPharmacyAdmin, isSuperAdmin } from '@/common/helpers';
+import { Branch } from '@prisma/client';
 
 @Injectable()
 export class BranchesService {
     constructor(
         private readonly branchesRepository: BranchesRepository,
-        private readonly subscriptionsService: SubscriptionsService,
+        private readonly subscriptionConstraintService: SubscriptionConstraintService,
     ) {}
-
-    private async validateBranchLimit(pharmacyId: string) {
-        const subscription = await this.subscriptionsService.ensureActiveSubscription(pharmacyId);
-
-        const maxBranches = subscription.plan.max_branches;
-
-        if (maxBranches == null) {
-            return;
-        }
-
-        const totalBranches = await this.branchesRepository.countByPharmacyId(pharmacyId);
-
-        if (totalBranches >= maxBranches) {
-            throw new ConflictException(SUBSCRIPTION_MESSAGES.ERROR.BRANCH_LIMIT_REACHED);
-        }
-    }
 
     async list(query: FindBranchesQueryDto) {
         return this.branchesRepository.findMany(query);
@@ -49,24 +40,38 @@ export class BranchesService {
         return branch;
     }
 
-    async create(dto: CreateBranchDto) {
-        const existingBranch = await this.branchesRepository.findByName(dto.pharmacy_id, dto.name);
+    async create(dto: CreateBranchDto, currentUser: AuthenticatedUser) {
+        const targetPharmacyId = isSuperAdmin(currentUser.roles)
+            ? dto.pharmacy_id
+            : (currentUser.pharmacy_id ?? dto.pharmacy_id);
+
+        const currentBranchCount =
+            await this.branchesRepository.countByPharmacyId(targetPharmacyId);
+
+        // Enforce subscription branch limit (SUPER_ADMIN is automatically bypassed)
+        await this.subscriptionConstraintService.validateBranchLimit(
+            currentUser,
+            currentBranchCount,
+        );
+
+        const existingBranch = await this.branchesRepository.findByName(targetPharmacyId, dto.name);
 
         if (existingBranch) {
             throw new ConflictException(MESSAGES.ERROR.NAME_ALREADY_EXISTS);
         }
 
         if (dto.is_main) {
-            const mainBranch = await this.branchesRepository.findMainBranch(dto.pharmacy_id);
+            const mainBranch = await this.branchesRepository.findMainBranch(targetPharmacyId);
 
             if (mainBranch) {
                 throw new ConflictException(MESSAGES.ERROR.MAIN_BRANCH_ALREADY_EXISTS);
             }
         }
 
-        await this.validateBranchLimit(dto.pharmacy_id);
-
-        await this.branchesRepository.create(dto);
+        await this.branchesRepository.create({
+            ...dto,
+            pharmacy_id: targetPharmacyId,
+        });
 
         return {
             message: MESSAGES.SUCCESS.CREATED,
@@ -146,5 +151,38 @@ export class BranchesService {
 
     async countByPharmacyId(pharmacyId: string) {
         return this.branchesRepository.countByPharmacyId(pharmacyId);
+    }
+
+    async findAvailableForUser(userId: string) {
+        return this.branchesRepository.findAvailableForUser(userId);
+    }
+
+    async findAvailableBranchesForUser(
+        userId: string,
+        pharmacyId: string | null,
+        isSuperAdmin: boolean,
+        isPharmacyAdmin: boolean,
+    ): Promise<Branch[]> {
+        if (isSuperAdmin || !pharmacyId) {
+            return [];
+        }
+
+        if (isPharmacyAdmin) {
+            return this.branchesRepository.findByPharmacyId(pharmacyId);
+        }
+
+        return this.branchesRepository.findByUserId(userId);
+    }
+
+    async ensureUserHasAccess(user: AuthenticatedUser, branchId: string): Promise<void> {
+        if (isSuperAdmin(user.roles)) {
+            return;
+        }
+
+        const hasAccess = await this.branchesRepository.userHasAccessToBranch(user, branchId);
+
+        if (!hasAccess) {
+            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ACCESS_DENIED);
+        }
     }
 }

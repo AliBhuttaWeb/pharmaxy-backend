@@ -3,12 +3,16 @@ import { Body, Get, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import type { Request } from 'express';
 
 import { AuthService } from '../services/auth.service';
-import { LoginDto, LoginResultDto, RefreshTokenDto, SwitchBranchDto } from '../dtos';
+import {
+    LoginDto,
+    LoginResultDto,
+    RefreshTokenDto,
+    RefreshTokenResultDto,
+    SignupDto,
+} from '../dtos';
 import type { AuthenticatedUser, SessionMetadata } from '../types';
 
 import { ConsoleController, CurrentUser, Public } from '@/common/decorators';
-
-import { Session } from '../dtos/session-metadata.decorator';
 
 @ConsoleController('auth')
 export class AuthConsoleController {
@@ -17,9 +21,7 @@ export class AuthConsoleController {
     private buildSessionMetadata(request: Request): SessionMetadata {
         return {
             ipAddress: request.ip ?? request.socket.remoteAddress ?? null,
-
             userAgent: request.get('user-agent') ?? null,
-
             deviceName: null,
         };
     }
@@ -34,7 +36,7 @@ export class AuthConsoleController {
     @Public()
     @Post('refresh')
     @HttpCode(HttpStatus.OK)
-    refresh(@Body() dto: RefreshTokenDto, @Req() request: Request): Promise<LoginResultDto> {
+    refresh(@Body() dto: RefreshTokenDto, @Req() request: Request): Promise<RefreshTokenResultDto> {
         return this.authService.refreshToken(dto, this.buildSessionMetadata(request));
     }
 
@@ -51,17 +53,14 @@ export class AuthConsoleController {
     }
 
     @Get('me')
-    me(@CurrentUser() user: AuthenticatedUser): AuthenticatedUser {
-        return user;
+    me(@CurrentUser() user: AuthenticatedUser): Promise<AuthenticatedUser> {
+        return this.authService.getProfile(user);
     }
 
-    @Post('switch-branch')
-    @HttpCode(HttpStatus.OK)
-    switchBranch(
-        @Body() dto: SwitchBranchDto,
-        @CurrentUser() user: AuthenticatedUser,
-        @Session() session: SessionMetadata,
-    ): Promise<LoginResultDto> {
-        return this.authService.switchBranch(user.id, dto, session);
+    @Public()
+    @Post('signup')
+    @HttpCode(HttpStatus.CREATED)
+    signup(@Body() dto: SignupDto): Promise<AuthenticatedUser> {
+        return this.authService.signup(dto);
     }
 }

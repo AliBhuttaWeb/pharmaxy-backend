@@ -104,12 +104,15 @@ model User {
   system_logs          SystemLog[]
   refresh_tokens RefreshToken[]
 
+  pharmacy_id String? @db.Uuid
+  pharmacy Pharmacy? @relation(fields: [pharmacy_id], references: [id], onDelete: SetNull)
+  user_branches UserBranch[]
+
   @@index([email])
   @@index([phone])
   @@index([status])
   @@map("users")
 }
-
 
 model Role {
   id                   String     @id @default(uuid()) @db.Uuid
@@ -142,26 +145,20 @@ model Permission {
 
 
 model UserRole {
-  id          String @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  user_id     String @db.Uuid
-  role_id     String @db.Uuid
-  branch_id   String? @db.Uuid
+  user_id String @db.Uuid
+  role_id String @db.Uuid
 
-  pharmacy_id String? @db.Uuid
-  supplier_id String? @db.Uuid
+  created_at DateTime @default(now())
 
-  created_at  DateTime @default(now())
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
 
-  user        User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  role        Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
-  branch      Branch?  @relation(fields: [branch_id], references: [id], onDelete: Cascade)
+  @@unique([user_id, role_id])
 
-  @@unique([user_id, branch_id])
   @@index([user_id])
   @@index([role_id])
-  @@index([pharmacy_id])
-  @@index([supplier_id])
 
   @@map("user_roles")
 }
@@ -276,6 +273,8 @@ model Pharmacy {
 
   system_logs             SystemLog[]
 
+  users User[]
+
   @@index([status])
 
   @@map("pharmacies")
@@ -338,7 +337,7 @@ model Branch {
 
   system_logs                   SystemLog[]
 
-  user_roles UserRole[]
+  user_branches UserBranch[]
   
   @@unique([pharmacy_id, name])
 
@@ -349,6 +348,24 @@ model Branch {
   @@map("branches")
 }
 
+model UserBranch {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id String @db.Uuid
+  branch_id String @db.Uuid
+
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, branch_id])
+
+  @@index([user_id])
+  @@index([branch_id])
+
+  @@map("user_branches")
+}
 
 //////////////////////////////////////////////////////
 // SUBSCRIPTION MODULE

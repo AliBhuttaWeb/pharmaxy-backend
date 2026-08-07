@@ -6,14 +6,15 @@ import { MESSAGES } from '../constants';
 
 import { CreateUserDto, FindUsersQueryDto, UpdateUserDto, UpdateUserStatusDto } from '../dtos';
 import { UsersRepository } from '../repositories/users.repository';
-import { MESSAGES as SUBSCRIPTION_MESSAGES } from '@modules/subscriptions/constants';
-import { SubscriptionsService } from '@/modules/subscriptions/services/subscriptions.service';
+import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
+import { AuthenticatedUser } from '@/modules/auth/types';
+import { isSuperAdmin } from '@/common/helpers';
 
 @Injectable()
 export class UsersService {
     constructor(
         private readonly usersRepository: UsersRepository,
-        private readonly subscriptionsService: SubscriptionsService,
+        private readonly subscriptionConstraintService: SubscriptionConstraintService,
     ) {}
 
     async list(query: FindUsersQueryDto) {
@@ -30,7 +31,21 @@ export class UsersService {
         return user;
     }
 
-    async create(dto: CreateUserDto) {
+    async create(dto: CreateUserDto, currentUser: AuthenticatedUser) {
+        const targetPharmacyId = isSuperAdmin(currentUser.roles)
+            ? (dto.pharmacy_id ?? currentUser.pharmacy_id)
+            : currentUser.pharmacy_id;
+
+        // If target pharmacy is present, enforce subscription user limits (SUPER_ADMIN is automatically bypassed)
+        if (targetPharmacyId) {
+            const currentUserCount = await this.usersRepository.countByPharmacyId(targetPharmacyId);
+            await this.subscriptionConstraintService.validateUserLimit(
+                currentUser,
+                targetPharmacyId,
+                currentUserCount,
+            );
+        }
+
         const existingEmail = await this.usersRepository.findByEmail(dto.email);
 
         if (existingEmail) {
@@ -47,8 +62,11 @@ export class UsersService {
 
         const hashedPassword = await bcrypt.hash(dto.password, 10);
 
+        // Strip pharmacy_id helper field from DTO before passing to Prisma create
+        const { pharmacy_id: _, ...userData } = dto;
+
         return this.usersRepository.create({
-            ...dto,
+            ...userData,
             password: hashedPassword,
         });
     }
@@ -99,21 +117,5 @@ export class UsersService {
         }
 
         return this.usersRepository.delete(id);
-    }
-
-    private async validateUserLimit(pharmacyId: string) {
-        const subscription = await this.subscriptionsService.ensureActiveSubscription(pharmacyId);
-
-        const maxUsers = subscription.plan.max_users;
-
-        if (maxUsers == null) {
-            return;
-        }
-
-        const totalUsers = await this.usersRepository.countByPharmacyId(pharmacyId);
-
-        if (totalUsers >= maxUsers) {
-            throw new ConflictException(SUBSCRIPTION_MESSAGES.ERROR.USER_LIMIT_REACHED);
-        }
     }
 }

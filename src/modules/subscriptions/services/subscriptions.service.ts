@@ -17,16 +17,12 @@ import { MESSAGES } from '../constants';
 import { SubscriptionsRepository } from '../repositories/subscriptions.repository';
 
 import { SubscriptionPlansService } from '@/modules/subscription-plans/services/subscription-plans.service';
-import { BranchesRepository } from '@/modules/branches/repositories/branches.repository';
 
 @Injectable()
 export class SubscriptionsService {
     constructor(
         private readonly subscriptionsRepository: SubscriptionsRepository,
-
         private readonly subscriptionPlansService: SubscriptionPlansService,
-
-        private readonly branchesRepository: BranchesRepository,
     ) {}
 
     findMany(query: SubscriptionQueryDto) {
@@ -159,19 +155,7 @@ export class SubscriptionsService {
         return subscription;
     }
 
-    async ensureBranchLimit(pharmacyId: string) {
-        const subscription = await this.ensureActiveSubscription(pharmacyId);
-
-        const maxBranches = subscription.plan.max_branches;
-
-        if (maxBranches === null) {
-            return;
-        }
-
-        const totalBranches = await this.branchesRepository.countByPharmacyId(pharmacyId);
-
-        if (totalBranches >= maxBranches) {
-            throw new ConflictException(MESSAGES.ERROR.BRANCH_LIMIT_REACHED);
-        }
+    async findActiveSubscriptionByPharmacyId(pharmacyId: string) {
+        return this.subscriptionsRepository.findActiveSubscriptionByPharmacyId(pharmacyId);
     }
 }

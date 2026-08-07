@@ -5,17 +5,17 @@ import { SubscriptionsConsoleController } from './controllers/subscriptions-cons
 import { SubscriptionsRepository } from './repositories/subscriptions.repository';
 
 import { SubscriptionsService } from './services/subscriptions.service';
+import { SubscriptionConstraintService } from './services/subscription-constraint.service';
 
 import { SubscriptionPlansModule } from '@/modules/subscription-plans/subscription-plans.module';
-import { BranchesRepository } from '../branches/repositories/branches.repository';
 
 @Module({
     imports: [SubscriptionPlansModule],
 
     controllers: [SubscriptionsConsoleController],
 
-    providers: [SubscriptionsRepository, SubscriptionsService, BranchesRepository],
+    providers: [SubscriptionsRepository, SubscriptionsService, SubscriptionConstraintService],
 
-    exports: [SubscriptionsService],
+    exports: [SubscriptionsService, SubscriptionConstraintService],
 })
 export class SubscriptionsModule {}

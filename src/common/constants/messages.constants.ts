@@ -30,5 +30,7 @@ export const MESSAGES = Object.freeze({
         SESSION_NOT_FOUND: 'Session not found.',
         SESSION_REVOKED: 'Your session has expired or has been revoked.',
         NO_ACTIVE_BRANCH: 'No active branch selected.',
+        INVALID_ROLE: 'The selected role is invalid.',
+        ROLE_NOT_ALLOWED_FOR_SIGNUP: 'The selected role cannot be registered through this signup.',
     },
 } as const);
