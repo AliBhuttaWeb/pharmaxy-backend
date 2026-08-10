@@ -106,12 +106,6 @@ export class RolesRepository {
                         permission: true,
                     },
                 },
-
-                _count: {
-                    select: {
-                        user_roles: true,
-                    },
-                },
             },
         });
     }

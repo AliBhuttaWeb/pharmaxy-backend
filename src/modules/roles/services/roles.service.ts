@@ -15,7 +15,7 @@ export class RolesService {
     }
 
     async get(id: string) {
-        const role = await this.rolesRepository.findByIdWithPermissions(id);
+        const role = await this.rolesRepository.findById(id);
 
         if (!role) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
@@ -25,9 +25,15 @@ export class RolesService {
     }
 
     async getPermissions(roleId: string) {
-        const role = await this.get(roleId);
+        const role = await this.rolesRepository.findByIdWithPermissions(roleId);
 
-        return role.role_permissions;
+        if (!role) {
+            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+        }
+
+        return {
+            role_permissions: role.role_permissions.map(({ permission }) => permission),
+        };
     }
 
     async assignPermissions(roleId: string, dto: UpdateRolePermissionsDto) {

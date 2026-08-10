@@ -6,6 +6,7 @@ import * as bodyParser from 'body-parser';
 import { AppModule } from '@/app.module';
 import { setupSwagger } from '@/config/swagger.config';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 async function bootstrap(): Promise<void> {
     const logger = new Logger('Bootstrap');
@@ -25,6 +26,8 @@ async function bootstrap(): Promise<void> {
         type: VersioningType.URI,
         defaultVersion: '1',
     });
+
+    app.useGlobalInterceptors(new ResponseInterceptor());
 
     // Global validation
     app.useGlobalPipes(

@@ -1,4 +1,4 @@
-import { Body, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Get, Param, ParseUUIDPipe, Put, Query, UseGuards } from '@nestjs/common';
 
 import { ConsoleController, Permissions, Public } from '@/common/decorators';
 
@@ -23,19 +23,22 @@ export class RolesConsoleController {
 
     @Get(':id')
     @Permissions(ROLES_PERMISSIONS.ROLE_VIEW_DETAIL.name)
-    get(@Param('id') id: string) {
+    get(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.rolesService.get(id);
     }
 
     @Get(':id/permissions')
     @Permissions(ROLES_PERMISSIONS.ROLE_VIEW_DETAIL.name)
-    getPermissions(@Param('id') id: string) {
+    getPermissions(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.rolesService.getPermissions(id);
     }
 
     @Put(':id/permissions')
     @Permissions(ROLES_PERMISSIONS.ROLE_ASSIGN_PERMISSION.name)
-    assignPermissions(@Param('id') id: string, @Body() dto: UpdateRolePermissionsDto) {
+    assignPermissions(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateRolePermissionsDto,
+    ) {
         return this.rolesService.assignPermissions(id, dto);
     }
 }

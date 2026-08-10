@@ -17,6 +17,8 @@ import {
     RefreshTokenDto,
     RefreshTokenResultDto,
     SignupDto,
+    SignupResultDto,
+    ProfileDto
 } from '../dtos';
 import { MESSAGES } from '../constants';
 import { RefreshTokenService } from './refresh-token.service';
@@ -194,7 +196,7 @@ export class AuthService {
         await this.updateLastLogin(user.id);
 
         return {
-            ...buildAuthenticatedUser(user),
+            user: buildAuthenticatedUser(user),
             accessToken,
             refreshToken,
         };
@@ -242,14 +244,14 @@ export class AuthService {
         return buildAuthenticatedUser(user);
     }
 
-    async getProfile(user: AuthenticatedUser): Promise<AuthenticatedUser> {
+    async getProfile(user: AuthenticatedUser): Promise<ProfileDto> {
         const dbUser = await this.authRepository.findUserById(user.id);
 
         if (!dbUser) {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
         }
 
-        return buildAuthenticatedUser(dbUser, user.branch_id);
+        return {profile: buildAuthenticatedUser(dbUser, user.branch_id)};
     }
 
     private async ensureEmailAvailable(email: string): Promise<void> {
@@ -272,7 +274,7 @@ export class AuthService {
         }
     }
 
-    async signup(dto: SignupDto): Promise<AuthenticatedUser> {
+    async signup(dto: SignupDto): Promise<SignupResultDto> {
         await this.ensureEmailAvailable(dto.email);
         await this.ensurePhoneAvailable(dto.phone);
 
@@ -287,6 +289,6 @@ export class AuthService {
             password,
         });
 
-        return buildAuthenticatedUser(user);
+        return { user: buildAuthenticatedUser(user) };
     }
 }

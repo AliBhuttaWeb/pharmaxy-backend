@@ -12,13 +12,9 @@ export class ResponseInterceptor implements NestInterceptor {
         return next.handle().pipe(
             map((response) => ({
                 success: true,
-
                 message: response?.message ?? MESSAGES.SUCCESS.COMPLETED,
-
-                data: response?.data ?? null,
-
+                data: response,
                 timestamp: new Date().toISOString(),
-
                 path: request.originalUrl,
             })),
         );

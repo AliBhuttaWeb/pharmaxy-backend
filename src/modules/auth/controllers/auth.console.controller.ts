@@ -6,9 +6,11 @@ import { AuthService } from '../services/auth.service';
 import {
     LoginDto,
     LoginResultDto,
+    ProfileDto,
     RefreshTokenDto,
     RefreshTokenResultDto,
     SignupDto,
+    SignupResultDto
 } from '../dtos';
 import type { AuthenticatedUser, SessionMetadata } from '../types';
 
@@ -56,14 +58,14 @@ export class AuthConsoleController {
     }
 
     @Get('me')
-    me(@CurrentUser() user: AuthenticatedUser): Promise<AuthenticatedUser> {
+    me(@CurrentUser() user: AuthenticatedUser): Promise<ProfileDto> {
         return this.authService.getProfile(user);
     }
 
     @Public()
     @Post('signup')
     @HttpCode(HttpStatus.CREATED)
-    signup(@Body() dto: SignupDto): Promise<AuthenticatedUser> {
+    signup(@Body() dto: SignupDto): Promise<SignupResultDto> {
         return this.authService.signup(dto);
     }
 }

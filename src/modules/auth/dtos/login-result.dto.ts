@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { AuthenticatedRole } from '../types';
 
-export class LoginResultDto {
+export class LoginUserDto {
     @ApiProperty()
     id!: string;
 
@@ -30,6 +31,13 @@ export class LoginResultDto {
         type: [AuthenticatedRole],
     })
     roles!: AuthenticatedRole[];
+}
+
+export class LoginResultDto {
+    @ApiProperty({
+        type: LoginUserDto,
+    })
+    user!: LoginUserDto;
 
     @ApiProperty()
     accessToken!: string;
