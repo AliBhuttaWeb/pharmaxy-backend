@@ -39,6 +39,6 @@ export class RolesConsoleController {
         @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: UpdateRolePermissionsDto,
     ) {
-        return this.rolesService.assignPermissions(id, dto);
+        return this.rolesService.replacePermissions(id, dto);
     }
 }
