@@ -18,7 +18,7 @@ import {
     RefreshTokenResultDto,
     SignupDto,
     SignupResultDto,
-    ProfileDto
+    ProfileDto,
 } from '../dtos';
 import { MESSAGES } from '../constants';
 import { RefreshTokenService } from './refresh-token.service';
@@ -251,7 +251,7 @@ export class AuthService {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
         }
 
-        return {profile: buildAuthenticatedUser(dbUser, user.branch_id)};
+        return { profile: buildAuthenticatedUser(dbUser, user.branch_id) };
     }
 
     private async ensureEmailAvailable(email: string): Promise<void> {

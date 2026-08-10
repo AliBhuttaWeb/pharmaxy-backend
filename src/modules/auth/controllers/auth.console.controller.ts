@@ -10,7 +10,7 @@ import {
     RefreshTokenDto,
     RefreshTokenResultDto,
     SignupDto,
-    SignupResultDto
+    SignupResultDto,
 } from '../dtos';
 import type { AuthenticatedUser, SessionMetadata } from '../types';
 

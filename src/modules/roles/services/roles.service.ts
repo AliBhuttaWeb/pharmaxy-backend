@@ -39,6 +39,9 @@ export class RolesService {
     async replacePermissions(roleId: string, dto: UpdateRolePermissionsDto) {
         await this.get(roleId);
         const role = await this.rolesRepository.replacePermissions(roleId, dto.permission_ids);
-        return role.role_permissions.map(({ permission }) => permission)
+
+        return {
+            permissions: role.role_permissions.map(({ permission }) => permission),
+        };
     }
 }
