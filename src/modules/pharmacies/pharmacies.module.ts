@@ -5,11 +5,12 @@ import { PermissionsModule } from '../permissions/permissions.module';
 import { PharmaciesService } from './services/pharmacies.services';
 import { PharmaciesRepository } from './repositories/pharmacies.repository';
 import { PharmaciesConsoleController } from './controllers/phrmacies.console.controller';
+import { UsersRepository } from '@modules/users/repositories/users.repository';
 
 @Module({
     imports: [PermissionsModule],
     controllers: [PharmaciesConsoleController],
-    providers: [PharmaciesService, PharmaciesRepository, PermissionsGuard],
+    providers: [PharmaciesService, PharmaciesRepository, PermissionsGuard, UsersRepository],
     exports: [PharmaciesService, PharmaciesRepository],
 })
 export class PharmaciesModule {}

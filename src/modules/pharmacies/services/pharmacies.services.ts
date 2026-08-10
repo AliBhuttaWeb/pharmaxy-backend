@@ -8,10 +8,17 @@ import {
     UpdatePharmacyStatusDto,
 } from '../dtos';
 import { PharmaciesRepository } from '../repositories/pharmacies.repository';
+import { UsersRepository } from '@/modules/users/repositories/users.repository';
+import { PrismaService } from '@/database/prisma/prisma.service';
+import { AuthenticatedUser } from '@/modules/auth/types';
 
 @Injectable()
 export class PharmaciesService {
-    constructor(private readonly pharmaciesRepository: PharmaciesRepository) {}
+    constructor(
+        private readonly pharmaciesRepository: PharmaciesRepository,
+        private readonly usersRepository: UsersRepository,
+        private readonly prismaService: PrismaService,
+    ) {}
 
     async list(query: FindPharmaciesQueryDto) {
         return this.pharmaciesRepository.findMany(query);
@@ -27,18 +34,24 @@ export class PharmaciesService {
         return pharmacy;
     }
 
-    async create(dto: CreatePharmacyDto) {
+    async create(dto: CreatePharmacyDto, user: AuthenticatedUser) {
+        if (user.pharmacy_id) {
+            throw new ConflictException(MESSAGES.ERROR.PHARMACY_ALREADY_EXISTS);
+        }
+
         const existingPharmacy = await this.pharmaciesRepository.findByName(dto.name);
 
         if (existingPharmacy) {
             throw new ConflictException(MESSAGES.ERROR.NAME_ALREADY_EXISTS);
         }
 
-        await this.pharmaciesRepository.create(dto);
+        return this.prismaService.transaction(async (tx) => {
+            const pharmacy = await this.pharmaciesRepository.create(dto, tx);
 
-        return {
-            message: MESSAGES.SUCCESS.CREATED,
-        };
+            await this.usersRepository.updatePharmacy(user.id, pharmacy.id, tx);
+
+            return { pharmacy };
+        });
     }
 
     async update(id: string, dto: UpdatePharmacyDto) {

@@ -119,8 +119,8 @@ export class UsersRepository {
         };
     }
 
-    findById(id: string) {
-        return this.prisma.user.findUnique({
+    findById(id: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).user.findUnique({
             where: {
                 id,
             },
@@ -216,6 +216,17 @@ export class UsersRepository {
     countByPharmacyId(pharmacyId: string, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).user.count({
             where: {
+                pharmacy_id: pharmacyId,
+            },
+        });
+    }
+
+    async updatePharmacy(userId: string, pharmacyId: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).user.update({
+            where: {
+                id: userId,
+            },
+            data: {
                 pharmacy_id: pharmacyId,
             },
         });

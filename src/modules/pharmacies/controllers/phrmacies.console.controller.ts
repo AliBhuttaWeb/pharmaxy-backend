@@ -1,6 +1,6 @@
 import { Body, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 
-import { ConsoleController, Permissions } from '@/common/decorators';
+import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 import { PermissionsGuard } from '@/common/guards';
 
 import {
@@ -11,6 +11,7 @@ import {
 } from '../dtos';
 import { PHARMACIES_PERMISSIONS } from '@/common/constants';
 import { PharmaciesService } from '../services/pharmacies.services';
+import { AuthenticatedUser } from '@/modules/auth/types';
 
 @ConsoleController('pharmacies')
 @UseGuards(PermissionsGuard)
@@ -31,8 +32,8 @@ export class PharmaciesConsoleController {
 
     @Post()
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_CREATE.name)
-    create(@Body() dto: CreatePharmacyDto) {
-        return this.pharmaciesService.create(dto);
+    create(@Body() dto: CreatePharmacyDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.pharmaciesService.create(dto, user);
     }
 
     @Put(':id')

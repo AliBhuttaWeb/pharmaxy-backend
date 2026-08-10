@@ -11,5 +11,6 @@ export const MESSAGES = {
     ERROR: {
         NOT_FOUND: 'Pharmacy not found.',
         NAME_ALREADY_EXISTS: 'A pharmacy with this name already exists.',
+        PHARMACY_ALREADY_EXISTS: 'A pharmacy already exists for this account.',
     },
 } as const;
