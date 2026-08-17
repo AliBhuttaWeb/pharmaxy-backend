@@ -15,7 +15,7 @@ export class PharmaciesRepository {
         return tx ?? this.prisma;
     }
 
-    async findMany(query: FindPharmaciesQueryDto, user: AuthenticatedUser) {
+    async findMany(query: FindPharmaciesQueryDto) {
         const { search, status, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.PharmacyWhereInput = {
@@ -78,11 +78,6 @@ export class PharmaciesRepository {
 
             deleted_at: null,
         };
-
-        // Pharmacy Admin / Staff can only see their own pharmacy.
-        if (user.pharmacy_id && !isSuperAdmin(user.roles)) {
-            where.id = user.pharmacy_id;
-        }
 
         const sortableFields = [
             'name',

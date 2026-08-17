@@ -21,9 +21,9 @@ export class PharmaciesService {
         private readonly prismaService: PrismaService,
     ) {}
 
-    async list(query: FindPharmaciesQueryDto, user: AuthenticatedUser) {
+    async list(query: FindPharmaciesQueryDto) {
         const { page, limit } = query;
-        const { records, totalRecords } = await this.pharmaciesRepository.findMany(query, user);
+        const { records, totalRecords } = await this.pharmaciesRepository.findMany(query);
 
         if (!totalRecords || !page || !limit) return { records };
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords });
