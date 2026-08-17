@@ -1,4 +1,15 @@
-import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Delete,
+    Get,
+    Param,
+    ParseUUIDPipe,
+    Patch,
+    Post,
+    Put,
+    Query,
+    UseGuards,
+} from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 import { PermissionsGuard } from '@/common/guards';
@@ -24,6 +35,12 @@ export class PharmaciesConsoleController {
         return this.pharmaciesService.list(query);
     }
 
+    @Get('deleted')
+    @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_VIEW_DELETED.name)
+    listDeleted(@Query() query: FindPharmaciesQueryDto) {
+        return this.pharmaciesService.listDeleted(query);
+    }
+
     @Get(':id')
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_VIEW_DETAIL.name)
     get(@Param('id', new ParseUUIDPipe()) id: string) {
@@ -44,7 +61,10 @@ export class PharmaciesConsoleController {
 
     @Patch(':id/status')
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_UPDATE_STATUS.name)
-    updateStatus(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdatePharmacyStatusDto) {
+    updateStatus(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdatePharmacyStatusDto,
+    ) {
         return this.pharmaciesService.updateStatus(id, dto);
     }
 
@@ -52,5 +72,11 @@ export class PharmaciesConsoleController {
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_DELETE.name)
     delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.pharmaciesService.delete(id);
+    }
+
+    @Patch(':id/restore')
+    @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_RESTORE.name)
+    restore(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.pharmaciesService.restore(id);
     }
 }

@@ -28,4 +28,14 @@ export const PHARMACIES_PERMISSIONS = {
         name: 'pharmacies.update.status',
         description: 'Update pharmacy status',
     },
+
+    PHARMACY_RESTORE: {
+        name: 'pharmacies.restore',
+        description: 'Restore pharmacy',
+    },
+
+    PHARMACY_VIEW_DELETED: {
+        name: 'pharmacies.view-deleted',
+        description: 'View deleted pharmacies',
+    },
 };

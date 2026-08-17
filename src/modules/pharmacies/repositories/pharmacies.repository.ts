@@ -179,4 +179,140 @@ export class PharmaciesRepository {
             },
         });
     }
+    async findByIdIncludingDeleted(id: string) {
+        return this.prisma.pharmacy.findUnique({
+            where: {
+                id,
+            },
+        });
+    }
+
+    async restore(id: string) {
+        return this.prisma.pharmacy.update({
+            where: {
+                id,
+            },
+            data: {
+                deleted_at: null,
+            },
+        });
+    }
+
+    async findDeleted(query: FindPharmaciesQueryDto) {
+        const { search, status, page, limit, sort_by, sort_order } = query;
+
+        const where: Prisma.PharmacyWhereInput = {
+            deleted_at: {
+                not: null,
+            },
+
+            ...(status && {
+                status,
+            }),
+
+            ...(search && {
+                OR: [
+                    {
+                        name: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        legal_name: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        registration_number: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        license_number: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        tax_number: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        email: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        phone: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        website: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                ],
+            }),
+        };
+
+        const sortableFields = [
+            'name',
+            'legal_name',
+            'email',
+            'phone',
+            'status',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+        ] as const;
+
+        type SortableField = (typeof sortableFields)[number];
+
+        const sortField: SortableField =
+            sort_by && sortableFields.includes(sort_by as SortableField)
+                ? (sort_by as SortableField)
+                : 'deleted_at';
+
+        const orderBy: Prisma.PharmacyOrderByWithRelationInput = {
+            [sortField]: sort_order ?? 'desc',
+        };
+
+        const isPaginated = page !== undefined && limit !== undefined;
+
+        if (!isPaginated) {
+            const records = await this.prisma.pharmacy.findMany({
+                where,
+                orderBy,
+            });
+
+            return { records };
+        }
+
+        const [records, totalRecords] = await this.prisma.$transaction([
+            this.prisma.pharmacy.findMany({
+                where,
+                orderBy,
+                skip: (page - 1) * limit,
+                take: limit,
+            }),
+
+            this.prisma.pharmacy.count({
+                where,
+            }),
+        ]);
+
+        return {
+            records,
+            totalRecords,
+        };
+    }
 }

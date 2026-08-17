@@ -11,14 +11,14 @@ export class ResponseInterceptor implements NestInterceptor {
 
         return next.handle().pipe(
             map((response) => {
-                const { message, ...data } = response
+                const { message, ...data } = response;
                 return {
                     success: true,
                     message: message ?? MESSAGES.SUCCESS.COMPLETED,
                     data,
                     timestamp: new Date().toISOString(),
                     path: request.originalUrl,
-                }
+                };
             }),
         );
     }

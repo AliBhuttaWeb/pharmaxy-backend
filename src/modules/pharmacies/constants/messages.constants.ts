@@ -6,11 +6,13 @@ export const MESSAGES = {
         UPDATED: 'Pharmacy updated successfully.',
         STATUS_UPDATED: 'Pharmacy status updated successfully.',
         DELETED: 'Pharmacy deleted successfully.',
+        RESTORED: 'Pharmacy restored successfully.',
     },
 
     ERROR: {
         NOT_FOUND: 'Pharmacy not found.',
         NAME_ALREADY_EXISTS: 'A pharmacy with this name already exists.',
         PHARMACY_ALREADY_EXISTS: 'A pharmacy already exists for this account.',
+        ALREADY_ACTIVE: 'Pharmacy is already active.',
     },
 } as const;

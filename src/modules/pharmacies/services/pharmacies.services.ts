@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+    BadRequestException,
+    ConflictException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 
 import { MESSAGES } from '../constants';
 import {
@@ -37,7 +42,7 @@ export class PharmaciesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return {pharmacy};
+        return { pharmacy };
     }
 
     async create(dto: CreatePharmacyDto, user: AuthenticatedUser) {
@@ -76,7 +81,7 @@ export class PharmaciesService {
         }
 
         const updatedPharmacy = await this.pharmaciesRepository.update(id, dto);
-        return { pharmacy: updatedPharmacy, message: MESSAGES.SUCCESS.UPDATED }
+        return { pharmacy: updatedPharmacy, message: MESSAGES.SUCCESS.UPDATED };
     }
 
     async updateStatus(id: string, dto: UpdatePharmacyStatusDto) {
@@ -88,7 +93,7 @@ export class PharmaciesService {
 
         const updatedPharmacy = await this.pharmaciesRepository.updateStatus(id, dto.status);
 
-        return { pharmacy: updatedPharmacy, message: MESSAGES.SUCCESS.STATUS_UPDATED }
+        return { pharmacy: updatedPharmacy, message: MESSAGES.SUCCESS.STATUS_UPDATED };
     }
 
     async delete(id: string) {
@@ -103,5 +108,29 @@ export class PharmaciesService {
         return {
             message: MESSAGES.SUCCESS.DELETED,
         };
+    }
+
+    async restore(id: string) {
+        const pharmacy = await this.pharmaciesRepository.findByIdIncludingDeleted(id);
+
+        if (!pharmacy) {
+            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+        }
+
+        if (!pharmacy.deleted_at) {
+            throw new BadRequestException(MESSAGES.ERROR.ALREADY_ACTIVE);
+        }
+
+        const restoredPharmacy = await this.pharmaciesRepository.restore(id);
+        return { pharmacy: restoredPharmacy, message: MESSAGES.SUCCESS.RESTORED };
+    }
+
+    async listDeleted(query: FindPharmaciesQueryDto) {
+        const { page, limit } = query;
+        const { records, totalRecords } = await this.pharmaciesRepository.findDeleted(query);
+
+        if (!totalRecords || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords });
+        return { records, pagination };
     }
 }
