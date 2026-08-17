@@ -33,7 +33,6 @@ export async function seedRolePermissions({ prisma, roles, permissions }: SeedCo
                 },
             });
         }
-
-        console.log(MESSAGES.SUCCESS.ROLES_PERMISSIONS_SEEDED);
     }
+    console.log(MESSAGES.SUCCESS.ROLES_PERMISSIONS_SEEDED);
 }

@@ -14,7 +14,11 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         ...Object.values(permissions.DASHBOARD_PERMISSIONS),
 
         // Platform management
-        ...Object.values(permissions.PHARMACIES_PERMISSIONS),
+        permissions.PHARMACIES_PERMISSIONS.PHARMACY_VIEW_LIST,
+        permissions.PHARMACIES_PERMISSIONS.PHARMACY_VIEW_DETAIL,
+        permissions.PHARMACIES_PERMISSIONS.PHARMACY_UPDATE,
+        permissions.PHARMACIES_PERMISSIONS.PHARMACY_DELETE,
+        permissions.PHARMACIES_PERMISSIONS.PHARMACY_UPDATE_STATUS,
         ...Object.values(permissions.BRANCHES_PERMISSIONS),
         ...Object.values(permissions.USERS_PERMISSIONS),
 
@@ -66,6 +70,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
 
     [ROLES.PHARMACY_ADMIN.name]: getSpecificPermissions(
         ...Object.values(permissions.DASHBOARD_PERMISSIONS),
+
+         // Pharmacy management
+        ...Object.values(permissions.PHARMACIES_PERMISSIONS),
 
         // Branch
         ...Object.values(permissions.BRANCHES_PERMISSIONS),

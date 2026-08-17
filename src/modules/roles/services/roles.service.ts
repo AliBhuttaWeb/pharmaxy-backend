@@ -5,13 +5,20 @@ import { MESSAGES } from '../constants/messages.constants';
 import { FindRolesQueryDto, UpdateRolePermissionsDto } from '../dtos';
 
 import { RolesRepository } from '../repositories/roles.repository';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class RolesService {
     constructor(private readonly rolesRepository: RolesRepository) {}
 
-    list(query: FindRolesQueryDto) {
-        return this.rolesRepository.findMany(query);
+    async list(query: FindRolesQueryDto) {
+        const { page, limit } = query;
+        const { records, totalRecords } = await this.rolesRepository.findMany(query);
+        
+        if(!totalRecords || !page || !limit) return { records };
+        const pagination =  buildPaginationMeta({currentPage: page, limit, totalRecords})
+
+        return { records, pagination }
     }
 
     async get(id: string) {
