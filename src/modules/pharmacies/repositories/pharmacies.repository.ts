@@ -5,6 +5,8 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 
 import { FindPharmaciesQueryDto } from '../dtos';
 import { TransactionClient } from '@gen/prisma/internal/prismaNamespace';
+import { AuthenticatedUser } from '@/modules/auth/types';
+import { isSuperAdmin } from '@/common/helpers';
 
 @Injectable()
 export class PharmaciesRepository {
@@ -13,7 +15,7 @@ export class PharmaciesRepository {
         return tx ?? this.prisma;
     }
 
-    async findMany(query: FindPharmaciesQueryDto) {
+    async findMany(query: FindPharmaciesQueryDto, user: AuthenticatedUser) {
         const { search, status, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.PharmacyWhereInput = {
@@ -77,6 +79,11 @@ export class PharmaciesRepository {
             deleted_at: null,
         };
 
+        // Pharmacy Admin / Staff can only see their own pharmacy.
+        if (user.pharmacy_id && !isSuperAdmin(user.roles)) {
+            where.id = user.pharmacy_id;
+        }
+
         const sortableFields = [
             'name',
             'legal_name',
@@ -87,22 +94,28 @@ export class PharmaciesRepository {
             'updated_at',
         ] as const;
 
+        type SortableField = (typeof sortableFields)[number];
+
+        const sortField: SortableField =
+            sort_by && sortableFields.includes(sort_by as SortableField)
+                ? (sort_by as SortableField)
+                : 'created_at';
+
         const orderBy: Prisma.PharmacyOrderByWithRelationInput = {
-            [sortableFields.includes((sort_by as (typeof sortableFields)[number]) ?? 'created_at')
-                ? (sort_by as keyof Prisma.PharmacyOrderByWithRelationInput)
-                : 'created_at']: sort_order ?? 'desc',
+            [sortField]: sort_order ?? 'desc',
         };
 
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.pharmacy.findMany({
+            const records = this.prisma.pharmacy.findMany({
                 where,
                 orderBy,
             });
+            return { records };
         }
 
-        const [records, total] = await this.prisma.$transaction([
+        const [records, totalRecords] = await this.prisma.$transaction([
             this.prisma.pharmacy.findMany({
                 where,
                 orderBy,
@@ -116,7 +129,7 @@ export class PharmaciesRepository {
 
         return {
             records,
-            total,
+            totalRecords,
         };
     }
 

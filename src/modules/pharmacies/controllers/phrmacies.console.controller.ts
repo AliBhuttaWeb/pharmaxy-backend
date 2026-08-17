@@ -20,8 +20,8 @@ export class PharmaciesConsoleController {
 
     @Get()
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_VIEW_LIST.name)
-    list(@Query() query: FindPharmaciesQueryDto) {
-        return this.pharmaciesService.list(query);
+    list(@Query() query: FindPharmaciesQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.pharmaciesService.list(query, user);
     }
 
     @Get(':id')

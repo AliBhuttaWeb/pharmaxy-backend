@@ -71,7 +71,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
     [ROLES.PHARMACY_ADMIN.name]: getSpecificPermissions(
         ...Object.values(permissions.DASHBOARD_PERMISSIONS),
 
-         // Pharmacy management
+        // Pharmacy management
         ...Object.values(permissions.PHARMACIES_PERMISSIONS),
 
         // Branch

@@ -11,6 +11,7 @@ import { PharmaciesRepository } from '../repositories/pharmacies.repository';
 import { UsersRepository } from '@/modules/users/repositories/users.repository';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class PharmaciesService {
@@ -20,8 +21,13 @@ export class PharmaciesService {
         private readonly prismaService: PrismaService,
     ) {}
 
-    async list(query: FindPharmaciesQueryDto) {
-        return this.pharmaciesRepository.findMany(query);
+    async list(query: FindPharmaciesQueryDto, user: AuthenticatedUser) {
+        const { page, limit } = query;
+        const { records, totalRecords } = await this.pharmaciesRepository.findMany(query, user);
+
+        if (!totalRecords || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords });
+        return { records, pagination };
     }
 
     async get(id: string) {
