@@ -37,7 +37,7 @@ export class PharmaciesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return pharmacy;
+        return {pharmacy};
     }
 
     async create(dto: CreatePharmacyDto, user: AuthenticatedUser) {
@@ -56,7 +56,7 @@ export class PharmaciesService {
 
             await this.usersRepository.updatePharmacy(user.id, pharmacy.id, tx);
 
-            return { pharmacy };
+            return { pharmacy, message: MESSAGES.SUCCESS.CREATED };
         });
     }
 
@@ -75,11 +75,8 @@ export class PharmaciesService {
             }
         }
 
-        await this.pharmaciesRepository.update(id, dto);
-
-        return {
-            message: MESSAGES.SUCCESS.UPDATED,
-        };
+        const updatedPharmacy = await this.pharmaciesRepository.update(id, dto);
+        return { pharmacy: updatedPharmacy, message: MESSAGES.SUCCESS.UPDATED }
     }
 
     async updateStatus(id: string, dto: UpdatePharmacyStatusDto) {
@@ -89,11 +86,9 @@ export class PharmaciesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        await this.pharmaciesRepository.updateStatus(id, dto.status);
+        const updatedPharmacy = await this.pharmaciesRepository.updateStatus(id, dto.status);
 
-        return {
-            message: MESSAGES.SUCCESS.UPDATED,
-        };
+        return { pharmacy: updatedPharmacy, message: MESSAGES.SUCCESS.STATUS_UPDATED }
     }
 
     async delete(id: string) {
@@ -108,9 +103,5 @@ export class PharmaciesService {
         return {
             message: MESSAGES.SUCCESS.DELETED,
         };
-    }
-
-    async findById(id: string) {
-        return this.pharmaciesRepository.findById(id);
     }
 }

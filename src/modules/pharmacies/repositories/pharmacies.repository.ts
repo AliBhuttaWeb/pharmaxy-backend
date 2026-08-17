@@ -11,9 +11,6 @@ import { isSuperAdmin } from '@/common/helpers';
 @Injectable()
 export class PharmaciesRepository {
     constructor(private readonly prisma: PrismaService) {}
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
 
     async findMany(query: FindPharmaciesQueryDto) {
         const { search, status, page, limit, sort_by, sort_order } = query;
@@ -180,25 +177,6 @@ export class PharmaciesRepository {
             data: {
                 deleted_at: new Date(),
             },
-        });
-    }
-
-    async createForUser(userId: string, data: Prisma.PharmacyCreateInput) {
-        return this.prisma.$transaction(async (tx) => {
-            const pharmacy = await tx.pharmacy.create({
-                data,
-            });
-
-            await tx.user.update({
-                where: {
-                    id: userId,
-                },
-                data: {
-                    pharmacy_id: pharmacy.id,
-                },
-            });
-
-            return pharmacy;
         });
     }
 }
