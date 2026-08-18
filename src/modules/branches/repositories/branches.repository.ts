@@ -98,22 +98,28 @@ export class BranchesRepository {
             'updated_at',
         ] as const;
 
+        type SortableField = (typeof sortableFields)[number];
+
+        const sortBy: SortableField = sortableFields.includes(sort_by as SortableField)
+            ? (sort_by as SortableField)
+            : 'created_at';
+
         const orderBy: Prisma.BranchOrderByWithRelationInput = {
-            [sortableFields.includes((sort_by as (typeof sortableFields)[number]) ?? 'created_at')
-                ? (sort_by as keyof Prisma.BranchOrderByWithRelationInput)
-                : 'created_at']: sort_order ?? 'desc',
+            [sortBy]: sort_order ?? 'desc',
         };
 
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.branch.findMany({
+            const records = await this.prisma.branch.findMany({
                 where,
                 orderBy,
             });
+
+            return { records };
         }
 
-        const [records, total] = await this.prisma.$transaction([
+        const [records, totalRecords] = await this.prisma.$transaction([
             this.prisma.branch.findMany({
                 where,
                 orderBy,
@@ -127,7 +133,7 @@ export class BranchesRepository {
 
         return {
             records,
-            total,
+            totalRecords,
         };
     }
 

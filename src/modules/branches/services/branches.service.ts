@@ -16,7 +16,7 @@ import { MESSAGES } from '../constants/messages.constants';
 import { BranchesRepository } from '../repositories/branches.repository';
 import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
-import { isPharmacyAdmin, isSuperAdmin } from '@/common/helpers';
+import { isSuperAdmin } from '@/common/helpers';
 import { Branch } from '@gen/prisma/client';
 
 @Injectable()
@@ -49,10 +49,10 @@ export class BranchesService {
             await this.branchesRepository.countByPharmacyId(targetPharmacyId);
 
         // Enforce subscription branch limit (SUPER_ADMIN is automatically bypassed)
-        await this.subscriptionConstraintService.validateBranchLimit(
-            currentUser,
+        await this.subscriptionConstraintService.validateBranchesLimit({
             currentBranchCount,
-        );
+            pharmacyId: targetPharmacyId,
+        });
 
         const existingBranch = await this.branchesRepository.findByName(targetPharmacyId, dto.name);
 
@@ -68,12 +68,13 @@ export class BranchesService {
             }
         }
 
-        await this.branchesRepository.create({
+        const branch = await this.branchesRepository.create({
             ...dto,
             pharmacy_id: targetPharmacyId,
         });
 
         return {
+            branch,
             message: MESSAGES.SUCCESS.CREATED,
         };
     }

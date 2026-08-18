@@ -2,9 +2,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { SubscriptionStatus } from '@gen/prisma/client';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
-import { isSuperAdmin } from '@/common/helpers';
 import { SubscriptionsRepository } from '../repositories/subscriptions.repository';
 import { MESSAGES } from '../constants';
+import { ValidateBranchesLimit } from '../types';
 
 @Injectable()
 export class SubscriptionConstraintService {
@@ -41,14 +41,9 @@ export class SubscriptionConstraintService {
 
     /**
      * Validates branch creation limits against the active subscription plan.
-     * SUPER_ADMIN bypasses all limit checks automatically.
      */
-    async validateBranchLimit(user: AuthenticatedUser, currentBranchCount: number): Promise<void> {
-        if (isSuperAdmin(user.roles)) {
-            return;
-        }
-
-        const pharmacyId = user.pharmacy_id;
+    async validateBranchesLimit(data: ValidateBranchesLimit): Promise<void> {
+        const { pharmacyId, currentBranchCount } = data;
         if (!pharmacyId) {
             throw new ConflictException(MESSAGES.ERROR.NO_ACTIVE_SUBSCRIPTION);
         }
@@ -63,17 +58,12 @@ export class SubscriptionConstraintService {
 
     /**
      * Validates user creation limits against the active subscription plan.
-     * SUPER_ADMIN bypasses all limit checks automatically.
      */
     async validateUserLimit(
         user: AuthenticatedUser,
         targetPharmacyId: string,
         currentUserCount: number,
     ): Promise<void> {
-        if (isSuperAdmin(user.roles)) {
-            return;
-        }
-
         const subscription = await this.ensureActiveSubscription(targetPharmacyId);
         const maxUsers = subscription.plan.max_users;
 
@@ -83,17 +73,12 @@ export class SubscriptionConstraintService {
     }
 
     /**
-     * Validates feature availability for quick sale or nearby inventory.
-     * SUPER_ADMIN bypasses all feature restrictions.
+     * Validates feature availability for quick sale or nearby inventory..
      */
     async validateFeatureAccess(
         user: AuthenticatedUser,
         feature: 'allow_quick_sale' | 'allow_nearby_inventory',
     ): Promise<void> {
-        if (isSuperAdmin(user.roles)) {
-            return;
-        }
-
         if (!user.pharmacy_id) {
             throw new ConflictException(MESSAGES.ERROR.NO_ACTIVE_SUBSCRIPTION);
         }
