@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query } from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 import type { AuthenticatedUser } from '@/modules/auth/types';
@@ -25,7 +25,7 @@ export class BranchesConsoleController {
 
     @Get(':id')
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_VIEW_DETAIL.name)
-    get(@Param('id') id: string) {
+    get(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.branchesService.get(id);
     }
 
@@ -37,19 +37,19 @@ export class BranchesConsoleController {
 
     @Put(':id')
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_UPDATE.name)
-    update(@Param('id') id: string, @Body() dto: UpdateBranchDto) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateBranchDto) {
         return this.branchesService.update(id, dto);
     }
 
     @Patch(':id/status')
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_UPDATE.name)
-    updateStatus(@Param('id') id: string, @Body() dto: UpdateBranchStatusDto) {
+    updateStatus(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateBranchStatusDto) {
         return this.branchesService.updateStatus(id, dto);
     }
 
     @Delete(':id')
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_DELETE.name)
-    delete(@Param('id') id: string) {
+    delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.branchesService.delete(id);
     }
 }

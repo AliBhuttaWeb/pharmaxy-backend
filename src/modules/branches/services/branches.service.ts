@@ -18,6 +18,7 @@ import { SubscriptionConstraintService } from '@/modules/subscriptions/services/
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { isSuperAdmin } from '@/common/helpers';
 import { Branch } from '@gen/prisma/client';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class BranchesService {
@@ -27,7 +28,12 @@ export class BranchesService {
     ) {}
 
     async list(query: FindBranchesQueryDto) {
-        return this.branchesRepository.findMany(query);
+        const { limit, page } = query;
+        const { records, totalRecords } = await this.branchesRepository.findMany(query);
+
+        if (!totalRecords || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords });
+        return { records, pagination };
     }
 
     async get(id: string) {
@@ -105,9 +111,10 @@ export class BranchesService {
             }
         }
 
-        await this.branchesRepository.update(id, dto);
+        const updatedBranch = await this.branchesRepository.update(id, dto);
 
         return {
+            branch: updatedBranch,
             message: MESSAGES.SUCCESS.UPDATED,
         };
     }

@@ -15,7 +15,7 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
                 billing_cycle: BillingCycle.MONTHLY,
                 price: 1999,
                 max_branches: 2,
-                max_users: 2,
+                max_users_per_branch: 2,
                 report_history_months: 2,
                 allow_nearby_inventory: false,
                 allow_quick_sale: false,
@@ -28,7 +28,7 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
                 billing_cycle: BillingCycle.YEARLY,
                 price: 19999,
                 max_branches: 2,
-                max_users: 2,
+                max_users_per_branch: 2,
                 report_history_months: 2,
                 allow_nearby_inventory: false,
                 allow_quick_sale: false,
@@ -45,7 +45,7 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
                 billing_cycle: BillingCycle.MONTHLY,
                 price: 3999,
                 max_branches: 5,
-                max_users: 5,
+                max_users_per_branch: 5,
                 report_history_months: 6,
                 allow_nearby_inventory: true,
                 allow_quick_sale: true,
@@ -63,7 +63,7 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
 
                 max_branches: 5,
 
-                max_users: 5,
+                max_users_per_branch: 5,
 
                 report_history_months: 6,
 
@@ -84,7 +84,7 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
                 billing_cycle: BillingCycle.MONTHLY,
                 price: 5999,
                 max_branches: null,
-                max_users: null,
+                max_users_per_branch: null,
                 report_history_months: 12,
                 allow_nearby_inventory: true,
                 allow_quick_sale: true,
@@ -97,7 +97,7 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
                 billing_cycle: BillingCycle.YEARLY,
                 price: 59999,
                 max_branches: null,
-                max_users: null,
+                max_users_per_branch: null,
                 report_history_months: 12,
                 allow_nearby_inventory: true,
                 allow_quick_sale: true,

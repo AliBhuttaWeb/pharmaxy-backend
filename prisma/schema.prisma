@@ -408,7 +408,7 @@ model SubscriptionPlan {
 
   // Limits
   max_branches Int?
-  max_users Int?
+  max_users_per_branch Int?
 
   // Report access
   report_history_months Int?

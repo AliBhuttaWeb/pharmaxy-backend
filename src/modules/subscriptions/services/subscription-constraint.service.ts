@@ -65,7 +65,7 @@ export class SubscriptionConstraintService {
         currentUserCount: number,
     ): Promise<void> {
         const subscription = await this.ensureActiveSubscription(targetPharmacyId);
-        const maxUsers = subscription.plan.max_users;
+        const maxUsers = subscription.plan.max_users_per_branch;
 
         if (maxUsers !== null && currentUserCount >= maxUsers) {
             throw new ConflictException(MESSAGES.ERROR.USER_LIMIT_REACHED);
