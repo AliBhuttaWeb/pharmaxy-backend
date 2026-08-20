@@ -60,7 +60,6 @@ export class SubscriptionConstraintService {
      * Validates user creation limits against the active subscription plan.
      */
     async validateUserLimit(
-        user: AuthenticatedUser,
         targetPharmacyId: string,
         currentUserCount: number,
     ): Promise<void> {

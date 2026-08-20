@@ -9,12 +9,18 @@ import { UsersRepository } from '../repositories/users.repository';
 import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { isSuperAdmin } from '@/common/helpers';
+import { UserBranchesRepository } from '../repositories/user-branches.repository';
+import { PrismaService } from '@/database/prisma/prisma.service';
+import { MESSAGES as PHARMACY_MESSAGES } from '@modules/pharmacies/constants';
+import { MESSAGES as BRANCHES_MESSAGES } from '@modules/branches/constants';
 
 @Injectable()
 export class UsersService {
     constructor(
         private readonly usersRepository: UsersRepository,
         private readonly subscriptionConstraintService: SubscriptionConstraintService,
+        private readonly userBranchesRepository: UserBranchesRepository,
+        private readonly prismaService: PrismaService
     ) {}
 
     async list(query: FindUsersQueryDto) {
@@ -32,20 +38,29 @@ export class UsersService {
     }
 
     async create(dto: CreateUserDto, currentUser: AuthenticatedUser) {
-        const targetPharmacyId = isSuperAdmin(currentUser.roles)
+        const isUserSuperAdmin = isSuperAdmin(currentUser.roles);
+        const targetPharmacyId = isUserSuperAdmin
             ? (dto.pharmacy_id ?? currentUser.pharmacy_id)
             : currentUser.pharmacy_id;
 
-        // If target pharmacy is present, enforce subscription user limits (SUPER_ADMIN is automatically bypassed)
-        if (targetPharmacyId) {
-            const currentUserCount = await this.usersRepository.countByPharmacyId(targetPharmacyId);
-            await this.subscriptionConstraintService.validateUserLimit(
-                currentUser,
-                targetPharmacyId,
-                currentUserCount,
-            );
+        const targetBranchId = isUserSuperAdmin
+            ? (dto.branch_id ?? currentUser.branch_id)
+            : currentUser.branch_id;
+
+        if (!targetPharmacyId) {
+            throw new Error(PHARMACY_MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
         }
 
+        if (!targetBranchId) {
+            throw new Error(BRANCHES_MESSAGES.ERROR.BRANCH_ID_REQUIRED);
+        }
+
+        const currentUserCount = await this.userBranchesRepository.countByBranchId(targetBranchId);
+        await this.subscriptionConstraintService.validateUserLimit(
+            targetPharmacyId,
+            currentUserCount,
+        );
+        
         const existingEmail = await this.usersRepository.findByEmail(dto.email);
 
         if (existingEmail) {
@@ -62,12 +77,25 @@ export class UsersService {
 
         const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-        // Strip pharmacy_id helper field from DTO before passing to Prisma create
-        const { pharmacy_id: _, ...userData } = dto;
+        return this.prismaService.$transaction(async (tx) => {
+            const user = await this.usersRepository.create(
+                {
+                    ...dto,
+                    pharmacy_id: targetPharmacyId,
+                    password: hashedPassword,
+                },
+                tx,
+            );
 
-        return this.usersRepository.create({
-            ...userData,
-            password: hashedPassword,
+            await this.userBranchesRepository.create(
+                {
+                    user_id: user.id,
+                    branch_id: targetBranchId,
+                },
+                tx,
+            );
+
+            return user;
         });
     }
 

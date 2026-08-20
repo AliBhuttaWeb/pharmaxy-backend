@@ -54,4 +54,11 @@ export class CreateUserDto {
     @IsOptional()
     @IsUUID()
     pharmacy_id?: string;
+
+    @ApiPropertyOptional({
+        description: 'Optional pharmacy branch ID for Super Admin creation context',
+    })
+    @IsOptional()
+    @IsUUID()
+    branch_id?: string;
 }

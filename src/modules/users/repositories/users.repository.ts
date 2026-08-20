@@ -155,8 +155,8 @@ export class UsersRepository {
         });
     }
 
-    create(data: Prisma.UserCreateInput) {
-        return this.prisma.user.create({
+    create(data: Prisma.UserUncheckedCreateInput, tx?: Prisma.TransactionClient,) {
+        return this.getClient(tx).user.create({
             data,
             include: {
                 user_roles: {

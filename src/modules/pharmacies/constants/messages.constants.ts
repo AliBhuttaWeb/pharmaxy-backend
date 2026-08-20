@@ -14,5 +14,6 @@ export const MESSAGES = {
         NAME_ALREADY_EXISTS: 'A pharmacy with this name already exists.',
         PHARMACY_ALREADY_EXISTS: 'A pharmacy already exists for this account.',
         ALREADY_ACTIVE: 'Pharmacy is already active.',
+        PHARMACY_ID_REQUIRED: "Pharamcy id is required."
     },
 } as const;
