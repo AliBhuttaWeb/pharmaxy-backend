@@ -1,45 +1,36 @@
-import { ROLE_SCOPES } from './role-scopes';
-import { SIGNUP_SCOPES } from './signup-scopes';
-import { RoleDefinition } from '../types';
+import { RoleScope, SignupScope } from '@gen/prisma/enums';
 
-export const ROLES: Record<string, RoleDefinition> = {
+export const ROLES = {
     SUPER_ADMIN: {
         name: 'Super Admin',
         description: 'Platform administrator',
-
-        roleScope: ROLE_SCOPES.SYSTEM,
-        signupScopes: [],
+        roleScope: RoleScope.GLOBAL,
     },
 
     PHARMACY_ADMIN: {
         name: 'Pharmacy Admin',
         description: 'Administrator managing pharmacy operations',
-
-        roleScope: ROLE_SCOPES.PHARMACY,
-        signupScopes: [SIGNUP_SCOPES.CONSOLE],
+        roleScope: RoleScope.PHARMACY,
+        signup_scope: SignupScope.CONSOLE,
     },
 
     CASHIER: {
         name: 'Cashier',
         description: 'Handles sales and customer transactions',
-
-        roleScope: ROLE_SCOPES.PHARMACY,
-        signupScopes: [],
+        roleScope: RoleScope.PHARMACY,
     },
 
     SUPPLIER: {
         name: 'Supplier',
         description: 'Supplier portal user',
-
-        roleScope: ROLE_SCOPES.SUPPLIER,
-        signupScopes: [SIGNUP_SCOPES.CONSOLE],
+        roleScope: RoleScope.GLOBAL,
+        signup_scope: SignupScope.CONSOLE,
     },
 
     USER: {
         name: 'User',
         description: 'Default authenticated user',
-
-        roleScope: ROLE_SCOPES.USER,
-        signupScopes: [SIGNUP_SCOPES.STORE],
+        roleScope: RoleScope.GLOBAL,
+        signup_scope: SignupScope.STORE,
     },
 } as const;

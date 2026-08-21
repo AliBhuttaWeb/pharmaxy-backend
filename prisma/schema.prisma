@@ -115,16 +115,44 @@ model User {
   @@map("users")
 }
 
+enum RoleScope {
+  GLOBAL
+  PHARMACY
+  BRANCH
+}
+
+enum SignupScope {
+  PLATFORM /** OpenMeds internal platform (support, sales, marketing, operations). */
+  CONSOLE /** Pharmacy management console (owners, admins, staff). */
+  STORE /** Customer-facing pharmacy storefront or mobile application. */
+}
+
 model Role {
-  id                   String     @id @default(uuid()) @db.Uuid
-  name                 String     @unique @db.VarChar(100)
-  description          String?    @db.Text
+  id          String    @id @default(uuid()) @db.Uuid
 
-  created_at           DateTime   @default(now())
-  updated_at           DateTime   @updatedAt
+  name        String    @unique @db.VarChar(100)
 
-  role_permissions     RolePermission[]
-  user_roles           UserRole[]
+  description String?   @db.Text
+
+  role_scope  RoleScope @default(GLOBAL)
+
+  signup_scope   SignupScope?
+
+  parent_id   String?   @db.Uuid
+
+  parent      Role?     @relation( "RoleHierarchy", fields: [parent_id], references: [id])
+
+  children    Role[]    @relation("RoleHierarchy")
+
+  created_at  DateTime  @default(now())
+
+  updated_at  DateTime  @updatedAt
+
+  role_permissions RolePermission[]
+
+  user_roles       UserRole[]
+
+  @@index([parent_id])
 
   @@map("roles")
 }

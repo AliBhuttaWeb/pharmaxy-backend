@@ -13,6 +13,8 @@ export class RolesRepository {
             select: {
                 id: true,
                 name: true,
+                role_scope: true,
+                signup_scope: true,
             },
         });
     }

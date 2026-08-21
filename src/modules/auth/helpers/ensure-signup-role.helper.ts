@@ -1,18 +1,15 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { MESSAGES } from '../constants';
-import { SignupScope } from '@/common/types';
-import { Role } from '@common/types';
+import { RoleSummary, SignupScope } from '@/common/types';
 import { canSignup } from '@/common/helpers';
+import { Role } from '@gen/prisma/client';
 
-export function ensureSignupRole(
-    role: { name: string } | null,
-    signupScope: SignupScope,
-): asserts role is { name: Role } {
+export function ensureSignupRole(role: RoleSummary | null, signupScope: SignupScope) {
     if (!role) {
         throw new BadRequestException(MESSAGES.ERROR.INVALID_ROLE);
     }
 
-    if (!canSignup(role.name as Role, signupScope)) {
+    if (!canSignup(role, signupScope)) {
         throw new ForbiddenException(MESSAGES.ERROR.ROLE_NOT_ALLOWED_FOR_SIGNUP);
     }
 }

@@ -3,8 +3,8 @@ import { SubscriptionStatus } from '@gen/prisma/client';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { SubscriptionsRepository } from '../repositories/subscriptions.repository';
-import { MESSAGES } from '../constants';
-import { ValidateBranchesLimit } from '../types';
+import { MESSAGES, PREMIUM_FEATUIRES } from '../constants';
+import { PremiumFeatures, ValidateBranchesLimit } from '../types';
 
 @Injectable()
 export class SubscriptionConstraintService {
@@ -59,10 +59,7 @@ export class SubscriptionConstraintService {
     /**
      * Validates user creation limits against the active subscription plan.
      */
-    async validateUserLimit(
-        targetPharmacyId: string,
-        currentUserCount: number,
-    ): Promise<void> {
+    async validateUserLimit(targetPharmacyId: string, currentUserCount: number): Promise<void> {
         const subscription = await this.ensureActiveSubscription(targetPharmacyId);
         const maxUsers = subscription.plan.max_users_per_branch;
 
@@ -76,7 +73,7 @@ export class SubscriptionConstraintService {
      */
     async validateFeatureAccess(
         user: AuthenticatedUser,
-        feature: 'allow_quick_sale' | 'allow_nearby_inventory',
+        feature: PremiumFeatures,
     ): Promise<void> {
         if (!user.pharmacy_id) {
             throw new ConflictException(MESSAGES.ERROR.NO_ACTIVE_SUBSCRIPTION);
@@ -84,11 +81,11 @@ export class SubscriptionConstraintService {
 
         const subscription = await this.ensureActiveSubscription(user.pharmacy_id);
 
-        if (feature === 'allow_quick_sale' && !subscription.plan.allow_quick_sale) {
+        if (feature === PREMIUM_FEATUIRES.QUICK_SALE && !subscription.plan.allow_quick_sale) {
             throw new ConflictException(MESSAGES.ERROR.QUICK_SALE_NOT_ALLOWED);
         }
 
-        if (feature === 'allow_nearby_inventory' && !subscription.plan.allow_nearby_inventory) {
+        if (feature === PREMIUM_FEATUIRES.NEARBY_INVENTORY && !subscription.plan.allow_nearby_inventory) {
             throw new ConflictException(MESSAGES.ERROR.NEARBY_INVENTORY_NOT_ALLOWED);
         }
     }

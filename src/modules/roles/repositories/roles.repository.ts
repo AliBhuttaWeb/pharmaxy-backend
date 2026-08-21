@@ -4,7 +4,6 @@ import { Prisma } from '@gen/prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { FindRolesQueryDto, UpdateRolePermissionsDto } from '../dtos';
-import { getSignupRoles } from '@/common/helpers';
 
 @Injectable()
 export class RolesRepository {
@@ -22,11 +21,7 @@ export class RolesRepository {
 
         const where: Prisma.RoleWhereInput = {};
 
-        if (signup_scope) {
-            where.name = {
-                in: getSignupRoles(signup_scope),
-            };
-        }
+        if (signup_scope) { where.name = signup_scope }
 
         if (search) {
             const searchFilter: Prisma.RoleWhereInput = {
@@ -107,16 +102,6 @@ export class RolesRepository {
                     },
                 },
             },
-        });
-    }
-
-    update(id: string, data: UpdateRolePermissionsDto) {
-        return this.prisma.role.update({
-            where: {
-                id,
-            },
-
-            data,
         });
     }
 

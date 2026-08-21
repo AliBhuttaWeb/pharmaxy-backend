@@ -3,11 +3,11 @@
  */
 export const SIGNUP_SCOPES = {
     /** OpenMeds internal platform (support, sales, marketing, operations). */
-    PLATFORM: 'platform',
+    PLATFORM: 'PLATFORM',
 
     /** Pharmacy management console (owners, admins, staff). */
-    CONSOLE: 'console',
+    CONSOLE: 'CONSOLE',
 
     /** Customer-facing pharmacy storefront or mobile application. */
-    STORE: 'store',
+    STORE: 'STORE',
 } as const;

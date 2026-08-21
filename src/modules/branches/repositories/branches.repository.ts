@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@gen/prisma/client';
 import { PrismaService } from '@/database/prisma/prisma.service';
-import { isNonBranchScopedRole, isPharmacyAdmin } from '@/common/helpers';
 import { Role } from '@/common/types';
 
 import { CreateBranchDto, FindBranchesQueryDto } from '../dtos';
 import { AuthenticatedUser } from '@/modules/auth/types';
+import { isPharmacyAdmin } from '@/common/helpers';
 
 @Injectable()
 export class BranchesRepository {
@@ -218,48 +218,6 @@ export class BranchesRepository {
                 pharmacy_id: pharmacyId,
                 deleted_at: null,
             },
-        });
-    }
-
-    /**
-     * RBAC-driven Branch Access Query.
-     * Returns accessible active branches based on user role assignments.
-     */
-    async findAvailableBranchesForUser(
-        pharmacyId: string,
-        userRoles: { role: { name: string }; branch_id: string | null }[],
-    ) {
-        const hasNonBranchRole = userRoles.some(({ role }) =>
-            isNonBranchScopedRole(role.name as Role),
-        );
-
-        if (hasNonBranchRole) {
-            return this.prisma.branch.findMany({
-                where: {
-                    pharmacy_id: pharmacyId,
-                    is_active: true,
-                    deleted_at: null,
-                },
-                orderBy: [{ is_main: 'desc' }, { name: 'asc' }],
-            });
-        }
-
-        const assignedBranchIds = userRoles
-            .map((ur) => ur.branch_id)
-            .filter((id): id is string => Boolean(id));
-
-        if (assignedBranchIds.length === 0) {
-            return [];
-        }
-
-        return this.prisma.branch.findMany({
-            where: {
-                pharmacy_id: pharmacyId,
-                id: { in: assignedBranchIds },
-                is_active: true,
-                deleted_at: null,
-            },
-            orderBy: [{ is_main: 'desc' }, { name: 'asc' }],
         });
     }
 

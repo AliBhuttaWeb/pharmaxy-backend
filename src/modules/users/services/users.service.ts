@@ -20,7 +20,7 @@ export class UsersService {
         private readonly usersRepository: UsersRepository,
         private readonly subscriptionConstraintService: SubscriptionConstraintService,
         private readonly userBranchesRepository: UserBranchesRepository,
-        private readonly prismaService: PrismaService
+        private readonly prismaService: PrismaService,
     ) {}
 
     async list(query: FindUsersQueryDto) {
@@ -60,7 +60,7 @@ export class UsersService {
             targetPharmacyId,
             currentUserCount,
         );
-        
+
         const existingEmail = await this.usersRepository.findByEmail(dto.email);
 
         if (existingEmail) {

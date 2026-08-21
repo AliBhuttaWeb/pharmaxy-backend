@@ -1,14 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ROLES } from '@/common/constants';
-import type { Role } from '@/common/types';
+import { RoleScope, SignupScope } from '@gen/prisma/enums';
 
 export class AuthenticatedRole {
     @ApiProperty()
     id!: string;
 
+    @ApiProperty()
+    name!: string;
+
     @ApiProperty({
-        enum: ROLES,
+        enum: RoleScope,
     })
-    name!: Role;
+    role_scope!: RoleScope;
+
+    @ApiProperty({
+        enum: SignupScope,
+        nullable: true,
+    })
+    signup_scope!: SignupScope | null;
 }

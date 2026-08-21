@@ -155,7 +155,7 @@ export class UsersRepository {
         });
     }
 
-    create(data: Prisma.UserUncheckedCreateInput, tx?: Prisma.TransactionClient,) {
+    create(data: Prisma.UserUncheckedCreateInput, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).user.create({
             data,
             include: {
