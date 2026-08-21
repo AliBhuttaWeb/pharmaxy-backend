@@ -1,6 +1,6 @@
 export const ROLE_SCOPES = {
-    GLOBAL: 'global', // Not tied to a specific pharmacy or branch
-    PHARMACY: 'pharmacy', // Tied to a specific pharmacy
-    BRANCH: 'branch', // Tied to a specific branch
-    USER: 'user', // Individual user-level scope
+    GLOBAL: 'GLOBAL', // Not tied to a specific pharmacy or branch
+    PHARMACY: 'PHARMACY', // Tied to a specific pharmacy
+    BRANCH: 'BRANCH', // Tied to a specific branch
+    USER: 'USER', // Individual user-level scope
 } as const;

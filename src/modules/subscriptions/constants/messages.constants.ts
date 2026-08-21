@@ -28,5 +28,6 @@ export const MESSAGES = {
         NEARBY_INVENTORY_NOT_ALLOWED:
             'Nearby inventory is not available in your current subscription plan.',
         QUICK_SALE_NOT_ALLOWED: 'Quick Sale is not available in your current subscription plan.',
+        FEATURE_NOT_ALLOWED: (feature: string) => `This ${feature} is not available in your current subscription plan.`
     },
 } as const;

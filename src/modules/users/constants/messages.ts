@@ -12,5 +12,7 @@ export const MESSAGES = {
         ALREADY_EXISTS: 'User already exists.',
         EMAIL_ALREADY_EXISTS: 'Email already exists.',
         PHONE_ALREADY_EXISTS: 'Phone number already exists.',
+        BRANCH_SCOPED_USERS_ALLOWED_TO_BE_CREATED: 'Only branch-scoped users can be created.',
+        INVALID_ROLE_SCOPE: 'Invalid role scope.'
     },
 } as const;

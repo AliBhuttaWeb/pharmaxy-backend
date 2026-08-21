@@ -13,6 +13,7 @@ import { UserBranchesRepository } from '../repositories/user-branches.repository
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { MESSAGES as PHARMACY_MESSAGES } from '@modules/pharmacies/constants';
 import { MESSAGES as BRANCHES_MESSAGES } from '@modules/branches/constants';
+import { resolveUserScope } from '../helpers/resolve-user-scope.helper';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +23,22 @@ export class UsersService {
         private readonly userBranchesRepository: UserBranchesRepository,
         private readonly prismaService: PrismaService,
     ) {}
+
+    private async validateUserUniqueness(dto: CreateUserDto) {
+        const existingEmail = await this.usersRepository.findByEmail(dto.email);
+
+        if (existingEmail) {
+            throw new ConflictException(MESSAGES.ERROR.EMAIL_ALREADY_EXISTS);
+        }
+
+        if (dto.phone) {
+            const existingPhone =await this.usersRepository.findByPhone(dto.phone);
+
+            if (existingPhone) {
+                throw new ConflictException(MESSAGES.ERROR.PHONE_ALREADY_EXISTS);
+            }
+        }
+    }
 
     async list(query: FindUsersQueryDto) {
         return this.usersRepository.findMany(query);
@@ -38,42 +55,14 @@ export class UsersService {
     }
 
     async create(dto: CreateUserDto, currentUser: AuthenticatedUser) {
-        const isUserSuperAdmin = isSuperAdmin(currentUser.roles);
-        const targetPharmacyId = isUserSuperAdmin
-            ? (dto.pharmacy_id ?? currentUser.pharmacy_id)
-            : currentUser.pharmacy_id;
+        const { pharmacyId, branchId } = resolveUserScope(dto, currentUser);
 
-        const targetBranchId = isUserSuperAdmin
-            ? (dto.branch_id ?? currentUser.branch_id)
-            : currentUser.branch_id;
-
-        if (!targetPharmacyId) {
-            throw new Error(PHARMACY_MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
+        if (pharmacyId && branchId) {
+            const currentUserCount = await this.userBranchesRepository.countByBranchId(branchId);
+            await this.subscriptionConstraintService.validateUserLimit(pharmacyId, currentUserCount);
         }
 
-        if (!targetBranchId) {
-            throw new Error(BRANCHES_MESSAGES.ERROR.BRANCH_ID_REQUIRED);
-        }
-
-        const currentUserCount = await this.userBranchesRepository.countByBranchId(targetBranchId);
-        await this.subscriptionConstraintService.validateUserLimit(
-            targetPharmacyId,
-            currentUserCount,
-        );
-
-        const existingEmail = await this.usersRepository.findByEmail(dto.email);
-
-        if (existingEmail) {
-            throw new ConflictException(MESSAGES.ERROR.EMAIL_ALREADY_EXISTS);
-        }
-
-        if (dto.phone) {
-            const existingPhone = await this.usersRepository.findByPhone(dto.phone);
-
-            if (existingPhone) {
-                throw new ConflictException(MESSAGES.ERROR.PHONE_ALREADY_EXISTS);
-            }
-        }
+        await this.validateUserUniqueness(dto);
 
         const hashedPassword = await bcrypt.hash(dto.password, 10);
 
@@ -81,19 +70,21 @@ export class UsersService {
             const user = await this.usersRepository.create(
                 {
                     ...dto,
-                    pharmacy_id: targetPharmacyId,
+                    pharmacy_id: pharmacyId,
                     password: hashedPassword,
                 },
                 tx,
             );
 
-            await this.userBranchesRepository.create(
-                {
-                    user_id: user.id,
-                    branch_id: targetBranchId,
-                },
-                tx,
-            );
+            if (branchId) {
+                await this.userBranchesRepository.create(
+                    {
+                        user_id: user.id,
+                        branch_id: branchId,
+                    },
+                    tx,
+                );
+            }
 
             return user;
         });

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { UserStatus } from '@gen/prisma/enums';
+import { RoleScope, UserStatus } from '@gen/prisma/enums';
 
 import {
     IsEmail,
@@ -61,4 +61,11 @@ export class CreateUserDto {
     @IsOptional()
     @IsUUID()
     branch_id?: string;
+
+    @ApiProperty({
+        enum: RoleScope,
+        description: 'Scope of the user role.',
+    })
+    @IsEnum(RoleScope)
+    role_scope!: RoleScope;
 }

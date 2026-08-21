@@ -71,22 +71,15 @@ export class SubscriptionConstraintService {
     /**
      * Validates feature availability for quick sale or nearby inventory..
      */
-    async validateFeatureAccess(
-        user: AuthenticatedUser,
-        feature: PremiumFeatures,
-    ): Promise<void> {
-        if (!user.pharmacy_id) {
-            throw new ConflictException(MESSAGES.ERROR.NO_ACTIVE_SUBSCRIPTION);
-        }
+    async validateFeatureAccess(user: AuthenticatedUser, feature: PremiumFeatures,): Promise<void> {
+    if (!user.pharmacy_id) {
+        throw new ConflictException(MESSAGES.ERROR.NO_ACTIVE_SUBSCRIPTION);
+    }
 
-        const subscription = await this.ensureActiveSubscription(user.pharmacy_id);
+    const subscription = await this.ensureActiveSubscription(user.pharmacy_id,);
 
-        if (feature === PREMIUM_FEATUIRES.QUICK_SALE && !subscription.plan.allow_quick_sale) {
-            throw new ConflictException(MESSAGES.ERROR.QUICK_SALE_NOT_ALLOWED);
-        }
-
-        if (feature === PREMIUM_FEATUIRES.NEARBY_INVENTORY && !subscription.plan.allow_nearby_inventory) {
-            throw new ConflictException(MESSAGES.ERROR.NEARBY_INVENTORY_NOT_ALLOWED);
-        }
+    if (!subscription.plan[feature]) {
+        throw new ConflictException(MESSAGES.ERROR.FEATURE_NOT_ALLOWED(feature));
+    }
     }
 }
