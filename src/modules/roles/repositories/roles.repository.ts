@@ -21,7 +21,7 @@ export class RolesRepository {
 
         const where: Prisma.RoleWhereInput = {};
 
-        if (signup_scope) { where.name = signup_scope }
+        if (signup_scope) { where.signup_scope = signup_scope }
 
         if (search) {
             const searchFilter: Prisma.RoleWhereInput = {
