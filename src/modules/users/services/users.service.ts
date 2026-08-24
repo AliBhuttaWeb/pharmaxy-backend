@@ -32,7 +32,7 @@ export class UsersService {
         }
 
         if (dto.phone) {
-            const existingPhone =await this.usersRepository.findByPhone(dto.phone);
+            const existingPhone = await this.usersRepository.findByPhone(dto.phone);
 
             if (existingPhone) {
                 throw new ConflictException(MESSAGES.ERROR.PHONE_ALREADY_EXISTS);
@@ -59,7 +59,10 @@ export class UsersService {
 
         if (pharmacyId && branchId) {
             const currentUserCount = await this.userBranchesRepository.countByBranchId(branchId);
-            await this.subscriptionConstraintService.validateUserLimit(pharmacyId, currentUserCount);
+            await this.subscriptionConstraintService.validateUserLimit(
+                pharmacyId,
+                currentUserCount,
+            );
         }
 
         await this.validateUserUniqueness(dto);

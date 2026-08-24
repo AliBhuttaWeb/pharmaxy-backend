@@ -36,11 +36,7 @@ export class SubscriptionPlansConsoleController {
 
     @Patch(':id')
     @Permissions(SUBSCRIPTION_PLANS_PERMISSIONS.SUBSCRIPTION_PLAN_UPDATE.name)
-    update(
-        @Param('id') id: string,
-
-        @Body() dto: UpdateSubscriptionPlanDto,
-    ) {
+    update(@Param('id') id: string, @Body() dto: UpdateSubscriptionPlanDto) {
         return this.subscriptionPlansService.update(id, dto);
     }
 

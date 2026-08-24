@@ -6,10 +6,7 @@ import { MESSAGES as BRANCH_MESSAGES } from '@modules/branches/constants';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { MESSAGES } from '../constants';
 
-export const resolveUserScope = (
-    dto: CreateUserDto,
-    currentUser: AuthenticatedUser,
-) => {
+export const resolveUserScope = (dto: CreateUserDto, currentUser: AuthenticatedUser) => {
     const isUserSuperAdmin = isSuperAdmin(currentUser.roles);
 
     if (!isUserSuperAdmin) {

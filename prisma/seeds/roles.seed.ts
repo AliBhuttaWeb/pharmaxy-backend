@@ -11,10 +11,10 @@ export async function seedRoles({ prisma }: SeedContext) {
 
             update: {
                 description: role.description,
-                role_scope: role.role_scope
+                role_scope: role.role_scope,
             },
 
-            create: role
+            create: role,
         });
     }
 
