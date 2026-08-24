@@ -8,11 +8,9 @@ import {
     Post,
     Put,
     Query,
-    UseGuards,
 } from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
-import { PermissionsGuard } from '@/common/guards';
 
 import {
     CreatePharmacyDto,
@@ -25,7 +23,6 @@ import { PharmaciesService } from '../services/pharmacies.services';
 import { AuthenticatedUser } from '@/modules/auth/types';
 
 @ConsoleController('pharmacies')
-@UseGuards(PermissionsGuard)
 export class PharmaciesConsoleController {
     constructor(private readonly pharmaciesService: PharmaciesService) {}
 

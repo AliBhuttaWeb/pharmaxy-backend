@@ -1,8 +1,6 @@
-import { Body, Get, Param, ParseUUIDPipe, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Get, Param, ParseUUIDPipe, Put, Query } from '@nestjs/common';
 
 import { ConsoleController, Permissions, Public } from '@/common/decorators';
-
-import { PermissionsGuard } from '@/common/guards';
 
 import { ROLES_PERMISSIONS } from '@/common/constants';
 
@@ -11,7 +9,6 @@ import { FindRolesQueryDto, UpdateRolePermissionsDto } from '../dtos';
 import { RolesService } from '../services/roles.service';
 
 @ConsoleController('roles')
-@UseGuards(PermissionsGuard)
 export class RolesConsoleController {
     constructor(private readonly rolesService: RolesService) {}
 

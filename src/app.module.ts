@@ -5,7 +5,7 @@ import envValidationSchema from '@/config/env-validation.config';
 import appConfig from '@/config/app.config';
 import { APP_GUARD } from '@nestjs/core';
 
-import { JwtAuthGuard } from '@common/guards';
+import { JwtAuthGuard, PermissionsGuard } from '@common/guards';
 import { PrismaModule } from '@/database/prisma/prisma.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { RolesModule } from './modules/roles/roles.module';
@@ -66,6 +66,10 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
             provide: APP_GUARD,
             useClass: JwtAuthGuard,
         },
+        {
+            provide: APP_GUARD,
+            useClass: PermissionsGuard
+        }
     ],
 })
 export class AppModule {}

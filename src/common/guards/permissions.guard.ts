@@ -23,17 +23,6 @@ export class PermissionsGuard implements CanActivate {
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        /**
-         * Skip authorization for public endpoints.
-         */
-        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-            context.getHandler(),
-            context.getClass(),
-        ]);
-
-        if (isPublic) {
-            return true;
-        }
 
         /**
          * Permissions required by the endpoint.

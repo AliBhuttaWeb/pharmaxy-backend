@@ -1,15 +1,13 @@
-import { Body, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 import { USERS_PERMISSIONS } from '@/common/constants';
-import { PermissionsGuard } from '@/common/guards';
 import type { AuthenticatedUser } from '@/modules/auth/types';
 
 import { CreateUserDto, FindUsersQueryDto, UpdateUserDto } from '../dtos';
 import { UsersService } from '../services/users.service';
 
 @ConsoleController('users')
-@UseGuards(PermissionsGuard)
 export class UsersConsoleController {
     constructor(private readonly usersService: UsersService) {}
 
