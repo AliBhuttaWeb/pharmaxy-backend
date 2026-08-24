@@ -3,7 +3,7 @@ import { CreateUserDto } from '../dtos';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { ROLE_SCOPES } from '@/common/constants';
 import { MESSAGES as BRANCH_MESSAGES } from '@modules/branches/constants';
-import { ForbiddenException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { MESSAGES } from '../constants';
 
 export const resolveUserScope = (
@@ -18,11 +18,11 @@ export const resolveUserScope = (
         }
 
         if (!dto.pharmacy_id) {
-            throw new Error(BRANCH_MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
+            throw new BadRequestException(BRANCH_MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
         }
 
         if (!dto.branch_id) {
-            throw new Error(BRANCH_MESSAGES.ERROR.BRANCH_ID_REQUIRED);
+            throw new BadRequestException(BRANCH_MESSAGES.ERROR.BRANCH_ID_REQUIRED);
         }
 
         return {
