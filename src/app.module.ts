@@ -68,8 +68,8 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
         },
         {
             provide: APP_GUARD,
-            useClass: PermissionsGuard
-        }
+            useClass: PermissionsGuard,
+        },
     ],
 })
 export class AppModule {}

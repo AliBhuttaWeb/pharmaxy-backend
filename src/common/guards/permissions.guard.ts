@@ -23,7 +23,6 @@ export class PermissionsGuard implements CanActivate {
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-
         /**
          * Permissions required by the endpoint.
          */

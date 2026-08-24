@@ -1,13 +1,10 @@
-import {
-    ArgumentsHost,
-    Catch,
-    ExceptionFilter,
-    HttpException,
-    HttpStatus,
-    ValidationError,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+
+import { Prisma } from '@gen/prisma/client';
 import { ConfigService } from '@nestjs/config';
-import { Request, Response } from 'express';
+
+import { Response } from 'express';
+
 import { MESSAGES } from '@/common/constants';
 
 @Catch()
@@ -16,15 +13,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     catch(exception: unknown, host: ArgumentsHost): void {
         const ctx = host.switchToHttp();
-
         const response = ctx.getResponse<Response>();
 
         const isDevelopment = this.configService.getOrThrow<string>('app.env') === 'development';
 
         let status = HttpStatus.INTERNAL_SERVER_ERROR;
-
         let message = MESSAGES.ERROR.INTERNAL_SERVER_ERROR as string;
-
         let data: unknown = null;
 
         if (exception instanceof HttpException) {
@@ -49,6 +43,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
                 } else {
                     message = error.message ?? error.error ?? message;
                 }
+            }
+        } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
+            if (exception.code === 'P2003') {
+                status = HttpStatus.NOT_FOUND;
+                message = 'Referenced record not found.';
             }
         } else if (exception instanceof Error) {
             if (isDevelopment) {

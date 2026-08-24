@@ -8,11 +8,8 @@ import { CreateUserDto, FindUsersQueryDto, UpdateUserDto, UpdateUserStatusDto } 
 import { UsersRepository } from '../repositories/users.repository';
 import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
-import { isSuperAdmin } from '@/common/helpers';
 import { UserBranchesRepository } from '../repositories/user-branches.repository';
 import { PrismaService } from '@/database/prisma/prisma.service';
-import { MESSAGES as PHARMACY_MESSAGES } from '@modules/pharmacies/constants';
-import { MESSAGES as BRANCHES_MESSAGES } from '@modules/branches/constants';
 import { resolveUserScope } from '../helpers/resolve-user-scope.helper';
 
 @Injectable()
@@ -68,11 +65,11 @@ export class UsersService {
         await this.validateUserUniqueness(dto);
 
         const hashedPassword = await bcrypt.hash(dto.password, 10);
-
+        const { branch_id, role_scope, ...userDto } = dto;
         return this.prismaService.$transaction(async (tx) => {
             const user = await this.usersRepository.create(
                 {
-                    ...dto,
+                    ...userDto,
                     pharmacy_id: pharmacyId,
                     password: hashedPassword,
                 },
