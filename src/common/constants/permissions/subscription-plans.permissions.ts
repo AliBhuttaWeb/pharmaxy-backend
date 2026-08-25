@@ -13,4 +13,9 @@ export const SUBSCRIPTION_PLANS_PERMISSIONS = {
         name: 'subscription_plans.delete',
         description: 'Delete subscription plans',
     },
+
+    SUBSCRIPTION_PLAN_STATUS_UPDATE: {
+        name: 'subscription_plans.update_status',
+        description: 'Update subscription plan status',
+    },
 };

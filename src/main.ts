@@ -38,7 +38,7 @@ async function bootstrap(): Promise<void> {
             forbidUnknownValues: true,
             stopAtFirstError: false,
             transformOptions: {
-                enableImplicitConversion: true,
+                enableImplicitConversion: false,
             },
         }),
     );

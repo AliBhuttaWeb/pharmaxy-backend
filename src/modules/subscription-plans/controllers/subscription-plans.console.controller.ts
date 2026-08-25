@@ -4,6 +4,7 @@ import {
     CreateSubscriptionPlanDto,
     SubscriptionPlanQueryDto,
     UpdateSubscriptionPlanDto,
+    UpdateSubscriptionPlanStatusDto,
 } from '../dtos';
 
 import { SubscriptionPlansService } from '../services/subscription-plans.service';
@@ -40,15 +41,12 @@ export class SubscriptionPlansConsoleController {
         return this.subscriptionPlansService.update(id, dto);
     }
 
-    @Patch(':id/activate')
-    @Permissions(SUBSCRIPTION_PLANS_PERMISSIONS.SUBSCRIPTION_PLAN_UPDATE.name)
-    activate(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.subscriptionPlansService.activate(id);
-    }
-
-    @Patch(':id/deactivate')
-    @Permissions(SUBSCRIPTION_PLANS_PERMISSIONS.SUBSCRIPTION_PLAN_UPDATE.name)
-    deactivate(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.subscriptionPlansService.deactivate(id);
+    @Patch(':id/status')
+    @Permissions(SUBSCRIPTION_PLANS_PERMISSIONS.SUBSCRIPTION_PLAN_STATUS_UPDATE.name)
+    updateStatus(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateSubscriptionPlanStatusDto,
+    ) {
+        return this.subscriptionPlansService.updateStatus(id, dto);
     }
 }

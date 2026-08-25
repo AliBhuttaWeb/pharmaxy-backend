@@ -8,6 +8,7 @@ import {
     CreateSubscriptionPlanDto,
     SubscriptionPlanQueryDto,
     UpdateSubscriptionPlanDto,
+    UpdateSubscriptionPlanStatusDto,
 } from '../dtos';
 
 import { SUBSCRIPTION_PLAN_MESSAGES } from '../constants';
@@ -123,13 +124,8 @@ export class SubscriptionPlansService {
         return this.subscriptionPlansRepository.update(id, data);
     }
 
-    async activate(id: string) {
+    async updateStatus(id: string, dto: UpdateSubscriptionPlanStatusDto) {
         await this.findById(id);
-        return this.subscriptionPlansRepository.activate(id);
-    }
-
-    async deactivate(id: string) {
-        await this.findById(id);
-        return this.subscriptionPlansRepository.deactivate(id);
+        return this.subscriptionPlansRepository.updateStatus(id, dto.is_active);
     }
 }

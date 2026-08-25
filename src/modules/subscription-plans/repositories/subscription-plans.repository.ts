@@ -143,26 +143,14 @@ export class SubscriptionPlansRepository {
         });
     }
 
-    activate(id: string, tx?: Prisma.TransactionClient) {
+    updateStatus(id: string, is_active: boolean, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).subscriptionPlan.update({
             where: {
                 id,
             },
 
             data: {
-                is_active: true,
-            },
-        });
-    }
-
-    deactivate(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscriptionPlan.update({
-            where: {
-                id,
-            },
-
-            data: {
-                is_active: false,
+                is_active,
             },
         });
     }
