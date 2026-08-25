@@ -11,13 +11,18 @@ import {
 } from '../dtos';
 
 import { SUBSCRIPTION_PLAN_MESSAGES } from '../constants';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class SubscriptionPlansService {
     constructor(private readonly subscriptionPlansRepository: SubscriptionPlansRepository) {}
 
     async findMany(query: SubscriptionPlanQueryDto) {
-        return this.subscriptionPlansRepository.findMany(query);
+        const { page, limit } = query;
+        const { records, total } = await this.subscriptionPlansRepository.findMany(query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async findById(id: string) {

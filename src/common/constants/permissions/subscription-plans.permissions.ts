@@ -1,14 +1,4 @@
 export const SUBSCRIPTION_PLANS_PERMISSIONS = {
-    SUBSCRIPTION_PLAN_VIEW_LIST: {
-        name: 'subscription_plans.view.list',
-        description: 'View subscription plans listing',
-    },
-
-    SUBSCRIPTION_PLAN_VIEW_DETAIL: {
-        name: 'subscription_plans.view.detail',
-        description: 'View subscription plan details',
-    },
-
     SUBSCRIPTION_PLAN_CREATE: {
         name: 'subscription_plans.create',
         description: 'Create subscription plans',

@@ -1,4 +1,4 @@
-import { Body, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 
 import {
     CreateSubscriptionPlanDto,
@@ -8,7 +8,7 @@ import {
 
 import { SubscriptionPlansService } from '../services/subscription-plans.service';
 
-import { ConsoleController, Permissions } from '@/common/decorators';
+import { ConsoleController, Permissions, Public } from '@/common/decorators';
 
 import { SUBSCRIPTION_PLANS_PERMISSIONS } from '@/common/constants/permissions';
 
@@ -17,14 +17,14 @@ export class SubscriptionPlansConsoleController {
     constructor(private readonly subscriptionPlansService: SubscriptionPlansService) {}
 
     @Get()
-    @Permissions(SUBSCRIPTION_PLANS_PERMISSIONS.SUBSCRIPTION_PLAN_VIEW_LIST.name)
+    @Public()
     findMany(@Query() query: SubscriptionPlanQueryDto) {
         return this.subscriptionPlansService.findMany(query);
     }
 
     @Get(':id')
-    @Permissions(SUBSCRIPTION_PLANS_PERMISSIONS.SUBSCRIPTION_PLAN_VIEW_DETAIL.name)
-    findById(@Param('id') id: string) {
+    @Public()
+    findById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.subscriptionPlansService.findById(id);
     }
 
@@ -36,19 +36,19 @@ export class SubscriptionPlansConsoleController {
 
     @Patch(':id')
     @Permissions(SUBSCRIPTION_PLANS_PERMISSIONS.SUBSCRIPTION_PLAN_UPDATE.name)
-    update(@Param('id') id: string, @Body() dto: UpdateSubscriptionPlanDto) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateSubscriptionPlanDto) {
         return this.subscriptionPlansService.update(id, dto);
     }
 
     @Patch(':id/activate')
     @Permissions(SUBSCRIPTION_PLANS_PERMISSIONS.SUBSCRIPTION_PLAN_UPDATE.name)
-    activate(@Param('id') id: string) {
+    activate(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.subscriptionPlansService.activate(id);
     }
 
     @Patch(':id/deactivate')
     @Permissions(SUBSCRIPTION_PLANS_PERMISSIONS.SUBSCRIPTION_PLAN_UPDATE.name)
-    deactivate(@Param('id') id: string) {
+    deactivate(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.subscriptionPlansService.deactivate(id);
     }
 }
