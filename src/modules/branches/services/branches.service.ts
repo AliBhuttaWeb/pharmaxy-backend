@@ -43,7 +43,7 @@ export class BranchesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return branch;
+        return {branch};
     }
 
     async create(dto: CreateBranchDto, currentUser: AuthenticatedUser) {
@@ -51,8 +51,7 @@ export class BranchesService {
             ? dto.pharmacy_id
             : (currentUser.pharmacy_id ?? dto.pharmacy_id);
 
-        const currentBranchCount =
-            await this.branchesRepository.countByPharmacyId(targetPharmacyId);
+        const currentBranchCount = await this.branchesRepository.countByPharmacyId(targetPharmacyId);
 
         // Enforce subscription branch limit (SUPER_ADMIN is automatically bypassed)
         await this.subscriptionConstraintService.validateBranchesLimit({
@@ -76,6 +75,7 @@ export class BranchesService {
 
         const branch = await this.branchesRepository.create({
             ...dto,
+            is_main: dto.is_main || !currentBranchCount,
             pharmacy_id: targetPharmacyId,
         });
 
@@ -126,9 +126,10 @@ export class BranchesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        await this.branchesRepository.updateStatus(id, dto.is_active);
+        const updatedBranch = await this.branchesRepository.updateStatus(id, dto.is_active);
 
         return {
+            branch: updatedBranch,
             message: MESSAGES.SUCCESS.STATUS_UPDATED,
         };
     }
