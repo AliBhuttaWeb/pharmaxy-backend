@@ -19,13 +19,13 @@ export const BRANCHES_PERMISSIONS = {
         description: 'Update branch information',
     },
 
+    BRANCH_STATUS_UPDATE: {
+        name: 'branches.update_status',
+        description: 'Update branch status',
+    },
+
     BRANCH_DELETE: {
         name: 'branches.delete',
         description: 'Delete branches',
-    },
-
-    BRANCH_SWITCH: {
-        name: 'branches.switch',
-        description: 'Switch active branch context',
     },
 };

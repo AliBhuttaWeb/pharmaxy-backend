@@ -42,7 +42,7 @@ export class BranchesConsoleController {
     }
 
     @Patch(':id/status')
-    @Permissions(BRANCHES_PERMISSIONS.BRANCH_UPDATE.name)
+    @Permissions(BRANCHES_PERMISSIONS.BRANCH_STATUS_UPDATE.name)
     updateStatus(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateBranchStatusDto) {
         return this.branchesService.updateStatus(id, dto);
     }
