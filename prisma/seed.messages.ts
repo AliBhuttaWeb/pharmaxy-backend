@@ -10,6 +10,8 @@ export const MESSAGES = {
         MANUFACTURERS_SEEDED: 'Manufacturers seeded successfully.',
         DOSAGE_FORMS_SEEDED: 'Dosage forms seeded successfully.',
         SUBSCRIPTION_PLANS_SEEDED: 'Subscription Plans seeded successfully.',
+        PAYMENT_PRVIDERS_SEEDED: 'Payment provders seeded successfully.',
+        PAYMENT_METHODS_SEEDED: 'Payment methods seeded successfully.',
     },
 
     ERROR: {

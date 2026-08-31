@@ -14,7 +14,9 @@ import { seedManufacturers } from './seeds/manufacturers.seed';
 import { seedProductTypes } from './seeds/product-type.seed';
 import { seedRetailCategories } from './seeds/retail-category.seed';
 import { seedSubscriptionPlans } from './seeds/subscription-plans.seed';
-// import { seedRolePermissions } from './seeds/role-permissions.seed.ts';
+import { seedPaymentProviders } from './seeds/payment-providers.seed';
+import { seedPaymentMethods } from './seeds/payment-methods.seed';
+
 
 async function main() {
     const prisma = new PrismaClient({
@@ -48,6 +50,8 @@ async function main() {
     seedProductTypes(ctx);
     seedRetailCategories(ctx);
     seedSubscriptionPlans(ctx);
+    await seedPaymentProviders(ctx);
+    seedPaymentMethods(ctx);
 
     await prisma.$disconnect();
 }

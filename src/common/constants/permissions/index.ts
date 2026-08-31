@@ -31,3 +31,6 @@ export * from './retail-categories.permissions';
 export * from './product-types.permissions';
 export * from './dosage-forms.permissions';
 export * from './branch-products.permissions';
+export * from './payment-methods.permissions';
+export * from './payment-providers.permissions';
+export * from './pharmacy-payment-methods.permissions';

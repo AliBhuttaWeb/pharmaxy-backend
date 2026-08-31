@@ -296,7 +296,7 @@ model Pharmacy {
 
   audit_logs              AuditLog[]
 
-  payment_methods         PaymentMethod[]
+  pharmacy_payment_methods         PharmacyPaymentMethod[]
 
   suppliers               Supplier[]
 
@@ -987,39 +987,74 @@ model Customer {
   @@map("customers")
 }
 
+model PaymentProvider {
+  id               String          @id @default(uuid()) @db.Uuid
+  name             String          @unique @db.VarChar(100)
+  code             String          @unique @db.VarChar(50)
+  is_active        Boolean         @default(true)
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+
+  payment_methods  PaymentMethod[]
+  // pharmacy_payment_providers later
+
+  @@map("payment_providers")
+}
+
+enum PaymentMethodType {
+  CASH
+  CARD
+  BANK_TRANSFER
+  DIGITAL_WALLET
+  CREDIT
+}
+
 model PaymentMethod {
-  id                    String    @id @default(uuid()) @db.Uuid
+  id                 String             @id @default(uuid()) @db.Uuid
+  name               String             @unique @db.VarChar(100)
+  code               String             @unique @db.VarChar(50)
+  type               PaymentMethodType
 
-  pharmacy_id           String    @db.Uuid
+  provider_id        String?            @db.Uuid
+  provider           PaymentProvider? @relation(fields: [provider_id], references: [id], onDelete: Restrict)
 
-  name                  String    @db.VarChar(100)
-  code                  String    @db.VarChar(50)
+  description        String?            @db.Text
+  requires_reference Boolean            @default(false)
+  is_active          Boolean            @default(true)
+  display_order      Int                @default(0)
 
-  description           String?   @db.Text
+  created_at         DateTime            @default(now())
+  updated_at         DateTime            @updatedAt
 
-  is_cash               Boolean   @default(false)
+  pharmacy_payment_methods PharmacyPaymentMethod[]
 
-  requires_reference    Boolean   @default(false)
-
-  is_active             Boolean   @default(true)
-
-  display_order         Int       @default(0)
-
-  created_at            DateTime  @default(now())
-  updated_at            DateTime  @updatedAt
-  deleted_at            DateTime?
-
-  pharmacy              Pharmacy  @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
-
-  invoice_payments      InvoicePayment[]
-
-  @@unique([pharmacy_id, code])
-  @@unique([pharmacy_id, name])
-
-  @@index([pharmacy_id])
+  @@index([provider_id])
   @@index([is_active])
-
   @@map("payment_methods")
+}
+
+model PharmacyPaymentMethod {
+  id                String        @id @default(uuid()) @db.Uuid
+
+  pharmacy_id       String        @db.Uuid
+  payment_method_id String        @db.Uuid
+
+  is_active         Boolean       @default(true)
+  display_order     Int           @default(0)
+
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+
+  pharmacy          Pharmacy      @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+
+  payment_method    PaymentMethod @relation(fields: [payment_method_id], references: [id], onDelete: Restrict)
+
+  invoice_payments InvoicePayment[]
+
+  @@unique([pharmacy_id, payment_method_id])
+  @@index([pharmacy_id])
+  @@index([payment_method_id])
+  @@map("pharmacy_payment_methods")
 }
 
 enum InvoiceStatus {
@@ -1163,7 +1198,7 @@ model InvoicePayment {
   id                         String          @id @default(uuid()) @db.Uuid
 
   invoice_id                 String          @db.Uuid
-  payment_method_id          String          @db.Uuid
+  pharmacy_payment_method_id          String          @db.Uuid
 
   amount                     Decimal         @db.Decimal(14,2)
 
@@ -1183,10 +1218,10 @@ model InvoicePayment {
 
   invoice                    Invoice         @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
 
-  payment_method             PaymentMethod   @relation(fields: [payment_method_id], references: [id], onDelete: Restrict)
-
+  pharmacy_payment_method PharmacyPaymentMethod @relation(fields: [pharmacy_payment_method_id], references: [id], onDelete: Restrict)
+  
   @@index([invoice_id])
-  @@index([payment_method_id])
+  @@index([pharmacy_payment_method_id])
   @@index([status])
 
   @@map("invoice_payments")
