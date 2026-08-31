@@ -32,5 +32,6 @@ export const MESSAGES = Object.freeze({
         NO_ACTIVE_BRANCH: 'No active branch selected.',
         INVALID_ROLE: 'The selected role is invalid.',
         ROLE_NOT_ALLOWED_FOR_SIGNUP: 'The selected role cannot be registered through this signup.',
+        PHARMACY_ACCESS_DENIED: 'You do not have access to this pharmacy.',
     },
 } as const);

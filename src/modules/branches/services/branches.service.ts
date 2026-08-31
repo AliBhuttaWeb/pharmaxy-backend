@@ -43,7 +43,7 @@ export class BranchesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return {branch};
+        return { branch };
     }
 
     async create(dto: CreateBranchDto, currentUser: AuthenticatedUser) {
@@ -51,7 +51,8 @@ export class BranchesService {
             ? dto.pharmacy_id
             : (currentUser.pharmacy_id ?? dto.pharmacy_id);
 
-        const currentBranchCount = await this.branchesRepository.countByPharmacyId(targetPharmacyId);
+        const currentBranchCount =
+            await this.branchesRepository.countByPharmacyId(targetPharmacyId);
 
         // Enforce subscription branch limit (SUPER_ADMIN is automatically bypassed)
         await this.subscriptionConstraintService.validateBranchesLimit({

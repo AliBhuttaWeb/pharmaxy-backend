@@ -1,4 +1,4 @@
-import { PaymentMethodType } from "@gen/prisma/enums";
+import { PaymentMethodType } from '@gen/prisma/enums';
 
 export const PAYMENT_METHODS = [
     {

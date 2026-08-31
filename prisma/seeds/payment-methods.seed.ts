@@ -10,10 +10,8 @@ export async function seedPaymentMethods({ prisma }: SeedContext) {
         },
     });
 
-    const providerMap = new Map(
-        providers.map((provider) => [provider.code, provider.id]),
-    );
-    
+    const providerMap = new Map(providers.map((provider) => [provider.code, provider.id]));
+
     for (const method of PAYMENT_METHODS) {
         await prisma.paymentMethod.upsert({
             where: {
@@ -23,7 +21,7 @@ export async function seedPaymentMethods({ prisma }: SeedContext) {
                 name: method.name,
                 type: method.type,
                 provider_id: method.providerCode
-                    ? providerMap.get(method.providerCode) ?? null
+                    ? (providerMap.get(method.providerCode) ?? null)
                     : null,
                 requires_reference: method.requires_reference,
                 display_order: method.display_order,
@@ -34,7 +32,7 @@ export async function seedPaymentMethods({ prisma }: SeedContext) {
                 code: method.code,
                 type: method.type,
                 provider_id: method.providerCode
-                    ? providerMap.get(method.providerCode) ?? null
+                    ? (providerMap.get(method.providerCode) ?? null)
                     : null,
                 requires_reference: method.requires_reference,
                 display_order: method.display_order,

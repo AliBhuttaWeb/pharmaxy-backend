@@ -17,7 +17,6 @@ import { seedSubscriptionPlans } from './seeds/subscription-plans.seed';
 import { seedPaymentProviders } from './seeds/payment-providers.seed';
 import { seedPaymentMethods } from './seeds/payment-methods.seed';
 
-
 async function main() {
     const prisma = new PrismaClient({
         adapter: new PrismaPg({

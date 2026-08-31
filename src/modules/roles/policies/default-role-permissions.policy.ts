@@ -69,7 +69,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         ...Object.values(permissions.PAYMENT_PROVIDERS_PERMISSIONS),
 
         // Payment Methods
-        ...Object.values(permissions.PAYMENT_METHODS_PERMISSIONS)
+        ...Object.values(permissions.PAYMENT_METHODS_PERMISSIONS),
     ),
 
     // =====================================================
@@ -152,8 +152,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         permissions.PAYMENT_METHODS_PERMISSIONS.PAYMENT_METHOD_VIEW_LIST,
 
         // Pharmacy Payment Methods
-        ...Object.values(permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS)
-      
+        ...Object.values(permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS),
     ),
 
     // =====================================================
@@ -193,7 +192,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
 
         // Pharmacy Payment Methods
-       permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_VIEW_LIST
+        permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_VIEW_LIST,
     ),
 
     // =====================================================
