@@ -9,7 +9,7 @@ export class FindBranchesQueryDto extends BaseQueryDto {
     })
     @IsOptional()
     @IsUUID()
-    pharmacy_id?: string;
+    declare pharmacy_id?: string;
 
     @ApiPropertyOptional({
         description: 'Filter by active status.',

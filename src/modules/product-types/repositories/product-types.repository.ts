@@ -45,10 +45,11 @@ export class ProductTypesRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.productType.findMany({
+            const records = await this.prisma.productType.findMany({
                 where,
                 orderBy,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

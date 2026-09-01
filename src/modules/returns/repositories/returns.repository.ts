@@ -73,7 +73,7 @@ export class ReturnsRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.return.findMany({
+            const records = await this.prisma.return.findMany({
                 where,
 
                 include: this.returnRelations,
@@ -82,6 +82,7 @@ export class ReturnsRepository {
                     created_at: 'desc',
                 },
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([
@@ -106,7 +107,6 @@ export class ReturnsRepository {
 
         return {
             records,
-
             total,
         };
     }

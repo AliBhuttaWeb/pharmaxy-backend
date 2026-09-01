@@ -56,13 +56,14 @@ export class SubscriptionsRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.subscription.findMany({
+            const records = await this.prisma.subscription.findMany({
                 where,
 
                 orderBy,
 
                 include: this.subscriptionRelations,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

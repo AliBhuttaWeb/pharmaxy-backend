@@ -1,31 +1,13 @@
 import { Injectable } from '@nestjs/common';
-
 import { Prisma } from '@gen/prisma/client';
-
 import { PrismaService } from '@/database/prisma/prisma.service';
 
 @Injectable()
 export class PharmacyPaymentMethodsRepository {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(private readonly prisma: PrismaService) {}
 
     private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prismaService;
-    }
-
-    findById(id: string, pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).pharmacyPaymentMethod.findFirst({
-            where: {
-                id,
-                pharmacy_id: pharmacyId,
-            },
-            include: {
-                payment_method: {
-                    include: {
-                        provider: true,
-                    },
-                },
-            },
-        });
+        return tx ?? this.prisma;
     }
 
     findByPaymentMethodId(
@@ -57,6 +39,22 @@ export class PharmacyPaymentMethodsRepository {
             },
             orderBy: {
                 display_order: 'asc',
+            },
+        });
+    }
+
+    findById(id: string, pharmacyId: string, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).pharmacyPaymentMethod.findFirst({
+            where: {
+                id,
+                pharmacy_id: pharmacyId,
+            },
+            include: {
+                payment_method: {
+                    include: {
+                        provider: true,
+                    },
+                },
             },
         });
     }

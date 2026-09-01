@@ -45,10 +45,11 @@ export class RetailCategoriesRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.retailCategory.findMany({
+            const records = await this.prisma.retailCategory.findMany({
                 where,
                 orderBy,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

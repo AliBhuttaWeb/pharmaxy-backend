@@ -13,10 +13,10 @@ export class RolesService {
 
     async list(query: FindRolesQueryDto) {
         const { page, limit } = query;
-        const { records, totalRecords } = await this.rolesRepository.findMany(query);
+        const { records, total } = await this.rolesRepository.findMany(query);
 
-        if (!totalRecords || !page || !limit) return { records };
-        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords });
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
 
         return { records, pagination };
     }

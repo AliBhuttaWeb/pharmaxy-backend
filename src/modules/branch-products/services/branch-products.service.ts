@@ -13,6 +13,7 @@ import { BranchesService } from '@/modules/branches/services/branches.service';
 import { ProductsService } from '@/modules/products/services/products.service';
 import { Prisma } from '@gen/prisma/client';
 import { OnboardBranchProductService } from './onboard-branch-products.service';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class BranchProductsService {
@@ -25,8 +26,12 @@ export class BranchProductsService {
         private readonly onboardBranchProductService: OnboardBranchProductService,
     ) {}
 
-    findMany(query: BranchProductQueryDto) {
-        return this.branchProductsRepository.findMany(query);
+    async findMany(query: BranchProductQueryDto) {
+        const { limit, page } = query;
+        const { records, total } = await this.branchProductsRepository.findMany(query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async findById(id: string) {

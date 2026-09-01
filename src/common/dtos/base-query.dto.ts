@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
+import { IsIn, IsInt, IsOptional, IsString, Max, MaxLength, Min, IsUUID } from 'class-validator';
 
 export class BaseQueryDto {
     @IsOptional()
@@ -27,4 +27,12 @@ export class BaseQueryDto {
     @IsOptional()
     @IsIn(['asc', 'desc'])
     sort_order?: 'asc' | 'desc';
+
+    @IsOptional()
+    @IsUUID()
+    pharmacy_id?: string;
+
+    @IsOptional()
+    @IsUUID()
+    branch_id?: string;
 }

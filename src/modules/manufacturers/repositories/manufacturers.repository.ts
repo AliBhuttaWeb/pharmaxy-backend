@@ -44,10 +44,11 @@ export class ManufacturersRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.manufacturer.findMany({
+            const records = await this.prisma.manufacturer.findMany({
                 where,
                 orderBy,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

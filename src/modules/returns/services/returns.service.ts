@@ -14,6 +14,7 @@ import { MESSAGES } from '../constants';
 
 import { PreparedReturnBatch, PreparedReturnItem } from '../types';
 import { ReturnStatus } from '@gen/prisma/enums';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class ReturnsService {
@@ -214,16 +215,12 @@ export class ReturnsService {
         return result;
     }
 
-    findMany(
-        branchId: string,
-
-        query: ReturnQueryDto,
-    ) {
-        return this.returnsRepository.findMany(
-            branchId,
-
-            query,
-        );
+    async findMany(branchId: string, query: ReturnQueryDto) {
+        const { limit, page } = query;
+        const { records, total } = await this.returnsRepository.findMany(branchId, query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async findById(id: string) {

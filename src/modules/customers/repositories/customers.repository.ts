@@ -93,25 +93,22 @@ export class CustomersRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.customer.findMany({
+            const records = await this.prisma.customer.findMany({
                 where,
 
                 orderBy,
 
                 include: this.customerRelations,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([
             this.prisma.customer.findMany({
                 where,
-
                 orderBy,
-
                 include: this.customerRelations,
-
                 skip: (page - 1) * limit,
-
                 take: limit,
             }),
 

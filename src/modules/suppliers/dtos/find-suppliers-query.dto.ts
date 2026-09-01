@@ -8,7 +8,7 @@ export class FindSuppliersQueryDto extends BaseQueryDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsUUID()
-    pharmacy_id?: string;
+    declare pharmacy_id?: string;
 
     @ApiPropertyOptional({
         enum: SupplierStatus,

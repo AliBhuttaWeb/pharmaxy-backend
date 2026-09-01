@@ -17,6 +17,7 @@ import { MESSAGES } from '../constants';
 import { SubscriptionsRepository } from '../repositories/subscriptions.repository';
 
 import { SubscriptionPlansService } from '@/modules/subscription-plans/services/subscription-plans.service';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class SubscriptionsService {
@@ -25,8 +26,12 @@ export class SubscriptionsService {
         private readonly subscriptionPlansService: SubscriptionPlansService,
     ) {}
 
-    findMany(query: SubscriptionQueryDto) {
-        return this.subscriptionsRepository.findMany(query);
+    async findMany(query: SubscriptionQueryDto) {
+        const { limit, page } = query;
+        const { records, total } = await this.subscriptionsRepository.findMany(query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async findById(id: string) {

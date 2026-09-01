@@ -84,10 +84,11 @@ export class SuppliersRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.supplier.findMany({
+            const records = await this.prisma.supplier.findMany({
                 where,
                 orderBy,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

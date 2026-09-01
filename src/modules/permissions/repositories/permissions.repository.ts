@@ -121,10 +121,11 @@ export class PermissionsRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.permission.findMany({
+            const records = await this.prisma.permission.findMany({
                 where,
                 orderBy,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

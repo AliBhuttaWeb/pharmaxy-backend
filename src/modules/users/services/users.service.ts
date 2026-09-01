@@ -11,6 +11,7 @@ import { AuthenticatedUser } from '@/modules/auth/types';
 import { UserBranchesRepository } from '../repositories/user-branches.repository';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { resolveUserScope } from '../helpers/resolve-user-scope.helper';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class UsersService {
@@ -38,7 +39,11 @@ export class UsersService {
     }
 
     async list(query: FindUsersQueryDto) {
-        return this.usersRepository.findMany(query);
+        const { limit, page } = query;
+        const { records, total } = await this.usersRepository.findMany(query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async get(id: string) {

@@ -95,11 +95,12 @@ export class PurchaseOrdersRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.purchaseOrder.findMany({
+            const records = await this.prisma.purchaseOrder.findMany({
                 where,
                 orderBy,
                 include: this.purchaseOrderRelations,
             });
+            return {records}
         }
 
         const [records, total] = await this.prisma.$transaction([

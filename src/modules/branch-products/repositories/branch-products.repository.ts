@@ -92,11 +92,12 @@ export class BranchProductsRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.branchProduct.findMany({
+            const records = await this.prisma.branchProduct.findMany({
                 where,
                 orderBy,
                 include: this.branchProductRelations,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

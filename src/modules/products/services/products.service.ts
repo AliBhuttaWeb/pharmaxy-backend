@@ -12,6 +12,7 @@ import { MESSAGES as RETAIL_CATEGORY_MESSAGES } from '@modules/retail-categories
 import { MESSAGES as MANUFACTURER_MESSAGES } from '@/modules/manufacturers/constants';
 import { MESSAGES as PRODUCT_TYPE_MESSAGES } from '@/modules/product-types/constants';
 import { MESSAGES as DOSAGE_FORM_MESSAGES } from '@/modules/dosage-forms/constants';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class ProductsService {
@@ -27,8 +28,12 @@ export class ProductsService {
         private readonly dosageFormsRepository: DosageFormsRepository,
     ) {}
 
-    findMany(query: ProductQueryDto) {
-        return this.productsRepository.findMany(query);
+    async findMany(query: ProductQueryDto) {
+        const { limit, page } = query;
+        const { records, total } = await this.productsRepository.findMany(query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async findById(id: string) {

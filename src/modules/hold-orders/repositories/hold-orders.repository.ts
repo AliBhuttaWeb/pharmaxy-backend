@@ -47,11 +47,12 @@ export class HoldOrdersRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.holdOrder.findMany({
+            const records = await this.prisma.holdOrder.findMany({
                 where,
                 include: this.relations,
                 orderBy,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

@@ -8,13 +8,18 @@ import {
     UpdateSupplierStatusDto,
 } from '../dtos';
 import { SuppliersRepository } from '../repositories/suppliers.repository';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class SuppliersService {
     constructor(private readonly suppliersRepository: SuppliersRepository) {}
 
     async list(query: FindSuppliersQueryDto) {
-        return this.suppliersRepository.findMany(query);
+        const { limit, page } = query;
+        const { records, total } = await this.suppliersRepository.findMany(query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async get(id: string) {

@@ -107,7 +107,7 @@ export class PharmaciesRepository {
             return { records };
         }
 
-        const [records, totalRecords] = await this.prisma.$transaction([
+        const [records, total] = await this.prisma.$transaction([
             this.prisma.pharmacy.findMany({
                 where,
                 orderBy,
@@ -121,7 +121,7 @@ export class PharmaciesRepository {
 
         return {
             records,
-            totalRecords,
+            total
         };
     }
 
@@ -312,7 +312,7 @@ export class PharmaciesRepository {
 
         return {
             records,
-            totalRecords,
+            total: totalRecords,
         };
     }
 }

@@ -16,6 +16,7 @@ import { MESSAGES } from '../constants';
 
 import { generateHoldNumber } from '../helpers/generate-hold-number';
 import { Prisma } from '@gen/prisma/client';
+import { buildPaginationMeta } from '@/common/pagination';
 
 type PreparedHoldItem = {
     branch_product_id: string;
@@ -151,8 +152,12 @@ export class HoldOrdersService {
         });
     }
 
-    findMany(branchId: string, query: HoldOrderQueryDto) {
-        return this.holdOrdersRepository.findMany(branchId, query);
+    async findMany(branchId: string, query: HoldOrderQueryDto) {
+        const { limit, page } = query;
+        const { records, total } = await this.holdOrdersRepository.findMany(branchId, query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async findById(id: string) {

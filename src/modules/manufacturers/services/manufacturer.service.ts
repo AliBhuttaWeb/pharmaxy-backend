@@ -3,13 +3,18 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { MESSAGES } from '../constants';
 import { CreateManufacturerDto, FindManufacturersQueryDto, UpdateManufacturerDto } from '../dtos';
 import { ManufacturersRepository } from '../repositories/manufacturers.repository';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class ManufacturersService {
     constructor(private readonly manufacturersRepository: ManufacturersRepository) {}
 
     async list(query: FindManufacturersQueryDto) {
-        return this.manufacturersRepository.findMany(query);
+        const { limit, page } = query;
+        const { records, total } = await this.manufacturersRepository.findMany(query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async get(id: string) {

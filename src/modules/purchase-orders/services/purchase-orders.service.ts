@@ -21,6 +21,7 @@ import { AuthenticatedUser } from '@/modules/auth/types';
 import { BranchProductsRepository } from '@/modules/branch-products/repositories/branch-products.repository';
 import { ProductBatchesRepository } from '@/modules/branch-products/repositories/product-batches.repository';
 import { PrismaService } from '@/database/prisma/prisma.service';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class PurchaseOrdersService {
@@ -40,8 +41,12 @@ export class PurchaseOrdersService {
         private readonly prisma: PrismaService,
     ) {}
 
-    findMany(query: PurchaseOrderQueryDto) {
-        return this.purchaseOrdersRepository.findMany(query);
+    async findMany(query: PurchaseOrderQueryDto) {
+        const { limit, page } = query;
+        const {records, total} = await this.purchaseOrdersRepository.findMany(query);
+        if (!total || !page || !limit) return {records};
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async findById(id: string) {

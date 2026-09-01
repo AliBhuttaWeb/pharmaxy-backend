@@ -3,13 +3,18 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { CreateRetailCategoryDto, RetailCategoryQueryDto, UpdateRetailCategoryDto } from '../dtos';
 import { MESSAGES } from '../constants';
 import { RetailCategoriesRepository } from '../repositories/retail-categories.repository';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class RetailCategoriesService {
     constructor(private readonly retailCategoryRepository: RetailCategoriesRepository) {}
 
-    findMany(query: RetailCategoryQueryDto) {
-        return this.retailCategoryRepository.findMany(query);
+    async findMany(query: RetailCategoryQueryDto) {
+        const { limit, page } = query;
+        const { records, total } = await this.retailCategoryRepository.findMany(query);
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records, pagination };
     }
 
     async findById(id: string) {

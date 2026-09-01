@@ -28,10 +28,10 @@ export class PharmaciesService {
 
     async list(query: FindPharmaciesQueryDto) {
         const { page, limit } = query;
-        const { records, totalRecords } = await this.pharmaciesRepository.findMany(query);
+        const { records, total } = await this.pharmaciesRepository.findMany(query);
 
-        if (!totalRecords || !page || !limit) return { records };
-        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords });
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
         return { records, pagination };
     }
 
@@ -127,10 +127,10 @@ export class PharmaciesService {
 
     async listDeleted(query: FindPharmaciesQueryDto) {
         const { page, limit } = query;
-        const { records, totalRecords } = await this.pharmaciesRepository.findDeleted(query);
+        const { records, total } = await this.pharmaciesRepository.findDeleted(query);
 
-        if (!totalRecords || !page || !limit) return { records };
-        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords });
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
         return { records, pagination };
     }
 }

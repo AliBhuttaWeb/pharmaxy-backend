@@ -119,7 +119,7 @@ export class BranchesRepository {
             return { records };
         }
 
-        const [records, totalRecords] = await this.prisma.$transaction([
+        const [records, total] = await this.prisma.$transaction([
             this.prisma.branch.findMany({
                 where,
                 orderBy,
@@ -133,7 +133,7 @@ export class BranchesRepository {
 
         return {
             records,
-            totalRecords,
+            total,
         };
     }
 

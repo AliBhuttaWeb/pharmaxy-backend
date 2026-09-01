@@ -5,7 +5,7 @@ import { IsDecimal, IsUUID } from 'class-validator';
 export class PosPaymentDto {
     @ApiProperty()
     @IsUUID()
-    payment_method_id!: string;
+    pharmacy_payment_method_id!: string;
 
     @ApiProperty({
         example: '500',

@@ -45,10 +45,11 @@ export class DosageFormsRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            return this.prisma.dosageForm.findMany({
+            const records = await this.prisma.dosageForm.findMany({
                 where,
                 orderBy,
             });
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

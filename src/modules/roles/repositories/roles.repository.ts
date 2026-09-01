@@ -65,13 +65,13 @@ export class RolesRepository {
             return { records };
         }
 
-        const totalRecords = await this.prisma.role.count({
+        const total = await this.prisma.role.count({
             where,
         });
 
         return {
             records,
-            totalRecords,
+            total,
         };
     }
 

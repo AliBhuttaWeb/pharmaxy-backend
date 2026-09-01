@@ -184,9 +184,9 @@ export class PosService {
 
                     payments: {
                         create: dto.payments.map((payment) => ({
-                            payment_method: {
+                            pharmacy_payment_method: {
                                 connect: {
-                                    id: payment.payment_method_id,
+                                    id: payment.pharmacy_payment_method_id,
                                 },
                             },
                             amount: payment.amount,
