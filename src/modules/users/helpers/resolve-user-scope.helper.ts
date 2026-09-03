@@ -18,7 +18,7 @@ export const resolveUserScope = (dto: CreateUserDto, currentUser: AuthenticatedU
             throw new BadRequestException(BRANCH_MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
         }
 
-        if (!dto.branch_id) {
+        if (!dto.branch_id && !currentUser.branch_id) {
             throw new BadRequestException(BRANCH_MESSAGES.ERROR.BRANCH_ID_REQUIRED);
         }
 
