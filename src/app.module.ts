@@ -28,6 +28,7 @@ import { ReturnsModule } from './modules/returns/returns.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { SubscriptionPlansModule } from './modules/subscription-plans/subscription-plans.module';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
     imports: [
@@ -60,6 +61,7 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
         DashboardModule,
         SubscriptionPlansModule,
         SubscriptionsModule,
+        CommonModule
     ],
     providers: [
         {
