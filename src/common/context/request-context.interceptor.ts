@@ -22,16 +22,16 @@ export class RequestContextInterceptor implements NestInterceptor {
 
         const user = request.user as AuthenticatedUser | undefined;
 
-        if (user && requiresBranchContext(user.roles)) {
+        if (user) {
             const branchId = request.cookies?.branch_id ?? request.headers['x-branch-id'];
 
-            if (!branchId) {
+            if (requiresBranchContext(user.roles) && !branchId) {
                 throw new BadRequestException(BRANCH_MESSAGES.ERROR.BRANCH_ID_REQUIRED);
             }
 
-            await this.branchesService.ensureUserHasAccess(user, branchId);
-
             user.branch_id = branchId;
+            
+            branchId && await this.branchesService.ensureUserHasAccess(user, branchId);
         }
 
         const store: RequestStore = {
