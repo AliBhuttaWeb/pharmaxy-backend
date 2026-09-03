@@ -18,6 +18,8 @@ import { getActiveBranchId } from '@/common/helpers';
 import { MESSAGES as PRODUCT_MESSAGES } from '@modules/products/constants';
 import { MESSAGES as BRANCH_MESSAGES } from '@modules/branch-products/constants';
 import { HoldOrdersService } from '@/modules/hold-orders/services/hold-orders.service';
+import { MESSAGES } from '../constants/messages.constants';
+import { POS_DEFAULTS } from '../constants/defaults.constants';
 
 type PreparedSaleItem = {
     branchProduct: any;
@@ -107,11 +109,43 @@ export class PosService {
 
             const pharmacyId = preparedItems[0].branchProduct.branch.pharmacy_id;
 
-            const customer = dto.customer_id
-                ? await this.customersService.findById(dto.customer_id)
-                : await this.customersService.getOrCreateWalkInCustomer(pharmacyId);
+            // Validate Payments
+            for (const payment of dto.payments) {
+                const method = await this.prisma.pharmacyPaymentMethod.findFirst({
+                    where: {
+                        id: payment.pharmacy_payment_method_id,
+                        pharmacy_id: pharmacyId,
+                    }
+                });
 
-            if (!customer) {
+                if (!method) {
+                    throw new ConflictException(MESSAGES.ERROR.PAYMENT_METHOD_NOT_BELONGS_TO_PHARMACY(payment.pharmacy_payment_method_id));
+                }
+            }
+
+            let customerId = dto.customer_id;
+
+            if (!customerId) {
+                const phone = dto.customer_phone || POS_DEFAULTS.CUSTOMER_PHONE;
+                const name = dto.customer_name || POS_DEFAULTS.CUSTOMER_NAME;
+                
+                let customer = await this.customersService.findByPhone(pharmacyId, phone);
+                
+                if (!customer) {
+                    const nameParts = name.trim().split(' ');
+                    const firstName = nameParts[0];
+                    const lastName = nameParts.slice(1).join(' ') || null;
+                    
+                    customer = await (this.customersService as any).create(pharmacyId, {
+                        first_name: firstName,
+                        last_name: lastName,
+                        phone: phone,
+                    }, user);
+                }
+                customerId = customer!.id;
+            }
+
+            if (!customerId) {
                 throw new NotFoundException(CUSTOMER_MESSAGES.ERROR.NOT_FOUND);
             }
 
@@ -143,7 +177,7 @@ export class PosService {
 
                     customer: {
                         connect: {
-                            id: customer.id,
+                            id: customerId,
                         },
                     },
 
@@ -237,8 +271,8 @@ export class PosService {
 
         user: AuthenticatedUser,
     ) {
-        if (!dto.customer_id) {
-            throw new ConflictException(CUSTOMER_MESSAGES.ERROR.CUSTOMER_REQUIRED);
+        if (!dto.customer_id && !dto.customer_name && !dto.customer_phone) {
+            // It's fine, we will handle it in processSale with fallbacks
         }
 
         return this.processSale(dto, user);

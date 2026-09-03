@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsDecimal, IsUUID } from 'class-validator';
+import { IsInt, IsUUID, Min } from 'class-validator';
 
 export class PosItemDto {
     @ApiProperty()
@@ -10,8 +10,7 @@ export class PosItemDto {
     @ApiProperty({
         example: '2',
     })
-    @IsDecimal({
-        decimal_digits: '0,3',
-    })
-    quantity!: string;
+    @IsInt()
+    @Min(1)
+    quantity!: number;
 }

@@ -39,6 +39,10 @@ export class CustomersService {
         return customer;
     }
 
+    async findByPhone(pharmacyId: string, phone: string) {
+        return this.customersRepository.findByPhone(pharmacyId, phone);
+    }
+
     async create(pharmacyId: string, dto: CreateCustomerDto, user: AuthenticatedUser) {
         if (dto.phone) {
             const exists = await this.customersRepository.findByPhone(pharmacyId, dto.phone);

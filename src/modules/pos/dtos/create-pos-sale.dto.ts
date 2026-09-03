@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 
-import { ArrayMinSize, IsArray, IsOptional, IsUUID, ValidateNested } from 'class-validator';
+import { ArrayMinSize, IsArray, IsOptional, IsUUID, Matches, ValidateNested } from 'class-validator';
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PosItemDto, PosPaymentDto } from '.';
@@ -10,6 +10,19 @@ export class CreatePosSaleDto {
     @IsOptional()
     @IsUUID()
     customer_id?: string;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    customer_name?: string;
+
+    @ApiPropertyOptional({
+        example: '+923124700700',
+    })
+    @IsOptional()
+    @Matches(/^\+\d{2,}\d{5,}$/, {
+        message: 'customer_phone must be a valid phone number with country code',
+    })
+    customer_phone?: string;
 
     @ApiProperty({
         type: PosItemDto,
