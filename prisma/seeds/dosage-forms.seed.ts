@@ -62,6 +62,18 @@ const DOSAGE_FORMS = [
         name: 'Patch',
         description: 'Transdermal dosage form delivering medicine through skin',
     },
+    {
+        name: 'Other',
+        description: 'Other or miscellaneous dosage form',
+    },
+    {
+        name: 'Softgel',
+        description: 'Soft gelatin capsule',
+    },
+    {
+        name: 'Liquid',
+        description: 'Liquid form',
+    },
 ];
 
 export async function seedDosageForms({ prisma }: SeedContext) {

@@ -82,6 +82,95 @@ const MANUFACTURERS = [
         name: 'Novartis Pakistan',
         description: 'Global pharmaceutical company.',
     },
+    {
+        name: 'Johnson & Johnson',
+        description: 'Global healthcare and pharmaceutical company.',
+    },
+    {
+        name: 'Procter & Gamble',
+        description: 'Global consumer health and pharmaceutical products company.',
+    },
+    {
+        name: 'AstraZeneca',
+        description: 'Global pharmaceutical and biotechnology company.',
+    },
+    {
+        name: 'Reckitt',
+        description: 'Global consumer health and hygiene products company.',
+    },
+    {
+        name: 'Merck',
+        description: 'Global pharmaceutical and healthcare company.',
+    },
+    {
+        name: 'Allergan',
+        description: 'Global pharmaceutical company.',
+    },
+    {
+        name: 'Servier',
+        description: 'International pharmaceutical company.',
+    },
+    {
+        name: 'Beiersdorf',
+        description: 'Multinational skin care company.',
+    },
+    {
+        name: 'Leo Pharma',
+        description: 'Multinational pharmaceutical company.',
+    },
+    {
+        name: 'Nestle',
+        description: 'Multinational food and drink processing conglomerate.',
+    },
+    {
+        name: 'Kimberly-Clark',
+        description: 'Multinational personal care corporation.',
+    },
+    {
+        name: 'Hamdard',
+        description: 'Herbal and unani medicine manufacturer in Pakistan.',
+    },
+    {
+        name: 'Colgate-Palmolive',
+        description: 'Multinational consumer products company.',
+    },
+    {
+        name: 'Alcon',
+        description: 'Global medical company specializing in eye care products.',
+    },
+    {
+        name: 'Unilever',
+        description: 'Multinational consumer goods company.',
+    },
+    {
+        name: 'Haleon',
+        description: 'Multinational consumer healthcare company.',
+    },
+    {
+        name: 'Nutrifactor',
+        description: 'Leading nutraceutical company in Pakistan.',
+    },
+    {
+        name: 'Herbiotics',
+        description: 'Nutritional supplements manufacturer in Pakistan.',
+    },
+    {
+        name: 'Qarshi',
+        description: 'Leading natural products manufacturer in Pakistan.',
+    },
+    {
+        name: 'Safi',
+        description: 'Herbal medicine.',
+    },
+    {
+        name: 'Brookes Pharma',
+        description: 'Pharmaceutical company in Pakistan.',
+    },
+    { name: 'CCL Pharmaceuticals', description: 'Pakistani pharmaceutical company.' },
+    { name: 'Scilife Pharma', description: 'Pharmaceutical company in Pakistan.' },
+    { name: 'Bona Papa', description: 'Baby care manufacturer.' },
+    { name: 'Hayat Kimya', description: 'Manufacturer of Molfix diapers.' },
+    { name: 'Ontex', description: 'Global hygiene solutions.' },
 ] as const;
 
 export async function seedManufacturers({ prisma }: SeedContext): Promise<void> {

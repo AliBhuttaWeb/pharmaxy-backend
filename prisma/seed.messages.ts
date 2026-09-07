@@ -12,6 +12,7 @@ export const MESSAGES = {
         SUBSCRIPTION_PLANS_SEEDED: 'Subscription Plans seeded successfully.',
         PAYMENT_PRVIDERS_SEEDED: 'Payment provders seeded successfully.',
         PAYMENT_METHODS_SEEDED: 'Payment methods seeded successfully.',
+        PRODUCTS_SEEDED: 'Products methods seeded successfully.',
     },
 
     ERROR: {

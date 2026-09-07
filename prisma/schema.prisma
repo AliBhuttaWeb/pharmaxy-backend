@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
   moduleFormat = "cjs"
 }
 
@@ -46,24 +46,24 @@ enum OtpChannel {
 }
 
 model Otp {
-  id          String   @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  user_id     String?  @db.Uuid
-  user        User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String? @db.Uuid
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  destination String   @db.VarChar(255) // email or phone number
+  destination String @db.VarChar(255) // email or phone number
 
-  type        OtpType
-  channel     OtpChannel
+  type    OtpType
+  channel OtpChannel
 
-  code_hash   String   @db.VarChar(255)
+  code_hash String @db.VarChar(255)
 
   expires_at  DateTime
-  verified_at     DateTime?
+  verified_at DateTime?
 
-  attempts    Int      @default(0)
+  attempts Int @default(0)
 
-  created_at  DateTime @default(now())
+  created_at DateTime @default(now())
 
   @@index([destination])
   @@index([expires_at])
@@ -72,41 +72,41 @@ model Otp {
 }
 
 model User {
-  id                   String     @id @default(uuid()) @db.Uuid
-  first_name           String     @db.VarChar(100)
-  last_name            String?    @db.VarChar(100)
-  email                String     @unique @db.VarChar(255)
-  phone                String?    @unique @db.VarChar(30)
-  password             String     @db.VarChar(255)
-  avatar_url           String?    @db.Text
-  is_email_verified    Boolean    @default(false)
-  is_phone_verified    Boolean    @default(false)
-  last_login_at        DateTime?
-  status               UserStatus @default(ACTIVE)
+  id                String     @id @default(uuid()) @db.Uuid
+  first_name        String     @db.VarChar(100)
+  last_name         String?    @db.VarChar(100)
+  email             String     @unique @db.VarChar(255)
+  phone             String?    @unique @db.VarChar(30)
+  password          String     @db.VarChar(255)
+  avatar_url        String?    @db.Text
+  is_email_verified Boolean    @default(false)
+  is_phone_verified Boolean    @default(false)
+  last_login_at     DateTime?
+  status            UserStatus @default(ACTIVE)
 
   otps Otp[]
 
-  created_at           DateTime   @default(now())
-  updated_at           DateTime   @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  user_roles           UserRole[]
-  user_permissions     UserPermission[]
-  requested_transfers  StockTransfer[] @relation("TransferRequester")
-  dispatched_transfers StockTransfer[] @relation("TransferDispatcher")
-  received_transfers   StockTransfer[] @relation("TransferReceiver")
-  invoices             Invoice[] @relation("InvoiceCashier")
-  hold_orders          HoldOrder[] @relation("HoldOrderCashier")
-  returns              Return[] @relation("ReturnCashier")
-  stock_adjustments    StockAdjustment[] @relation("StockAdjustmentUser")
-  support_tickets      SupportTicket[] @relation("SupportTicketCreator")
-  audit_logs           AuditLog[] @relation("AuditLogUser")
-  notifications        Notification[]
+  user_roles              UserRole[]
+  user_permissions        UserPermission[]
+  requested_transfers     StockTransfer[]        @relation("TransferRequester")
+  dispatched_transfers    StockTransfer[]        @relation("TransferDispatcher")
+  received_transfers      StockTransfer[]        @relation("TransferReceiver")
+  invoices                Invoice[]              @relation("InvoiceCashier")
+  hold_orders             HoldOrder[]            @relation("HoldOrderCashier")
+  returns                 Return[]               @relation("ReturnCashier")
+  stock_adjustments       StockAdjustment[]      @relation("StockAdjustmentUser")
+  support_tickets         SupportTicket[]        @relation("SupportTicketCreator")
+  audit_logs              AuditLog[]             @relation("AuditLogUser")
+  notifications           Notification[]
   support_ticket_messages SupportTicketMessage[]
-  system_logs          SystemLog[]
-  refresh_tokens RefreshToken[]
+  system_logs             SystemLog[]
+  refresh_tokens          RefreshToken[]
 
-  pharmacy_id String? @db.Uuid
-  pharmacy Pharmacy? @relation(fields: [pharmacy_id], references: [id], onDelete: SetNull)
+  pharmacy_id   String?      @db.Uuid
+  pharmacy      Pharmacy?    @relation(fields: [pharmacy_id], references: [id], onDelete: SetNull)
   user_branches UserBranch[]
 
   @@index([email])
@@ -128,50 +128,47 @@ enum SignupScope {
 }
 
 model Role {
-  id          String    @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  name        String    @unique @db.VarChar(100)
+  name String @unique @db.VarChar(100)
 
-  description String?   @db.Text
+  description String? @db.Text
 
-  role_scope  RoleScope @default(GLOBAL)
+  role_scope RoleScope @default(GLOBAL)
 
-  signup_scope   SignupScope?
+  signup_scope SignupScope?
 
-  parent_id   String?   @db.Uuid
+  parent_id String? @db.Uuid
 
-  parent      Role?     @relation( "RoleHierarchy", fields: [parent_id], references: [id])
+  parent Role? @relation("RoleHierarchy", fields: [parent_id], references: [id])
 
-  children    Role[]    @relation("RoleHierarchy")
+  children Role[] @relation("RoleHierarchy")
 
-  created_at  DateTime  @default(now())
+  created_at DateTime @default(now())
 
-  updated_at  DateTime  @updatedAt
+  updated_at DateTime @updatedAt
 
   role_permissions RolePermission[]
 
-  user_roles       UserRole[]
+  user_roles UserRole[]
 
   @@index([parent_id])
-
   @@map("roles")
 }
 
-
 model Permission {
-  id                   String     @id @default(uuid()) @db.Uuid
-  name                 String     @unique @db.VarChar(150)
-  description          String?    @db.Text
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique @db.VarChar(150)
+  description String? @db.Text
 
-  created_at           DateTime   @default(now())
-  updated_at           DateTime   @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  role_permissions     RolePermission[]
-  user_permissions     UserPermission[]
+  role_permissions RolePermission[]
+  user_permissions UserPermission[]
 
   @@map("permissions")
 }
-
 
 model UserRole {
   id String @id @default(uuid()) @db.Uuid
@@ -185,24 +182,21 @@ model UserRole {
   role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, role_id])
-
   @@index([user_id])
   @@index([role_id])
-
   @@map("user_roles")
 }
 
-
 model RolePermission {
-  id                   String     @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  role_id              String     @db.Uuid
-  permission_id        String     @db.Uuid
+  role_id       String @db.Uuid
+  permission_id String @db.Uuid
 
-  created_at           DateTime   @default(now())
+  created_at DateTime @default(now())
 
-  role                 Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
-  permission           Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+  role       Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
 
   @@unique([role_id, permission_id])
   @@index([role_id])
@@ -210,20 +204,19 @@ model RolePermission {
   @@map("role_permissions")
 }
 
-
 model UserPermission {
-  id                   String             @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  user_id              String             @db.Uuid
-  permission_id        String             @db.Uuid
+  user_id       String @db.Uuid
+  permission_id String @db.Uuid
 
-  effect               PermissionEffect
+  effect PermissionEffect
 
-  created_at           DateTime           @default(now())
-  updated_at           DateTime           @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  user                 User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  permission           Permission         @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, permission_id])
   @@index([user_id])
@@ -244,155 +237,149 @@ enum PharmacyStatus {
 }
 
 model Pharmacy {
-  id                      String                @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  name                    String                @db.VarChar(255)
+  name String @db.VarChar(255)
 
-  legal_name              String?               @db.VarChar(255)
+  legal_name String? @db.VarChar(255)
 
-  registration_number     String?               @db.VarChar(100)
+  registration_number String? @db.VarChar(100)
 
-  license_number          String?               @db.VarChar(100)
+  license_number String? @db.VarChar(100)
 
-  tax_number              String?               @db.VarChar(100)
+  tax_number String? @db.VarChar(100)
 
-  email                   String?               @db.VarChar(255)
+  email String? @db.VarChar(255)
 
-  phone                   String?               @db.VarChar(30)
+  phone String? @db.VarChar(30)
 
-  website                 String?               @db.VarChar(255)
+  website String? @db.VarChar(255)
 
-  logo_url                String?               @db.Text
+  logo_url String? @db.Text
 
-  status                  PharmacyStatus        @default(ACTIVE)
+  status PharmacyStatus @default(ACTIVE)
 
-  created_at              DateTime              @default(now())
-  updated_at              DateTime              @updatedAt
-  deleted_at              DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
-  settings                PharmacySettings?
+  settings PharmacySettings?
 
-  branches                Branch[]
+  branches Branch[]
 
-  subscriptions           Subscription[]
+  subscriptions Subscription[]
 
-  customers               Customer[]
+  customers Customer[]
 
-  purchase_orders         PurchaseOrder[]
+  purchase_orders PurchaseOrder[]
 
-  invoices                Invoice[]
+  invoices Invoice[]
 
-  hold_orders             HoldOrder[]
+  hold_orders HoldOrder[]
 
-  sale_returns            Return[]
+  sale_returns Return[]
 
-  stock_adjustments       StockAdjustment[]
+  stock_adjustments StockAdjustment[]
 
-  stock_transfers         StockTransfer[]
+  stock_transfers StockTransfer[]
 
-  notifications           Notification[]
+  notifications Notification[]
 
-  support_tickets         SupportTicket[]
+  support_tickets SupportTicket[]
 
-  audit_logs              AuditLog[]
+  audit_logs AuditLog[]
 
-  pharmacy_payment_methods         PharmacyPaymentMethod[]
+  pharmacy_payment_methods PharmacyPaymentMethod[]
 
-  suppliers               Supplier[]
+  suppliers Supplier[]
 
-  system_logs             SystemLog[]
+  system_logs SystemLog[]
 
   users User[]
 
   @@index([status])
-
   @@map("pharmacies")
 }
 
 model Branch {
-  id                            String              @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id                   String              @db.Uuid
+  pharmacy_id String @db.Uuid
 
-  name                          String              @db.VarChar(255)
+  name String @db.VarChar(255)
 
-  address                       String              @db.Text
+  address String @db.Text
 
-  city                          String              @db.VarChar(100)
+  city String @db.VarChar(100)
 
-  state                         String?             @db.VarChar(100)
+  state String? @db.VarChar(100)
 
-  country                       String              @db.VarChar(100)
+  country String @db.VarChar(100)
 
-  postal_code                   String?             @db.VarChar(20)
+  postal_code String? @db.VarChar(20)
 
-  latitude                      Decimal?            @db.Decimal(10,7)
+  latitude Decimal? @db.Decimal(10, 7)
 
-  longitude                     Decimal?            @db.Decimal(10,7)
+  longitude Decimal? @db.Decimal(10, 7)
 
-  email                         String?             @db.VarChar(255)
+  email String? @db.VarChar(255)
 
-  phone                         String?             @db.VarChar(30)
+  phone String? @db.VarChar(30)
 
-  is_main                       Boolean             @default(false)
+  is_main Boolean @default(false)
 
-  is_active                     Boolean             @default(true)
+  is_active Boolean @default(true)
 
-  created_at                    DateTime            @default(now())
+  created_at DateTime @default(now())
 
-  updated_at                    DateTime            @updatedAt
+  updated_at DateTime @updatedAt
 
-  deleted_at                    DateTime?
+  deleted_at DateTime?
 
-  pharmacy                      Pharmacy            @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
 
-  branch_products               BranchProduct[]
+  branch_products BranchProduct[]
 
-  purchase_orders               PurchaseOrder[]
+  purchase_orders PurchaseOrder[]
 
-  hold_orders                   HoldOrder[]
+  hold_orders HoldOrder[]
 
-  invoices                      Invoice[]
+  invoices Invoice[]
 
-  stock_adjustments             StockAdjustment[]
+  stock_adjustments StockAdjustment[]
 
-  stock_transfers_from          StockTransfer[]     @relation("TransferFromBranch")
+  stock_transfers_from StockTransfer[] @relation("TransferFromBranch")
 
-  stock_transfers_to            StockTransfer[]     @relation("TransferToBranch")
+  stock_transfers_to StockTransfer[] @relation("TransferToBranch")
 
-  returns                       Return[]
+  returns Return[]
 
-  audit_logs                    AuditLog[]
+  audit_logs AuditLog[]
 
-  system_logs                   SystemLog[]
+  system_logs SystemLog[]
 
   user_branches UserBranch[]
-  
+
   @@unique([pharmacy_id, name])
-
   @@index([pharmacy_id])
-
   @@index([city])
-
   @@map("branches")
 }
 
 model UserBranch {
   id String @id @default(uuid()) @db.Uuid
 
-  user_id String @db.Uuid
+  user_id   String @db.Uuid
   branch_id String @db.Uuid
 
   created_at DateTime @default(now())
 
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   branch Branch @relation(fields: [branch_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, branch_id])
-
   @@index([user_id])
   @@index([branch_id])
-
   @@map("user_branches")
 }
 
@@ -429,14 +416,14 @@ enum BillingCycle {
 model SubscriptionPlan {
   id String @id @default(uuid()) @db.Uuid
 
-  name String @unique @db.VarChar(100)
+  name        String  @unique @db.VarChar(100)
   description String? @db.Text
 
   billing_cycle BillingCycle
-  price Decimal @db.Decimal(12, 2)
+  price         Decimal      @db.Decimal(12, 2)
 
   // Limits
-  max_branches Int?
+  max_branches         Int?
   max_users_per_branch Int?
 
   // Report access
@@ -444,7 +431,7 @@ model SubscriptionPlan {
 
   // Premium features
   allow_nearby_inventory Boolean @default(false)
-  allow_quick_sale Boolean @default(false)
+  allow_quick_sale       Boolean @default(false)
 
   // Trial
   trial_days Int @default(0)
@@ -464,7 +451,7 @@ model Subscription {
   id String @id @default(uuid()) @db.Uuid
 
   pharmacy_id String @db.Uuid
-  plan_id      String @db.Uuid
+  plan_id     String @db.Uuid
 
   // Current subscription state
   status SubscriptionStatus @default(TRIAL)
@@ -478,8 +465,8 @@ model Subscription {
   trial_expires_at DateTime?
 
   // Cancellation
-  cancelled_at DateTime?
-  cancellation_reason String? @db.VarChar(500)
+  cancelled_at        DateTime?
+  cancellation_reason String?   @db.VarChar(500)
 
   // Renewal
   auto_renew Boolean @default(true)
@@ -487,8 +474,8 @@ model Subscription {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
-  plan SubscriptionPlan @relation(fields: [plan_id], references: [id], onDelete: Restrict)
+  pharmacy Pharmacy         @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  plan     SubscriptionPlan @relation(fields: [plan_id], references: [id], onDelete: Restrict)
 
   payments SubscriptionPayment[]
 
@@ -499,26 +486,25 @@ model Subscription {
   @@map("subscriptions")
 }
 
-
 model SubscriptionPayment {
-  id                   String              @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  subscription_id      String              @db.Uuid
+  subscription_id String @db.Uuid
 
-  amount               Decimal             @db.Decimal(12, 2)
+  amount Decimal @db.Decimal(12, 2)
 
-  payment_status       SubscriptionPaymentStatus       @default(PENDING)
+  payment_status SubscriptionPaymentStatus @default(PENDING)
 
-  payment_reference    String?             @db.VarChar(255)
+  payment_reference String? @db.VarChar(255)
 
-  paid_at              DateTime?
+  paid_at DateTime?
 
-  payment_method       String?             @db.VarChar(100)
+  payment_method String? @db.VarChar(100)
 
-  created_at           DateTime            @default(now())
-  updated_at           DateTime            @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  subscription         Subscription        @relation(fields: [subscription_id], references: [id], onDelete: Cascade)
+  subscription Subscription @relation(fields: [subscription_id], references: [id], onDelete: Cascade)
 
   @@index([subscription_id])
   @@index([payment_status])
@@ -531,17 +517,17 @@ model SubscriptionPayment {
 //////////////////////////////////////////////////////
 
 model Manufacturer {
-  id          String   @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  name        String   @unique @db.VarChar(200)
+  name String @unique @db.VarChar(200)
 
-  description String?  @db.Text
+  description String? @db.Text
 
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  deleted_at  DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
-  products    Product[]
+  products Product[]
 
   @@index([name])
   @@map("manufacturers")
@@ -555,9 +541,7 @@ model Product {
   // Medicine Information
 
   name         String  @db.VarChar(255)
-  generic_name String? @db.VarChar(255)
-
-  formula      String? @db.VarChar(1000)
+  generic_name String? @db.VarChar(255) //It's what we pakistani call formula
 
   product_type_id String? @db.Uuid
 
@@ -565,24 +549,24 @@ model Product {
 
   dosage_form_id String? @db.Uuid
 
-  strength     String? @db.VarChar(100)
+  strength String? @db.VarChar(100)
 
   pack_quantity Int?
 
   pack_unit String? @db.VarChar(50)
 
-  barcode      String? @unique @db.VarChar(100)
+  barcode String? @unique @db.VarChar(100)
 
-  image_url    String? @db.Text
+  image_url String? @db.Text
 
-  description  String? @db.Text
+  description String? @db.Text
 
   requires_prescription Boolean @default(false)
 
   is_active Boolean @default(true)
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
   //////////////////////////////////////////////////////
@@ -590,7 +574,7 @@ model Product {
   //////////////////////////////////////////////////////
 
   manufacturer Manufacturer? @relation(fields: [manufacturer_id], references: [id], onDelete: SetNull)
-  
+
   product_type ProductType? @relation(fields: [product_type_id], references: [id], onDelete: SetNull)
 
   retail_category RetailCategory? @relation(fields: [retail_category_id], references: [id], onDelete: SetNull)
@@ -615,8 +599,7 @@ model Product {
   @@index([is_active])
   @@index([product_type_id])
   @@index([retail_category_id])
-  @@index([dosage_form_id]) 
-
+  @@index([dosage_form_id])
   @@map("products")
 }
 
@@ -628,15 +611,15 @@ model BranchProduct {
 
   quantity Int @default(0)
 
-  selling_price Decimal @db.Decimal(12,2)
+  selling_price Decimal @db.Decimal(12, 2)
 
-  is_controlled_drug Boolean @default(false)
+  is_controlled_drug   Boolean @default(false)
   storage_instructions String? @db.Text
 
   is_active Boolean @default(true)
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
   //////////////////////////////////////////////////////
@@ -661,49 +644,46 @@ model BranchProduct {
   // Constraints
   //////////////////////////////////////////////////////
 
-  @@unique([branch_id, product_id])
-
   //////////////////////////////////////////////////////
   // Indexes
   //////////////////////////////////////////////////////
 
+  @@unique([branch_id, product_id])
   @@index([branch_id])
   @@index([product_id])
   @@index([selling_price])
   @@index([is_active])
-
   @@map("branch_products")
 }
 
 model ProductType {
-  id          String   @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  name        String   @unique @db.VarChar(100)
-  description String?  @db.Text
+  name        String  @unique @db.VarChar(100)
+  description String? @db.Text
 
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  deleted_at  DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   products Product[]
 
   @@index([name])
-
   @@map("product_types")
 }
 
 model RetailCategory {
-  id          String   @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  name        String   @unique @db.VarChar(150)
+  name String @unique @db.VarChar(150)
 
-  description String?  @db.Text
+  description String? @db.Text
 
-  parent_id   String?  @db.Uuid
+  parent_id String? @db.Uuid
 
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  deleted_at  DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   parent   RetailCategory?  @relation("retail_category_parent", fields: [parent_id], references: [id], onDelete: SetNull)
   children RetailCategory[] @relation("retail_category_parent")
@@ -711,27 +691,24 @@ model RetailCategory {
   products Product[]
 
   @@index([parent_id])
-
   @@index([name])
-
   @@map("retail_categories")
 }
 
 model DosageForm {
-  id          String   @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  name        String   @unique @db.VarChar(100)
+  name String @unique @db.VarChar(100)
 
-  description String?  @db.Text
+  description String? @db.Text
 
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  deleted_at  DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   products Product[]
 
   @@index([name])
-
   @@map("dosage_forms")
 }
 
@@ -759,13 +736,13 @@ model ProductBatch {
 
   expiry_date DateTime?
 
-  purchase_price Decimal @db.Decimal(12,2)
-  mrp Decimal @db.Decimal(12,2)
+  purchase_price Decimal @db.Decimal(12, 2)
+  mrp            Decimal @db.Decimal(12, 2)
 
   quantity Int @default(0)
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
   //////////////////////////////////////////////////////
@@ -774,7 +751,7 @@ model ProductBatch {
 
   branch_product BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Cascade)
 
-  source_type            BatchSourceType
+  source_type BatchSourceType
 
   purchase_order_item_id String? @db.Uuid
 
@@ -790,16 +767,14 @@ model ProductBatch {
   // Constraints
   //////////////////////////////////////////////////////
 
-  @@unique([branch_product_id, batch_number])
-
   //////////////////////////////////////////////////////
   // Indexes
   //////////////////////////////////////////////////////
 
+  @@unique([branch_product_id, batch_number])
   @@index([branch_product_id])
   @@index([expiry_date])
   @@index([batch_number])
-
   @@map("product_batches")
 }
 
@@ -817,102 +792,97 @@ enum PurchaseOrderStatus {
 }
 
 model PurchaseOrder {
-  id                          String                 @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id                 String                 @db.Uuid
-  branch_id                   String                 @db.Uuid
-  supplier_id                 String                 @db.Uuid
+  pharmacy_id String @db.Uuid
+  branch_id   String @db.Uuid
+  supplier_id String @db.Uuid
 
-  purchase_order_number       String                 @db.VarChar(50)
+  purchase_order_number String @db.VarChar(50)
 
-  status                      PurchaseOrderStatus    @default(DRAFT)
+  status PurchaseOrderStatus @default(DRAFT)
 
-  order_date                  DateTime               @db.Date
-  expected_delivery_date      DateTime?              @db.Date
+  order_date             DateTime  @db.Date
+  expected_delivery_date DateTime? @db.Date
 
-  subtotal                    Decimal                @default(0) @db.Decimal(14,2)
-  discount_amount             Decimal                @default(0) @db.Decimal(14,2)
-  tax_amount                  Decimal                @default(0) @db.Decimal(14,2)
-  shipping_amount             Decimal                @default(0) @db.Decimal(14,2)
-  other_charges               Decimal                @default(0) @db.Decimal(14,2)
+  subtotal        Decimal @default(0) @db.Decimal(14, 2)
+  discount_amount Decimal @default(0) @db.Decimal(14, 2)
+  tax_amount      Decimal @default(0) @db.Decimal(14, 2)
+  shipping_amount Decimal @default(0) @db.Decimal(14, 2)
+  other_charges   Decimal @default(0) @db.Decimal(14, 2)
 
-  grand_total                 Decimal                @default(0) @db.Decimal(14,2)
+  grand_total Decimal @default(0) @db.Decimal(14, 2)
 
-  supplier_response_at        DateTime?
-  fulfilled_at                DateTime?
-  received_at                 DateTime?
+  supplier_response_at DateTime?
+  fulfilled_at         DateTime?
+  received_at          DateTime?
 
-  supplier_notes              String?                @db.Text
-  receiver_notes              String?                @db.Text
-  internal_notes              String?                @db.Text
+  supplier_notes String? @db.Text
+  receiver_notes String? @db.Text
+  internal_notes String? @db.Text
 
-  created_by                  String?                @db.Uuid
-  approved_by                 String?                @db.Uuid
-  received_by                 String?                @db.Uuid
+  created_by  String? @db.Uuid
+  approved_by String? @db.Uuid
+  received_by String? @db.Uuid
 
-  created_at                  DateTime               @default(now())
-  updated_at                  DateTime               @updatedAt
-  deleted_at                  DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
-  pharmacy                    Pharmacy               @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
 
-  branch                      Branch                 @relation(fields: [branch_id], references: [id], onDelete: Restrict)
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Restrict)
 
-  supplier                    Supplier               @relation(fields: [supplier_id], references: [id], onDelete: Restrict)
+  supplier Supplier @relation(fields: [supplier_id], references: [id], onDelete: Restrict)
 
-  items                       PurchaseOrderItem[]
+  items PurchaseOrderItem[]
 
   @@unique([branch_id, purchase_order_number])
-
   @@index([pharmacy_id])
   @@index([branch_id])
   @@index([supplier_id])
-
   @@index([status])
   @@index([order_date])
   @@index([expected_delivery_date])
-
   @@index([created_by])
   @@index([approved_by])
   @@index([received_by])
-
   @@map("purchase_orders")
 }
 
 model PurchaseOrderItem {
-  id                        String   @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  purchase_order_id         String   @db.Uuid
-  product_id                String   @db.Uuid
+  purchase_order_id String @db.Uuid
+  product_id        String @db.Uuid
 
-  ordered_quantity          Decimal  @db.Decimal(14,3)
-  fulfilled_quantity        Decimal  @default(0) @db.Decimal(14,3)
-  received_quantity         Decimal  @default(0) @db.Decimal(14,3)
+  ordered_quantity   Decimal @db.Decimal(14, 3)
+  fulfilled_quantity Decimal @default(0) @db.Decimal(14, 3)
+  received_quantity  Decimal @default(0) @db.Decimal(14, 3)
 
-  unit_cost                 Decimal  @db.Decimal(14,2)
+  unit_cost Decimal @db.Decimal(14, 2)
 
-  discount_percentage       Decimal? @db.Decimal(5,2)
-  discount_amount           Decimal  @default(0) @db.Decimal(14,2)
+  discount_percentage Decimal? @db.Decimal(5, 2)
+  discount_amount     Decimal  @default(0) @db.Decimal(14, 2)
 
-  tax_percentage            Decimal? @db.Decimal(5,2)
-  tax_amount                Decimal  @default(0) @db.Decimal(14,2)
+  tax_percentage Decimal? @db.Decimal(5, 2)
+  tax_amount     Decimal  @default(0) @db.Decimal(14, 2)
 
-  line_total                Decimal  @db.Decimal(14,2)
+  line_total Decimal @db.Decimal(14, 2)
 
-  remarks                   String?  @db.Text
+  remarks String? @db.Text
 
-  created_at                DateTime @default(now())
-  updated_at                DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  purchase_order            PurchaseOrder @relation(fields: [purchase_order_id], references: [id], onDelete: Cascade)
+  purchase_order PurchaseOrder @relation(fields: [purchase_order_id], references: [id], onDelete: Cascade)
 
-  product                   Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
+  product Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
 
-  product_batches           ProductBatch[]
+  product_batches ProductBatch[]
 
   @@index([purchase_order_id])
   @@index([product_id])
-
   @@map("purchase_order_items")
 }
 
@@ -925,77 +895,75 @@ enum Gender {
 }
 
 model Customer {
-  id                          String            @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id                 String            @db.Uuid
+  pharmacy_id String @db.Uuid
 
-  customer_code               String            @db.VarChar(50)
+  customer_code String @db.VarChar(50)
 
-  first_name                  String            @db.VarChar(100)
-  last_name                   String?           @db.VarChar(100)
+  first_name String  @db.VarChar(100)
+  last_name  String? @db.VarChar(100)
 
-  phone                       String?           @db.VarChar(30)
-  email                       String?           @db.VarChar(255)
+  phone String? @db.VarChar(30)
+  email String? @db.VarChar(255)
 
-  gender                      Gender?
+  gender Gender?
 
-  date_of_birth               DateTime?         @db.Date
+  date_of_birth DateTime? @db.Date
 
-  address                     String?           @db.Text
-  city                        String?           @db.VarChar(100)
-  state                       String?           @db.VarChar(100)
-  country                     String?           @db.VarChar(100)
-  postal_code                 String?           @db.VarChar(20)
+  address     String? @db.Text
+  city        String? @db.VarChar(100)
+  state       String? @db.VarChar(100)
+  country     String? @db.VarChar(100)
+  postal_code String? @db.VarChar(20)
 
-  loyalty_points              Decimal           @default(0) @db.Decimal(14,2)
+  loyalty_points Decimal @default(0) @db.Decimal(14, 2)
 
-  total_spent                 Decimal           @default(0) @db.Decimal(14,2)
+  total_spent Decimal @default(0) @db.Decimal(14, 2)
 
-  total_orders                Int               @default(0)
+  total_orders Int @default(0)
 
-  notes                       String?           @db.Text
+  notes String? @db.Text
 
-  is_walk_in                  Boolean           @default(false)
+  is_walk_in Boolean @default(false)
 
-  is_active                   Boolean           @default(true)
+  is_active Boolean @default(true)
 
-  created_by                  String?           @db.Uuid
-  updated_by                  String?           @db.Uuid
+  created_by String? @db.Uuid
+  updated_by String? @db.Uuid
 
-  created_at                  DateTime          @default(now())
-  updated_at                  DateTime          @updatedAt
-  deleted_at                  DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
-  pharmacy                    Pharmacy          @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
 
-  invoices                    Invoice[]
+  invoices Invoice[]
 
-  hold_orders                 HoldOrder[]
+  hold_orders HoldOrder[]
 
-  returns                     Return[]
+  returns Return[]
 
   @@unique([pharmacy_id, customer_code])
   @@unique([pharmacy_id, phone])
   @@unique([pharmacy_id, email])
-
   @@index([pharmacy_id])
   @@index([phone])
   @@index([email])
   @@index([is_walk_in])
   @@index([is_active])
-
   @@map("customers")
 }
 
 model PaymentProvider {
-  id               String          @id @default(uuid()) @db.Uuid
-  name             String          @unique @db.VarChar(100)
-  code             String          @unique @db.VarChar(50)
-  is_active        Boolean         @default(true)
-  created_at       DateTime        @default(now())
-  updated_at       DateTime        @updatedAt
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String   @unique @db.VarChar(100)
+  code       String   @unique @db.VarChar(50)
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  payment_methods  PaymentMethod[]
+  payment_methods PaymentMethod[]
   // pharmacy_payment_providers later
 
   @@map("payment_providers")
@@ -1010,21 +978,21 @@ enum PaymentMethodType {
 }
 
 model PaymentMethod {
-  id                 String             @id @default(uuid()) @db.Uuid
-  name               String             @unique @db.VarChar(100)
-  code               String             @unique @db.VarChar(50)
-  type               PaymentMethodType
+  id   String            @id @default(uuid()) @db.Uuid
+  name String            @unique @db.VarChar(100)
+  code String            @unique @db.VarChar(50)
+  type PaymentMethodType
 
-  provider_id        String?            @db.Uuid
-  provider           PaymentProvider? @relation(fields: [provider_id], references: [id], onDelete: Restrict)
+  provider_id String?          @db.Uuid
+  provider    PaymentProvider? @relation(fields: [provider_id], references: [id], onDelete: Restrict)
 
-  description        String?            @db.Text
-  requires_reference Boolean            @default(false)
-  is_active          Boolean            @default(true)
-  display_order      Int                @default(0)
+  description        String? @db.Text
+  requires_reference Boolean @default(false)
+  is_active          Boolean @default(true)
+  display_order      Int     @default(0)
 
-  created_at         DateTime            @default(now())
-  updated_at         DateTime            @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   pharmacy_payment_methods PharmacyPaymentMethod[]
 
@@ -1034,20 +1002,20 @@ model PaymentMethod {
 }
 
 model PharmacyPaymentMethod {
-  id                String        @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id       String        @db.Uuid
-  payment_method_id String        @db.Uuid
+  pharmacy_id       String @db.Uuid
+  payment_method_id String @db.Uuid
 
-  is_active         Boolean       @default(true)
-  display_order     Int           @default(0)
+  is_active     Boolean @default(true)
+  display_order Int     @default(0)
 
-  created_at        DateTime      @default(now())
-  updated_at        DateTime      @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  pharmacy          Pharmacy      @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
 
-  payment_method    PaymentMethod @relation(fields: [payment_method_id], references: [id], onDelete: Restrict)
+  payment_method PaymentMethod @relation(fields: [payment_method_id], references: [id], onDelete: Restrict)
 
   invoice_payments InvoicePayment[]
 
@@ -1068,119 +1036,114 @@ enum InvoiceStatus {
 }
 
 model Invoice {
-  id                      String          @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id             String          @db.Uuid
-  branch_id               String          @db.Uuid
+  pharmacy_id String @db.Uuid
+  branch_id   String @db.Uuid
 
-  customer_id             String          @db.Uuid
+  customer_id String @db.Uuid
 
-  cashier_id              String          @db.Uuid
+  cashier_id String @db.Uuid
 
-  invoice_number          String          @db.VarChar(50)
+  invoice_number String @db.VarChar(50)
 
-  status                  InvoiceStatus   @default(DRAFT)
+  status InvoiceStatus @default(DRAFT)
 
-  subtotal                Decimal         @default(0) @db.Decimal(14,2)
-  discount_amount         Decimal         @default(0) @db.Decimal(14,2)
-  tax_amount              Decimal         @default(0) @db.Decimal(14,2)
-  rounding_amount         Decimal         @default(0) @db.Decimal(14,2)
-  grand_total             Decimal         @default(0) @db.Decimal(14,2)
+  subtotal        Decimal @default(0) @db.Decimal(14, 2)
+  discount_amount Decimal @default(0) @db.Decimal(14, 2)
+  tax_amount      Decimal @default(0) @db.Decimal(14, 2)
+  rounding_amount Decimal @default(0) @db.Decimal(14, 2)
+  grand_total     Decimal @default(0) @db.Decimal(14, 2)
 
-  paid_amount             Decimal         @default(0) @db.Decimal(14,2)
-  due_amount              Decimal         @default(0) @db.Decimal(14,2)
+  paid_amount Decimal @default(0) @db.Decimal(14, 2)
+  due_amount  Decimal @default(0) @db.Decimal(14, 2)
 
-  notes                   String?         @db.Text
+  notes String? @db.Text
 
-  completed_at            DateTime?
-  cancelled_at            DateTime?
+  completed_at DateTime?
+  cancelled_at DateTime?
 
-  created_at              DateTime        @default(now())
-  updated_at              DateTime        @updatedAt
-  deleted_at              DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
-  pharmacy                Pharmacy        @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
 
-  branch                  Branch          @relation(fields: [branch_id], references: [id], onDelete: Restrict)
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Restrict)
 
-  customer                Customer        @relation(fields: [customer_id], references: [id], onDelete: Restrict)
-  cashier                 User            @relation("InvoiceCashier", fields: [cashier_id], references: [id], onDelete: Restrict)
+  customer Customer @relation(fields: [customer_id], references: [id], onDelete: Restrict)
+  cashier  User     @relation("InvoiceCashier", fields: [cashier_id], references: [id], onDelete: Restrict)
 
-  items                   InvoiceItem[]
-  payments                InvoicePayment[]
-  returns                 Return[]
+  items    InvoiceItem[]
+  payments InvoicePayment[]
+  returns  Return[]
 
   @@unique([branch_id, invoice_number])
-
   @@index([pharmacy_id])
   @@index([branch_id])
   @@index([customer_id])
   @@index([cashier_id])
   @@index([status])
   @@index([completed_at])
-
   @@map("invoices")
 }
 
 model InvoiceItem {
-  id                      String      @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  invoice_id              String      @db.Uuid
+  invoice_id String @db.Uuid
 
-  product_id              String      @db.Uuid
-  branch_product_id       String      @db.Uuid
+  product_id        String @db.Uuid
+  branch_product_id String @db.Uuid
 
-  quantity                Decimal     @db.Decimal(14,3)
+  quantity Decimal @db.Decimal(14, 3)
 
-  unit_price              Decimal     @db.Decimal(14,2)
+  unit_price Decimal @db.Decimal(14, 2)
 
-  discount_amount         Decimal     @default(0) @db.Decimal(14,2)
+  discount_amount Decimal @default(0) @db.Decimal(14, 2)
 
-  tax_amount              Decimal     @default(0) @db.Decimal(14,2)
+  tax_amount Decimal @default(0) @db.Decimal(14, 2)
 
-  line_total              Decimal     @db.Decimal(14,2)
+  line_total Decimal @db.Decimal(14, 2)
 
-  notes                   String?     @db.Text
+  notes String? @db.Text
 
-  created_at              DateTime    @default(now())
-  updated_at              DateTime    @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   invoice Invoice @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
 
-  product                 Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
+  product Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
 
-  branch_product          BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+  branch_product BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
 
-  batches                 InvoiceItemBatch[]
+  batches InvoiceItemBatch[]
 
-  return_items            ReturnItem[]
+  return_items ReturnItem[]
 
   @@index([invoice_id])
   @@index([product_id])
   @@index([branch_product_id])
-
   @@map("invoice_items")
 }
 
 model InvoiceItemBatch {
-  id                          String            @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  invoice_item_id             String            @db.Uuid
+  invoice_item_id String @db.Uuid
 
-  product_batch_id            String            @db.Uuid
+  product_batch_id String @db.Uuid
 
-  quantity                    Decimal           @db.Decimal(14,3)
+  quantity Decimal @db.Decimal(14, 3)
 
-  created_at                  DateTime          @default(now())
+  created_at DateTime @default(now())
 
-  invoice_item                InvoiceItem       @relation(fields: [invoice_item_id], references: [id], onDelete: Cascade)
+  invoice_item InvoiceItem @relation(fields: [invoice_item_id], references: [id], onDelete: Cascade)
 
-  product_batch               ProductBatch      @relation(fields: [product_batch_id], references: [id], onDelete: Restrict)
+  product_batch ProductBatch @relation(fields: [product_batch_id], references: [id], onDelete: Restrict)
 
   @@index([invoice_item_id])
-
   @@index([product_batch_id])
-
   @@map("invoice_item_batches")
 }
 
@@ -1195,108 +1158,103 @@ enum PaymentStatus {
 }
 
 model InvoicePayment {
-  id                         String          @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  invoice_id                 String          @db.Uuid
-  pharmacy_payment_method_id          String          @db.Uuid
+  invoice_id                 String @db.Uuid
+  pharmacy_payment_method_id String @db.Uuid
 
-  amount                     Decimal         @db.Decimal(14,2)
+  amount Decimal @db.Decimal(14, 2)
 
-  status                     PaymentStatus   @default(PENDING)
+  status PaymentStatus @default(PENDING)
 
-  gateway_transaction_id     String?         @db.VarChar(255)
-  gateway_reference          String?         @db.VarChar(255)
+  gateway_transaction_id String? @db.VarChar(255)
+  gateway_reference      String? @db.VarChar(255)
 
-  gateway_response           Json?
-  metadata                   Json?
+  gateway_response Json?
+  metadata         Json?
 
-  notes                      String?         @db.Text
+  notes String? @db.Text
 
-  paid_at                    DateTime?
-  created_at                 DateTime        @default(now())
-  updated_at                 DateTime        @updatedAt
+  paid_at    DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
 
-  invoice                    Invoice         @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
+  invoice Invoice @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
 
   pharmacy_payment_method PharmacyPaymentMethod @relation(fields: [pharmacy_payment_method_id], references: [id], onDelete: Restrict)
-  
+
   @@index([invoice_id])
   @@index([pharmacy_payment_method_id])
   @@index([status])
-
   @@map("invoice_payments")
 }
 
 model HoldOrder {
-  id                    String      @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id           String      @db.Uuid
-  branch_id             String      @db.Uuid
+  pharmacy_id String @db.Uuid
+  branch_id   String @db.Uuid
 
-  customer_id           String?     @db.Uuid
+  customer_id String? @db.Uuid
 
-  cashier_id            String      @db.Uuid
+  cashier_id String @db.Uuid
 
-  hold_number           String      @db.VarChar(50)
+  hold_number String @db.VarChar(50)
 
-  subtotal              Decimal     @default(0) @db.Decimal(14,2)
-  discount_amount       Decimal     @default(0) @db.Decimal(14,2)
-  tax_amount            Decimal     @default(0) @db.Decimal(14,2)
-  grand_total           Decimal     @default(0) @db.Decimal(14,2)
+  subtotal        Decimal @default(0) @db.Decimal(14, 2)
+  discount_amount Decimal @default(0) @db.Decimal(14, 2)
+  tax_amount      Decimal @default(0) @db.Decimal(14, 2)
+  grand_total     Decimal @default(0) @db.Decimal(14, 2)
 
-  notes                 String?     @db.Text
+  notes String? @db.Text
 
-  expires_at            DateTime?
+  expires_at DateTime?
 
-  created_at            DateTime    @default(now())
-  updated_at            DateTime    @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  pharmacy              Pharmacy    @relation(fields: [pharmacy_id], references: [id])
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id])
 
-  branch                Branch      @relation(fields: [branch_id], references: [id])
+  branch Branch @relation(fields: [branch_id], references: [id])
 
-  customer              Customer?   @relation(fields: [customer_id], references: [id])
+  customer Customer? @relation(fields: [customer_id], references: [id])
 
-  cashier               User        @relation("HoldOrderCashier", fields: [cashier_id], references: [id])
+  cashier User @relation("HoldOrderCashier", fields: [cashier_id], references: [id])
 
-  items                 HoldOrderItem[]
+  items HoldOrderItem[]
 
   @@unique([branch_id, hold_number])
-
   @@index([branch_id])
-
   @@map("hold_orders")
 }
 
 model HoldOrderItem {
-  id                          String            @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  hold_order_id               String            @db.Uuid
+  hold_order_id String @db.Uuid
 
-  branch_product_id           String            @db.Uuid
+  branch_product_id String @db.Uuid
 
-  quantity                    Decimal           @db.Decimal(14,3)
+  quantity Decimal @db.Decimal(14, 3)
 
-  unit_price                  Decimal           @db.Decimal(14,2)
+  unit_price Decimal @db.Decimal(14, 2)
 
-  discount_amount             Decimal           @default(0) @db.Decimal(14,2)
+  discount_amount Decimal @default(0) @db.Decimal(14, 2)
 
-  tax_amount                  Decimal           @default(0) @db.Decimal(14,2)
+  tax_amount Decimal @default(0) @db.Decimal(14, 2)
 
-  subtotal                    Decimal           @db.Decimal(14,2)
+  subtotal Decimal @db.Decimal(14, 2)
 
-  notes                       String?           @db.Text
+  notes String? @db.Text
 
-  created_at                  DateTime          @default(now())
+  created_at DateTime @default(now())
 
-  hold_order                  HoldOrder         @relation(fields: [hold_order_id], references: [id], onDelete: Cascade)
+  hold_order HoldOrder @relation(fields: [hold_order_id], references: [id], onDelete: Cascade)
 
-  branch_product              BranchProduct     @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+  branch_product BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
 
   @@index([hold_order_id])
-
   @@index([branch_product_id])
-
   @@map("hold_order_items")
 }
 
@@ -1308,74 +1266,69 @@ enum ReturnStatus {
 }
 
 model Return {
-  id                      String          @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id             String          @db.Uuid
+  pharmacy_id String @db.Uuid
 
-  branch_id               String          @db.Uuid
+  branch_id String @db.Uuid
 
-  invoice_id              String          @db.Uuid
+  invoice_id String @db.Uuid
 
-  customer_id             String          @db.Uuid
+  customer_id String @db.Uuid
 
-  cashier_id              String          @db.Uuid
+  cashier_id String @db.Uuid
 
-  return_number           String          @db.VarChar(50)
+  return_number String @db.VarChar(50)
 
-  refund_amount           Decimal         @default(0) @db.Decimal(14,2)
+  refund_amount Decimal @default(0) @db.Decimal(14, 2)
 
-  status                  ReturnStatus    @default(COMPLETED)
+  status ReturnStatus @default(COMPLETED)
 
-  reason                  String?         @db.Text
+  reason String? @db.Text
 
-  notes                   String?         @db.Text
+  notes String? @db.Text
 
-  created_at              DateTime        @default(now())
+  created_at DateTime @default(now())
 
-  updated_at              DateTime        @updatedAt
+  updated_at DateTime @updatedAt
 
-  pharmacy                Pharmacy        @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
 
-  branch                  Branch          @relation(fields: [branch_id], references: [id], onDelete: Restrict)
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Restrict)
 
-  invoice                 Invoice         @relation(fields: [invoice_id], references: [id], onDelete: Restrict)
+  invoice Invoice @relation(fields: [invoice_id], references: [id], onDelete: Restrict)
 
-  customer                Customer        @relation(fields: [customer_id], references: [id], onDelete: Restrict)
+  customer Customer @relation(fields: [customer_id], references: [id], onDelete: Restrict)
 
-  cashier                 User            @relation("ReturnCashier", fields: [cashier_id], references: [id], onDelete: Restrict)
+  cashier User @relation("ReturnCashier", fields: [cashier_id], references: [id], onDelete: Restrict)
 
-  items                   ReturnItem[]
+  items ReturnItem[]
 
   @@unique([branch_id, return_number])
-
   @@index([invoice_id])
-
   @@index([customer_id])
-
   @@map("returns")
 }
 
 model ReturnItem {
-  id                      String          @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  return_id               String          @db.Uuid
+  return_id String @db.Uuid
 
-  invoice_item_id         String          @db.Uuid
+  invoice_item_id String @db.Uuid
 
-  quantity                Decimal         @db.Decimal(14,3)
+  quantity Decimal @db.Decimal(14, 3)
 
-  refund_amount           Decimal         @db.Decimal(14,2)
+  refund_amount Decimal @db.Decimal(14, 2)
 
-  notes                   String?         @db.Text
+  notes String? @db.Text
 
-  return                  Return          @relation(fields: [return_id], references: [id], onDelete: Cascade)
+  return Return @relation(fields: [return_id], references: [id], onDelete: Cascade)
 
-  invoice_item            InvoiceItem     @relation(fields: [invoice_item_id], references: [id], onDelete: Restrict)
+  invoice_item InvoiceItem @relation(fields: [invoice_item_id], references: [id], onDelete: Restrict)
 
   @@index([return_id])
-
   @@index([invoice_item_id])
-
   @@map("return_items")
 }
 
@@ -1388,37 +1341,35 @@ enum StockAdjustmentStatus {
 }
 
 model StockAdjustment {
-  id                      String                  @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id             String                  @db.Uuid
-  branch_id               String                  @db.Uuid
+  pharmacy_id String @db.Uuid
+  branch_id   String @db.Uuid
 
-  adjustment_number       String                  @db.VarChar(50)
+  adjustment_number String @db.VarChar(50)
 
-  status                  StockAdjustmentStatus   @default(PENDING)
+  status StockAdjustmentStatus @default(PENDING)
 
-  notes                   String?                 @db.Text
+  notes String? @db.Text
 
-  adjusted_by             String                  @db.Uuid
+  adjusted_by String @db.Uuid
 
-  adjusted_at             DateTime?
+  adjusted_at DateTime?
 
-  created_at              DateTime                @default(now())
-  updated_at              DateTime                @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  pharmacy                Pharmacy                @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
 
-  branch                  Branch                  @relation(fields: [branch_id], references: [id], onDelete: Restrict)
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Restrict)
 
-  user                    User                    @relation("StockAdjustmentUser", fields: [adjusted_by], references: [id], onDelete: Restrict)
+  user User @relation("StockAdjustmentUser", fields: [adjusted_by], references: [id], onDelete: Restrict)
 
-  items                   StockAdjustmentItem[]
+  items StockAdjustmentItem[]
 
   @@unique([branch_id, adjustment_number])
-
   @@index([branch_id])
   @@index([status])
-
   @@map("stock_adjustments")
 }
 
@@ -1434,33 +1385,32 @@ enum AdjustmentReason {
 }
 
 model StockAdjustmentItem {
-  id                        String              @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  stock_adjustment_id       String              @db.Uuid
+  stock_adjustment_id String @db.Uuid
 
-  branch_product_id         String              @db.Uuid
+  branch_product_id String @db.Uuid
 
-  product_batch_id          String?             @db.Uuid
+  product_batch_id String? @db.Uuid
 
-  reason                    AdjustmentReason
+  reason AdjustmentReason
 
-  quantity_before           Decimal             @db.Decimal(14,3)
+  quantity_before Decimal @db.Decimal(14, 3)
 
-  quantity_after            Decimal             @db.Decimal(14,3)
+  quantity_after Decimal @db.Decimal(14, 3)
 
-  adjustment_quantity       Decimal             @db.Decimal(14,3)
+  adjustment_quantity Decimal @db.Decimal(14, 3)
 
-  remarks                   String?             @db.Text
+  remarks String? @db.Text
 
-  stock_adjustment          StockAdjustment     @relation(fields: [stock_adjustment_id], references: [id], onDelete: Cascade)
+  stock_adjustment StockAdjustment @relation(fields: [stock_adjustment_id], references: [id], onDelete: Cascade)
 
-  branch_product            BranchProduct       @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+  branch_product BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
 
-  product_batch             ProductBatch?       @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
+  product_batch ProductBatch? @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
 
   @@index([stock_adjustment_id])
   @@index([branch_product_id])
-
   @@map("stock_adjustment_items")
 }
 
@@ -1474,76 +1424,73 @@ enum StockTransferStatus {
 }
 
 model StockTransfer {
-  id                          String                @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id                 String                @db.Uuid
+  pharmacy_id String @db.Uuid
 
-  from_branch_id              String                @db.Uuid
-  to_branch_id                String                @db.Uuid
+  from_branch_id String @db.Uuid
+  to_branch_id   String @db.Uuid
 
-  transfer_number             String                @db.VarChar(50)
+  transfer_number String @db.VarChar(50)
 
-  status                      StockTransferStatus   @default(DRAFT)
+  status StockTransferStatus @default(DRAFT)
 
-  notes                       String?               @db.Text
+  notes String? @db.Text
 
-  requested_by                String                @db.Uuid
+  requested_by String @db.Uuid
 
-  dispatched_by               String?               @db.Uuid
-  received_by                 String?               @db.Uuid
+  dispatched_by String? @db.Uuid
+  received_by   String? @db.Uuid
 
-  dispatched_at               DateTime?
-  received_at                 DateTime?
+  dispatched_at DateTime?
+  received_at   DateTime?
 
-  created_at                  DateTime              @default(now())
-  updated_at                  DateTime              @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  pharmacy                    Pharmacy              @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Restrict)
 
-  from_branch                 Branch                @relation("TransferFromBranch", fields: [from_branch_id], references: [id], onDelete: Restrict)
+  from_branch Branch @relation("TransferFromBranch", fields: [from_branch_id], references: [id], onDelete: Restrict)
 
-  to_branch                   Branch                @relation("TransferToBranch", fields: [to_branch_id], references: [id], onDelete: Restrict)
+  to_branch Branch @relation("TransferToBranch", fields: [to_branch_id], references: [id], onDelete: Restrict)
 
-  requester                   User                  @relation("TransferRequester", fields: [requested_by], references: [id], onDelete: Restrict)
+  requester User @relation("TransferRequester", fields: [requested_by], references: [id], onDelete: Restrict)
 
-  dispatcher                  User?                 @relation("TransferDispatcher", fields: [dispatched_by], references: [id], onDelete: SetNull)
+  dispatcher User? @relation("TransferDispatcher", fields: [dispatched_by], references: [id], onDelete: SetNull)
 
-  receiver                    User?                 @relation("TransferReceiver", fields: [received_by], references: [id], onDelete: SetNull)
+  receiver User? @relation("TransferReceiver", fields: [received_by], references: [id], onDelete: SetNull)
 
-  items                       StockTransferItem[]
+  items StockTransferItem[]
 
   @@unique([pharmacy_id, transfer_number])
-
   @@index([from_branch_id])
   @@index([to_branch_id])
   @@index([status])
-
   @@map("stock_transfers")
 }
 
 model StockTransferItem {
-  id                          String            @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  stock_transfer_id           String            @db.Uuid
+  stock_transfer_id String @db.Uuid
 
-  branch_product_id           String            @db.Uuid
+  branch_product_id String @db.Uuid
 
-  product_batch_id            String?           @db.Uuid
+  product_batch_id String? @db.Uuid
 
-  quantity                    Decimal           @db.Decimal(14,3)
+  quantity Decimal @db.Decimal(14, 3)
 
-  notes                       String?           @db.Text
+  notes String? @db.Text
 
-  stock_transfer              StockTransfer     @relation(fields: [stock_transfer_id], references: [id], onDelete: Cascade)
+  stock_transfer StockTransfer @relation(fields: [stock_transfer_id], references: [id], onDelete: Cascade)
 
-  branch_product              BranchProduct     @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+  branch_product BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
 
-  product_batch               ProductBatch?     @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
+  product_batch ProductBatch? @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
 
   @@index([stock_transfer_id])
   @@index([branch_product_id])
   @@index([product_batch_id])
-
   @@map("stock_transfer_items")
 }
 
@@ -1555,34 +1502,33 @@ enum NotificationStatus {
 }
 
 model Notification {
-  id                    String                 @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id           String?                @db.Uuid
+  pharmacy_id String? @db.Uuid
 
-  user_id               String                 @db.Uuid
+  user_id String @db.Uuid
 
-  status                NotificationStatus     @default(UNREAD)
+  status NotificationStatus @default(UNREAD)
 
-  title                 String                 @db.VarChar(255)
+  title String @db.VarChar(255)
 
-  message               String                 @db.Text
+  message String @db.Text
 
-  reference_type        String?                @db.VarChar(50)
+  reference_type String? @db.VarChar(50)
 
-  reference_id          String?                @db.Uuid
+  reference_id String? @db.Uuid
 
-  read_at               DateTime?
+  read_at DateTime?
 
-  created_at            DateTime               @default(now())
+  created_at DateTime @default(now())
 
-  pharmacy              Pharmacy?              @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  pharmacy Pharmacy? @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
 
-  user                  User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
   @@index([status])
   @@index([created_at])
-
   @@map("notifications")
 }
 
@@ -1596,77 +1542,72 @@ enum SupportTicketStatus {
 }
 
 model SupportTicket {
-  id                      String                @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id             String                @db.Uuid
+  pharmacy_id String @db.Uuid
 
-  created_by              String                @db.Uuid
+  created_by String @db.Uuid
 
-  ticket_number           String                @db.VarChar(50)
+  ticket_number String @db.VarChar(50)
 
-  subject                 String                @db.VarChar(255)
+  subject String @db.VarChar(255)
 
-  status                  SupportTicketStatus   @default(OPEN)
+  status SupportTicketStatus @default(OPEN)
 
-  created_at              DateTime              @default(now())
-  updated_at              DateTime              @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  pharmacy                Pharmacy              @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
 
-  creator                 User                  @relation("SupportTicketCreator", fields: [created_by], references: [id], onDelete: Restrict)
+  creator User @relation("SupportTicketCreator", fields: [created_by], references: [id], onDelete: Restrict)
 
-  messages                SupportTicketMessage[]
+  messages SupportTicketMessage[]
 
-  attachments             SupportTicketAttachment[]
+  attachments SupportTicketAttachment[]
 
   @@unique([pharmacy_id, ticket_number])
-
   @@index([status])
-
   @@index([created_by])
-
   @@map("support_tickets")
 }
 
 model SupportTicketMessage {
-  id                      String          @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  support_ticket_id       String          @db.Uuid
+  support_ticket_id String @db.Uuid
 
-  user_id                 String          @db.Uuid
+  user_id String @db.Uuid
 
-  message                 String          @db.Text
+  message String @db.Text
 
-  created_at              DateTime        @default(now())
+  created_at DateTime @default(now())
 
-  support_ticket          SupportTicket   @relation(fields: [support_ticket_id], references: [id], onDelete: Cascade)
+  support_ticket SupportTicket @relation(fields: [support_ticket_id], references: [id], onDelete: Cascade)
 
-  user                    User            @relation(fields: [user_id], references: [id], onDelete: Restrict)
+  user User @relation(fields: [user_id], references: [id], onDelete: Restrict)
 
   @@index([support_ticket_id])
-
   @@map("support_ticket_messages")
 }
 
 model SupportTicketAttachment {
-  id                    String                @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  support_ticket_id     String                @db.Uuid
+  support_ticket_id String @db.Uuid
 
-  file_name             String                @db.VarChar(255)
+  file_name String @db.VarChar(255)
 
-  file_url              String                @db.Text
+  file_url String @db.Text
 
-  mime_type             String?               @db.VarChar(100)
+  mime_type String? @db.VarChar(100)
 
-  file_size             Int?
+  file_size Int?
 
-  created_at            DateTime              @default(now())
+  created_at DateTime @default(now())
 
-  support_ticket        SupportTicket         @relation(fields: [support_ticket_id], references: [id], onDelete: Cascade)
+  support_ticket SupportTicket @relation(fields: [support_ticket_id], references: [id], onDelete: Cascade)
 
   @@index([support_ticket_id])
-
   @@map("support_ticket_attachments")
 }
 
@@ -1679,45 +1620,45 @@ enum AuditAction {
 
   @@map("audit_action")
 }
+
 model AuditLog {
-  id                    String        @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id           String?       @db.Uuid
+  pharmacy_id String? @db.Uuid
 
-  branch_id             String?       @db.Uuid
+  branch_id String? @db.Uuid
 
-  user_id               String?       @db.Uuid
+  user_id String? @db.Uuid
 
-  action                AuditAction
+  action AuditAction
 
-  entity                String        @db.VarChar(100)
+  entity String @db.VarChar(100)
 
-  entity_id             String        @db.Uuid
+  entity_id String @db.Uuid
 
-  before_data           Json?
+  before_data Json?
 
-  after_data            Json?
+  after_data Json?
 
-  metadata              Json?
+  metadata Json?
 
-  ip_address            String?       @db.VarChar(45)
+  ip_address String? @db.VarChar(45)
 
-  user_agent            String?       @db.Text
+  user_agent String? @db.Text
 
-  created_at            DateTime      @default(now())
+  created_at DateTime @default(now())
 
-  pharmacy              Pharmacy?     @relation(fields: [pharmacy_id], references: [id], onDelete: SetNull)
+  pharmacy Pharmacy? @relation(fields: [pharmacy_id], references: [id], onDelete: SetNull)
 
-  branch                Branch?       @relation(fields: [branch_id], references: [id], onDelete: SetNull)
+  branch Branch? @relation(fields: [branch_id], references: [id], onDelete: SetNull)
 
-  user                  User?         @relation("AuditLogUser", fields: [user_id], references: [id], onDelete: SetNull)
+  user User? @relation("AuditLogUser", fields: [user_id], references: [id], onDelete: SetNull)
 
   @@index([pharmacy_id])
   @@index([branch_id])
   @@index([user_id])
   @@index([entity, entity_id])
   @@index([created_at])
-
   @@map("audit_logs")
 }
 
@@ -1729,92 +1670,91 @@ enum RadiusUnit {
 }
 
 model PharmacySettings {
-  id                                  String                @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id                         String                @unique @db.Uuid
+  pharmacy_id String @unique @db.Uuid
 
   // -----------------------------
   // General
   // -----------------------------
 
-  timezone                            String                @default("Asia/Karachi") @db.VarChar(100)
+  timezone String @default("Asia/Karachi") @db.VarChar(100)
 
-  currency                            String                @default("PKR") @db.VarChar(10)
+  currency String @default("PKR") @db.VarChar(10)
 
   // -----------------------------
   // Receipt
   // -----------------------------
 
-  receipt_header                      String?               @db.Text
+  receipt_header String? @db.Text
 
-  receipt_footer                      String?               @db.Text
+  receipt_footer String? @db.Text
 
-  print_logo                          Boolean               @default(true)
+  print_logo Boolean @default(true)
 
-  print_tax_number                    Boolean               @default(true)
+  print_tax_number Boolean @default(true)
 
-  print_phone                         Boolean               @default(true)
+  print_phone Boolean @default(true)
 
-  print_address                       Boolean               @default(true)
+  print_address Boolean @default(true)
 
-  print_qr_code                       Boolean               @default(false)
+  print_qr_code Boolean @default(false)
 
-  show_cashier_name                   Boolean               @default(true)
+  show_cashier_name Boolean @default(true)
 
   // -----------------------------
   // Inventory
   // -----------------------------
 
-  minimum_stock_quantity               Int      @default(10)
+  minimum_stock_quantity Int @default(10)
 
-  critical_stock_quantity              Int      @default(5)
+  critical_stock_quantity Int @default(5)
 
-  expiry_alert_before_days             Int      @default(30)
-
+  expiry_alert_before_days Int @default(30)
 
   // -----------------------------
   // Nearby Search
   // -----------------------------
 
-  enable_stock_sharing                Boolean               @default(false)
+  enable_stock_sharing Boolean @default(false)
 
-  share_inventory_details             Boolean               @default(false)
+  share_inventory_details Boolean @default(false)
 
-  allow_reservations                  Boolean               @default(false)
+  allow_reservations Boolean @default(false)
 
-  search_radius                       Decimal               @default(1) @db.Decimal(5,2)
+  search_radius Decimal @default(1) @db.Decimal(5, 2)
 
-  radius_unit                         RadiusUnit            @default(KM)
+  radius_unit RadiusUnit @default(KM)
 
   // -----------------------------
   // Notifications
   // -----------------------------
 
-  email_notifications                 Boolean               @default(true)
+  email_notifications Boolean @default(true)
 
-  sms_notifications                   Boolean               @default(false)
+  sms_notifications Boolean @default(false)
 
-  push_notifications                  Boolean               @default(true)
+  push_notifications Boolean @default(true)
 
-  in_app_notifications                Boolean               @default(true)
+  in_app_notifications Boolean @default(true)
 
-  low_stock_alert                     Boolean               @default(true)
+  low_stock_alert Boolean @default(true)
 
-  expiry_alert                        Boolean               @default(true)
+  expiry_alert Boolean @default(true)
 
-  purchase_alert                      Boolean               @default(true)
+  purchase_alert Boolean @default(true)
 
-  sale_alert                          Boolean               @default(false)
+  sale_alert Boolean @default(false)
 
   // -----------------------------
   // System
   // -----------------------------
 
-  created_at                          DateTime              @default(now())
+  created_at DateTime @default(now())
 
-  updated_at                          DateTime              @updatedAt
+  updated_at DateTime @updatedAt
 
-  pharmacy                            Pharmacy              @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
 
   @@map("pharmacy_settings")
 }
@@ -1878,7 +1818,6 @@ model SystemLog {
   @@index([pharmacy_id])
   @@index([branch_id])
   @@index([user_id])
-
   @@map("system_logs")
 }
 
@@ -1889,52 +1828,46 @@ enum SupplierStatus {
   @@map("supplier_status")
 }
 
-
 model Supplier {
-  id                      String            @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id             String            @db.Uuid
+  pharmacy_id String @db.Uuid
 
-  name                    String            @db.VarChar(255)
+  name String @db.VarChar(255)
 
-  company_name            String?           @db.VarChar(255)
+  company_name String? @db.VarChar(255)
 
-  registration_number     String?           @db.VarChar(100)
+  registration_number String? @db.VarChar(100)
 
-  tax_number              String?           @db.VarChar(100)
+  tax_number String? @db.VarChar(100)
 
-  contact_person          String?           @db.VarChar(255)
+  contact_person String? @db.VarChar(255)
 
-  phone                   String?           @db.VarChar(30)
+  phone String? @db.VarChar(30)
 
-  email                   String?           @db.VarChar(255)
+  email String? @db.VarChar(255)
 
-  address                 String?           @db.Text
+  address String? @db.Text
 
-  city                    String?           @db.VarChar(100)
+  city String? @db.VarChar(100)
 
-  notes                   String?           @db.Text
+  notes String? @db.Text
 
-  status                  SupplierStatus    @default(ACTIVE)
+  status SupplierStatus @default(ACTIVE)
 
-  created_at              DateTime          @default(now())
+  created_at DateTime @default(now())
 
-  updated_at              DateTime          @updatedAt
+  updated_at DateTime @updatedAt
 
-  deleted_at              DateTime?
-
+  deleted_at DateTime?
 
   pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
 
-  purchase_orders          PurchaseOrder[]
-
+  purchase_orders PurchaseOrder[]
 
   @@unique([pharmacy_id, name])
-
   @@index([pharmacy_id])
-
   @@index([status])
-
   @@map("suppliers")
 }
 
@@ -1977,35 +1910,33 @@ enum RefreshTokenRevocationReason {
 
   /// Token was replaced with a newly issued refresh token during normal token rotation.
   ROTATED
-
 }
 
 model RefreshToken {
-  id                   String    @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  user_id              String    @db.Uuid
-  token_hash           String    @unique @db.VarChar(255)
+  user_id    String @db.Uuid
+  token_hash String @unique @db.VarChar(255)
 
-  expires_at           DateTime
-  revoked_at           DateTime?
+  expires_at     DateTime
+  revoked_at     DateTime?
   revoked_reason RefreshTokenRevocationReason?
 
-  replaced_by_token_id String?   @db.Uuid
+  replaced_by_token_id String? @db.Uuid
 
-  device_name          String?   @db.VarChar(100)
-  ip_address           String?   @db.VarChar(45)
-  user_agent           String?   @db.Text
+  device_name String? @db.VarChar(100)
+  ip_address  String? @db.VarChar(45)
+  user_agent  String? @db.Text
 
-  last_used_at         DateTime  @default(now())
+  last_used_at DateTime @default(now())
 
-  created_at           DateTime  @default(now())
-  updated_at           DateTime  @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
   @@index([expires_at])
   @@index([revoked_at])
-
   @@map("refresh_tokens")
 }

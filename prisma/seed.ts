@@ -9,20 +9,22 @@ import { seedPermissions } from './seeds/permissions.seed';
 import { seedRoles } from './seeds/roles.seed';
 import { seedRolePermissions } from './seeds/role-permissions.seed';
 import { seedUsers } from './seeds/users.seeder';
-import { seedDosageForms } from './seeds/dosage-form.seed';
+import { seedDosageForms } from './seeds/dosage-forms.seed';
 import { seedManufacturers } from './seeds/manufacturers.seed';
-import { seedProductTypes } from './seeds/product-type.seed';
-import { seedRetailCategories } from './seeds/retail-category.seed';
+import { seedProductTypes } from './seeds/product-types.seed';
+import { seedRetailCategories } from './seeds/retail-categories.seed';
 import { seedSubscriptionPlans } from './seeds/subscription-plans.seed';
 import { seedPaymentProviders } from './seeds/payment-providers.seed';
 import { seedPaymentMethods } from './seeds/payment-methods.seed';
+import { seedProducts } from './seeds/products.seed';
+
+import pg from 'pg';
+const { Pool } = pg;
 
 async function main() {
-    const prisma = new PrismaClient({
-        adapter: new PrismaPg({
-            connectionString: process.env.DATABASE_URL!,
-        }),
-    });
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+    const adapter = new PrismaPg(pool);
+    const prisma = new PrismaClient({ adapter });
 
     const ctx: SeedContext = {
         prisma,
@@ -44,10 +46,11 @@ async function main() {
 
     await seedRolePermissions(ctx);
     await seedUsers(ctx);
-    seedDosageForms(ctx);
-    seedManufacturers(ctx);
-    seedProductTypes(ctx);
-    seedRetailCategories(ctx);
+    await seedDosageForms(ctx);
+    await seedManufacturers(ctx);
+    await seedProductTypes(ctx);
+    await seedRetailCategories(ctx);
+    seedProducts(ctx);
     seedSubscriptionPlans(ctx);
     await seedPaymentProviders(ctx);
     seedPaymentMethods(ctx);
