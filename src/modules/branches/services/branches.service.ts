@@ -189,10 +189,14 @@ export class BranchesService {
             return;
         }
 
-        const hasAccess = await this.branchesRepository.userHasAccessToBranch(user, branchId);
+        const branch = await this.branchesRepository.findUserAccessibleBranch(user, branchId);
 
-        if (!hasAccess) {
+        if (!branch) {
             throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ACCESS_DENIED);
+        }
+
+        if (!branch.is_active) {
+            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_INACTIVE);
         }
     }
 }

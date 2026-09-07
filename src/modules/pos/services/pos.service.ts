@@ -115,11 +115,15 @@ export class PosService {
                     where: {
                         id: payment.pharmacy_payment_method_id,
                         pharmacy_id: pharmacyId,
-                    }
+                    },
                 });
 
                 if (!method) {
-                    throw new ConflictException(MESSAGES.ERROR.PAYMENT_METHOD_NOT_BELONGS_TO_PHARMACY(payment.pharmacy_payment_method_id));
+                    throw new ConflictException(
+                        MESSAGES.ERROR.PAYMENT_METHOD_NOT_BELONGS_TO_PHARMACY(
+                            payment.pharmacy_payment_method_id,
+                        ),
+                    );
                 }
             }
 
@@ -128,19 +132,23 @@ export class PosService {
             if (!customerId) {
                 const phone = dto.customer_phone || POS_DEFAULTS.CUSTOMER_PHONE;
                 const name = dto.customer_name || POS_DEFAULTS.CUSTOMER_NAME;
-                
+
                 let customer = await this.customersService.findByPhone(pharmacyId, phone);
-                
+
                 if (!customer) {
                     const nameParts = name.trim().split(' ');
                     const firstName = nameParts[0];
                     const lastName = nameParts.slice(1).join(' ') || null;
-                    
-                    customer = await (this.customersService as any).create(pharmacyId, {
-                        first_name: firstName,
-                        last_name: lastName,
-                        phone: phone,
-                    }, user);
+
+                    customer = await (this.customersService as any).create(
+                        pharmacyId,
+                        {
+                            first_name: firstName,
+                            last_name: lastName,
+                            phone: phone,
+                        },
+                        user,
+                    );
                 }
                 customerId = customer!.id;
             }

@@ -273,29 +273,25 @@ export class BranchesRepository {
         });
     }
 
-    async userHasAccessToBranch(user: AuthenticatedUser, branchId: string): Promise<boolean> {
+    async findUserAccessibleBranch(user: AuthenticatedUser, branchId: string) {
         if (isPharmacyAdmin(user.roles)) {
-            const count = await this.prisma.branch.count({
+            return this.prisma.branch.findFirst({
                 where: {
                     id: branchId,
                     pharmacy_id: user.pharmacy_id!,
-                    is_active: true,
                 },
             });
-
-            return count > 0;
         }
 
-        const count = await this.prisma.userBranch.count({
+        return this.prisma.branch.findFirst({
             where: {
-                user_id: user.id,
-                branch_id: branchId,
-                branch: {
-                    is_active: true,
+                id: branchId,
+                user_branches: {
+                    some: {
+                        user_id: user.id,
+                    },
                 },
             },
         });
-
-        return count > 0;
     }
 }

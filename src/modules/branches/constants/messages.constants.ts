@@ -16,5 +16,6 @@ export const MESSAGES = {
         BRANCH_ACCESS_DENIED: "You don't have permissions to access this branch.",
         BRANCH_ID_REQUIRED: 'Branch id is required.',
         PHARMACY_ID_REQUIRED: 'Pharmacy id is required.',
+        BRANCH_INACTIVE: 'Branch is inactive.',
     },
 } as const;

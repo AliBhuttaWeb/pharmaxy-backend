@@ -43,8 +43,8 @@ export class PurchaseOrdersService {
 
     async findMany(query: PurchaseOrderQueryDto) {
         const { limit, page } = query;
-        const {records, total} = await this.purchaseOrdersRepository.findMany(query);
-        if (!total || !page || !limit) return {records};
+        const { records, total } = await this.purchaseOrdersRepository.findMany(query);
+        if (!total || !page || !limit) return { records };
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
         return { records, pagination };
     }

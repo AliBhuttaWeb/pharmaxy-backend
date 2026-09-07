@@ -121,7 +121,7 @@ export class PharmaciesRepository {
 
         return {
             records,
-            total
+            total,
         };
     }
 

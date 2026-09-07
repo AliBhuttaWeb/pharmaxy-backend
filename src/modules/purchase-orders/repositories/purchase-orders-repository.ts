@@ -100,7 +100,7 @@ export class PurchaseOrdersRepository {
                 orderBy,
                 include: this.purchaseOrderRelations,
             });
-            return {records}
+            return { records };
         }
 
         const [records, total] = await this.prisma.$transaction([

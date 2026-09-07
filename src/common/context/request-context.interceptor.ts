@@ -11,7 +11,7 @@ import { BranchesService } from '@/modules/branches/services/branches.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { RequestContext, RequestStore } from './request-context';
 import { requiresBranchContext } from '../helpers';
-import { MESSAGES as BRANCH_MESSAGES } from '@/modules/branches/constants'
+import { MESSAGES as BRANCH_MESSAGES } from '@/modules/branches/constants';
 
 @Injectable()
 export class RequestContextInterceptor implements NestInterceptor {
@@ -30,8 +30,8 @@ export class RequestContextInterceptor implements NestInterceptor {
             }
 
             user.branch_id = branchId;
-            
-            branchId && await this.branchesService.ensureUserHasAccess(user, branchId);
+
+            branchId && (await this.branchesService.ensureUserHasAccess(user, branchId));
         }
 
         const store: RequestStore = {

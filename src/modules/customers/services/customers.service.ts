@@ -23,7 +23,10 @@ export class CustomersService {
     async findMany(branchId: string, query: CustomerQueryDto) {
         const branch = await this.branchesService.findById(branchId);
         const { limit, page } = query;
-        const { records, total } = await this.customersRepository.findMany(branch.pharmacy_id, query);
+        const { records, total } = await this.customersRepository.findMany(
+            branch.pharmacy_id,
+            query,
+        );
         if (!total || !page || !limit) return { records };
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
         return { records, pagination };

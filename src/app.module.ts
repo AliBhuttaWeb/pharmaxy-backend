@@ -61,7 +61,7 @@ import { CommonModule } from './common/common.module';
         DashboardModule,
         SubscriptionPlansModule,
         SubscriptionsModule,
-        CommonModule
+        CommonModule,
     ],
     providers: [
         {
