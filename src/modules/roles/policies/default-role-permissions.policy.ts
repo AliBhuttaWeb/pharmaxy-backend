@@ -153,6 +153,15 @@ export const DEFAULT_ROLE_PERMISSIONS = {
 
         // Pharmacy Payment Methods
         ...Object.values(permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS),
+
+        permissions.RETAIL_CATEGORIES_PERMISSIONS.RETAIL_CATEGORY_VIEW_LIST,
+        permissions.PRODUCT_TYPES_PERMISSIONS.PRODUCT_TYPE_VIEW_LIST,
+        permissions.DOSAGE_FORMS_PERMISSIONS.DOSAGE_FORM_VIEW_LIST,
+        permissions.MANUFACTURERS_PERMISSIONS.MANUFACTURER_VIEW_LIST,
+
+        permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_LIST,
+        permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_DETAIL
+
     ),
 
     // =====================================================
