@@ -4,10 +4,6 @@ import { IsBoolean, IsDecimal, IsOptional, IsString, IsUUID, MaxLength } from 'c
 export class CreateBranchProductDto {
     @ApiProperty()
     @IsUUID()
-    branch_id!: string;
-
-    @ApiProperty()
-    @IsUUID()
     product_id!: string;
 
     @ApiProperty({

@@ -151,9 +151,9 @@ export class BranchProductsRepository {
         });
     }
 
-    create(data: CreateBranchProductDto, tx?: Prisma.TransactionClient) {
+    create(branchId: string, data: CreateBranchProductDto, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).branchProduct.create({
-            data,
+            data: { ...data, branch_id: branchId },
             include: this.branchProductRelations,
         });
     }

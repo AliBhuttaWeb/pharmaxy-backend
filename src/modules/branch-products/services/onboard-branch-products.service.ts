@@ -22,7 +22,7 @@ export class OnboardBranchProductService {
         private readonly productBatchesRepository: ProductBatchesRepository,
     ) {}
 
-    async execute(dto: OnboardBranchProductDto) {
+    async execute(dto: OnboardBranchProductDto, branchId) {
         return this.prisma.$transaction(async (tx) => {
             let productId = dto.branch_product.product_id;
 
@@ -50,7 +50,7 @@ export class OnboardBranchProductService {
              * Duplicate check
              */
             const existing = await this.branchProductsRepository.findByBranchAndProduct(
-                dto.branch_product.branch_id,
+                branchId,
                 productId,
                 undefined,
                 tx,
@@ -64,6 +64,7 @@ export class OnboardBranchProductService {
              * Create Branch Product
              */
             const branchProduct = await this.branchProductsRepository.create(
+                branchId,
                 {
                     ...dto.branch_product,
                     product_id: productId,

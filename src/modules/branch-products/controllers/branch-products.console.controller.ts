@@ -6,10 +6,11 @@ import {
     UpdateBranchProductDto,
 } from '../dtos';
 
-import { ConsoleController, Permissions } from '@/common/decorators';
+import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { BranchProductsService } from '../services/branch-products.service';
 import { BRANCH_PRODUCTS_PERMISSIONS } from '@/common/constants/permissions/branch-products.permissions';
+import { AuthenticatedUser } from '@/modules/auth/types';
 
 @ConsoleController('branch-products')
 export class BranchProductsConsoleController {
@@ -29,14 +30,14 @@ export class BranchProductsConsoleController {
 
     @Post()
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_CREATE.name)
-    create(@Body() dto: CreateBranchProductDto) {
-        return this.branchProductsService.create(dto);
+    create(@Body() dto: CreateBranchProductDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.branchProductsService.create(dto, user);
     }
 
     @Post('onboard')
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_CREATE.name)
-    onboard(@Body() dto: OnboardBranchProductDto) {
-        return this.branchProductsService.onboard(dto);
+    onboard(@Body() dto: OnboardBranchProductDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.branchProductsService.onboard(dto, user);
     }
 
     @Patch(':id')

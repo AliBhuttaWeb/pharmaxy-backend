@@ -15,5 +15,6 @@ export const MESSAGES = {
         PRODUCT_NOT_FOUND: 'Product not found.',
         PRODUCT_REQUIRED: 'Product details are required when no product is selected.',
         BATCH_NOT_FOUND: 'No batch found.',
+        BRANCH_ID_MISSING: "Bnrach is missing, seems like you did't select any branch.",
     },
 } as const;
