@@ -64,7 +64,7 @@ export class HoldOrdersService {
                     throw new ConflictException(MESSAGES.ERROR.PRODUCT_INACTIVE);
                 }
 
-                const quantity = Number(item.quantity);
+                const quantity = item.quantity;
 
                 const unitPrice = Number(branchProduct.selling_price);
 

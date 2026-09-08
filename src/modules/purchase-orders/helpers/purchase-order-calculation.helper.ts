@@ -8,24 +8,24 @@ export function calculatePurchaseOrderTotals(dto: CreatePurchaseOrderDto) {
     let totalTax = 0;
 
     const items = dto.items.map((item) => {
-        const quantity = Number(item.ordered_quantity);
+        const quantity = item.ordered_quantity;
 
-        const unitCost = Number(item.unit_cost);
+        const unitCost = item.unit_cost;
 
         const lineSubtotal = quantity * unitCost;
 
         const discountAmount = item.discount_amount
-            ? Number(item.discount_amount)
+            ? item.discount_amount
             : item.discount_percentage
-              ? (lineSubtotal * Number(item.discount_percentage)) / 100
+              ? (lineSubtotal * item.discount_percentage) / 100
               : 0;
 
         const amountAfterDiscount = lineSubtotal - discountAmount;
 
         const taxAmount = item.tax_amount
-            ? Number(item.tax_amount)
+            ? item.tax_amount
             : item.tax_percentage
-              ? (amountAfterDiscount * Number(item.tax_percentage)) / 100
+              ? (amountAfterDiscount * item.tax_percentage) / 100
               : 0;
 
         const lineTotal = amountAfterDiscount + taxAmount;
@@ -45,44 +45,44 @@ export function calculatePurchaseOrderTotals(dto: CreatePurchaseOrderDto) {
 
             ordered_quantity: item.ordered_quantity,
 
-            fulfilled_quantity: '0',
+            fulfilled_quantity: 0,
 
-            received_quantity: '0',
+            received_quantity: 0,
 
             unit_cost: item.unit_cost,
 
             discount_percentage: item.discount_percentage,
 
-            discount_amount: discountAmount.toFixed(2),
+            discount_amount: Math.round(discountAmount),
 
             tax_percentage: item.tax_percentage,
 
-            tax_amount: taxAmount.toFixed(2),
+            tax_amount: Math.round(taxAmount),
 
-            line_total: lineTotal.toFixed(2),
+            line_total: Math.round(lineTotal),
 
             remarks: item.remarks,
         };
     });
 
-    const orderDiscount = Number(dto.discount_amount ?? 0);
+    const orderDiscount = dto.discount_amount ?? 0;
 
-    const orderTax = Number(dto.tax_amount ?? 0);
+    const orderTax = dto.tax_amount ?? 0;
 
-    const shippingAmount = Number(dto.shipping_amount ?? 0);
+    const shippingAmount = dto.shipping_amount ?? 0;
 
-    const otherCharges = Number(dto.other_charges ?? 0);
+    const otherCharges = dto.other_charges ?? 0;
 
     const grandTotal = subtotal - orderDiscount + orderTax + shippingAmount + otherCharges;
 
     return {
-        subtotal: subtotal.toFixed(2),
+        subtotal: Math.round(subtotal),
 
-        discountAmount: (totalDiscount + orderDiscount).toFixed(2),
+        discountAmount: Math.round(totalDiscount + orderDiscount),
 
-        taxAmount: (totalTax + orderTax).toFixed(2),
+        taxAmount: Math.round(totalTax + orderTax),
 
-        grandTotal: grandTotal.toFixed(2),
+        grandTotal: Math.round(grandTotal),
 
         items,
     };

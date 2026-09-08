@@ -19,7 +19,7 @@ export class CreatePurchaseOrderItemDto {
         description: 'Unit purchase cost',
     })
     @IsInt()
-    @Min(0)
+    @Min(1)
     unit_cost!: number;
 
     @ApiPropertyOptional({

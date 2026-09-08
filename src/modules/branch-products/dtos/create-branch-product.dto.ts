@@ -10,7 +10,7 @@ export class CreateBranchProductDto {
         example: 250,
     })
     @IsInt()
-    @Min(0)
+    @Min(1)
     selling_price!: number;
 
     @ApiPropertyOptional({

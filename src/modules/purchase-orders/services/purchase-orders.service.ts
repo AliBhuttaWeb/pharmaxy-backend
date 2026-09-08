@@ -111,9 +111,9 @@ export class PurchaseOrdersService {
 
             tax_amount: totals.taxAmount,
 
-            shipping_amount: dto.shipping_amount ?? '0',
+            shipping_amount: dto.shipping_amount ?? 0,
 
-            other_charges: dto.other_charges ?? '0',
+            other_charges: dto.other_charges ?? 0,
 
             grand_total: totals.grandTotal,
 
@@ -287,7 +287,7 @@ export class PurchaseOrdersService {
                 }
 
                 const receivedQuantity = item.batches.reduce(
-                    (total, batch) => total + Number(batch.received_quantity),
+                    (total, batch) => total + batch.received_quantity,
                     0,
                 );
 
@@ -340,7 +340,7 @@ export class PurchaseOrdersService {
 
                             mrp: batch.mrp,
 
-                            quantity: Number(batch.received_quantity),
+                            quantity: batch.received_quantity,
 
                             source_type: BatchSourceType.PURCHASE_ORDER,
 

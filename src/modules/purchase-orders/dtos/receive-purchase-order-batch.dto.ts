@@ -18,14 +18,14 @@ export class ReceivePurchaseOrderBatchDto {
         example: 250,
     })
     @IsInt()
-    @Min(0)
+    @Min(1)
     purchase_price!: number;
 
     @ApiProperty({
         example: 300,
     })
     @IsInt()
-    @Min(0)
+    @Min(1)
     mrp!: number;
 
     @ApiPropertyOptional()
