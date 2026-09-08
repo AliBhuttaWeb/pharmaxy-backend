@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDecimal, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsUUID, Min } from 'class-validator';
 
 export class CreateHoldOrderItemDto {
     @ApiProperty()
@@ -7,12 +7,11 @@ export class CreateHoldOrderItemDto {
     branch_product_id!: string;
 
     @ApiProperty({
-        example: '2',
+        example: 2,
     })
-    @IsDecimal({
-        decimal_digits: '0,3',
-    })
-    quantity!: string;
+    @IsInt()
+    @Min(1)
+    quantity!: number;
 
     @ApiPropertyOptional()
     @IsOptional()

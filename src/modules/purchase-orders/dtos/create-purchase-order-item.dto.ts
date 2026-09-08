@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDecimal, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
 
 export class CreatePurchaseOrderItemDto {
     @ApiProperty()
@@ -7,62 +7,56 @@ export class CreatePurchaseOrderItemDto {
     product_id!: string;
 
     @ApiProperty({
-        example: '100.000',
+        example: 100,
         description: 'Quantity ordered from supplier',
     })
-    @IsDecimal({
-        decimal_digits: '0,3',
-    })
-    ordered_quantity!: string;
+    @IsInt()
+    @Min(1)
+    ordered_quantity!: number;
 
     @ApiProperty({
-        example: '250.00',
+        example: 250,
         description: 'Unit purchase cost',
     })
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    unit_cost!: string;
+    @IsInt()
+    @Min(0)
+    unit_cost!: number;
 
     @ApiPropertyOptional({
-        example: '5.00',
+        example: 5,
         description: 'Discount percentage',
     })
     @IsOptional()
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    discount_percentage?: string;
+    @IsInt()
+    @Min(0)
+    discount_percentage?: number;
 
     @ApiPropertyOptional({
-        example: '500.00',
+        example: 500,
         description: 'Discount amount',
     })
     @IsOptional()
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    discount_amount?: string;
+    @IsInt()
+    @Min(0)
+    discount_amount?: number;
 
     @ApiPropertyOptional({
-        example: '18.00',
+        example: 18,
         description: 'Tax percentage',
     })
     @IsOptional()
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    tax_percentage?: string;
+    @IsInt()
+    @Min(0)
+    tax_percentage?: number;
 
     @ApiPropertyOptional({
-        example: '900.00',
+        example: 900,
         description: 'Tax amount',
     })
     @IsOptional()
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    tax_amount?: string;
+    @IsInt()
+    @Min(0)
+    tax_amount?: number;
 
     @ApiPropertyOptional({
         maxLength: 1000,

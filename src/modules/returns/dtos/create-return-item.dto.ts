@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDecimal, IsUUID } from 'class-validator';
+import { IsInt, IsUUID, Min } from 'class-validator';
 
 export class CreateReturnItemDto {
     @ApiProperty()
@@ -7,10 +7,9 @@ export class CreateReturnItemDto {
     invoice_item_id!: string;
 
     @ApiProperty({
-        example: '2.000',
+        example: 2,
     })
-    @IsDecimal({
-        decimal_digits: '0,3',
-    })
-    quantity!: string;
+    @IsInt()
+    @Min(1)
+    quantity!: number;
 }

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsDecimal, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { IsBoolean, IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
 
 export class CreateBranchProductDto {
     @ApiProperty()
@@ -7,12 +7,11 @@ export class CreateBranchProductDto {
     product_id!: string;
 
     @ApiProperty({
-        example: '250.00',
+        example: 250,
     })
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    selling_price!: string;
+    @IsInt()
+    @Min(0)
+    selling_price!: number;
 
     @ApiPropertyOptional({
         default: false,

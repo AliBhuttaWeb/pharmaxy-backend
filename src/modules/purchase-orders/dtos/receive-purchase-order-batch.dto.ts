@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsDecimal, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsDateString, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 
 export class ReceivePurchaseOrderBatchDto {
     @ApiProperty()
@@ -8,28 +8,25 @@ export class ReceivePurchaseOrderBatchDto {
     batch_number!: string;
 
     @ApiProperty({
-        example: '100',
+        example: 100,
     })
-    @IsDecimal({
-        decimal_digits: '0,3',
-    })
+    @IsInt()
+    @Min(1)
     received_quantity!: number;
 
     @ApiProperty({
-        example: '250.00',
+        example: 250,
     })
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    purchase_price!: string;
+    @IsInt()
+    @Min(0)
+    purchase_price!: number;
 
     @ApiProperty({
-        example: '300.00',
+        example: 300,
     })
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    mrp!: string;
+    @IsInt()
+    @Min(0)
+    mrp!: number;
 
     @ApiPropertyOptional()
     @IsOptional()

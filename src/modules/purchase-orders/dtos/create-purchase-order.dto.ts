@@ -4,11 +4,12 @@ import {
     ArrayMinSize,
     IsArray,
     IsDateString,
-    IsDecimal,
+    IsInt,
     IsOptional,
     IsString,
     IsUUID,
     MaxLength,
+    Min,
     ValidateNested,
 } from 'class-validator';
 
@@ -41,44 +42,40 @@ export class CreatePurchaseOrderDto {
     expected_delivery_date?: string;
 
     @ApiPropertyOptional({
-        example: '500.00',
-        default: '0.00',
+        example: 500,
+        default: 0,
     })
     @IsOptional()
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    discount_amount?: string;
+    @IsInt()
+    @Min(0)
+    discount_amount?: number;
 
     @ApiPropertyOptional({
-        example: '1800.00',
-        default: '0.00',
+        example: 1800,
+        default: 0,
     })
     @IsOptional()
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    tax_amount?: string;
+    @IsInt()
+    @Min(0)
+    tax_amount?: number;
 
     @ApiPropertyOptional({
-        example: '300.00',
-        default: '0.00',
+        example: 300,
+        default: 0,
     })
     @IsOptional()
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    shipping_amount?: string;
+    @IsInt()
+    @Min(0)
+    shipping_amount?: number;
 
     @ApiPropertyOptional({
-        example: '100.00',
-        default: '0.00',
+        example: 100,
+        default: 0,
     })
     @IsOptional()
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    other_charges?: string;
+    @IsInt()
+    @Min(0)
+    other_charges?: number;
 
     @ApiPropertyOptional({
         maxLength: 5000,

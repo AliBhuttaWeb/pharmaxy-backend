@@ -1,7 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
     IsDateString,
-    IsDecimal,
     IsInt,
     IsOptional,
     IsString,
@@ -32,20 +31,18 @@ export class ReceiveStockDto {
     expiry_date?: string;
 
     @ApiProperty({
-        example: '250.00',
+        example: 250,
     })
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    purchase_price!: string;
+    @IsInt()
+    @Min(0)
+    purchase_price!: number;
 
     @ApiProperty({
-        example: '300.00',
+        example: 300,
     })
-    @IsDecimal({
-        decimal_digits: '0,2',
-    })
-    mrp!: string;
+    @IsInt()
+    @Min(0)
+    mrp!: number;
 
     @ApiProperty({
         example: 100,
