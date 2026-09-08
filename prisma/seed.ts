@@ -50,10 +50,10 @@ async function main() {
     await seedManufacturers(ctx);
     await seedProductTypes(ctx);
     await seedRetailCategories(ctx);
-    seedProducts(ctx);
-    seedSubscriptionPlans(ctx);
+    await seedProducts(ctx);
+    await seedSubscriptionPlans(ctx);
     await seedPaymentProviders(ctx);
-    seedPaymentMethods(ctx);
+    await seedPaymentMethods(ctx);
 
     await prisma.$disconnect();
 }

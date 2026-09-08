@@ -1,0 +1,146 @@
+{
+    "version": 1,
+    "description": "Seed-ready retail category master data for a pharmacy platform.",
+    "retailCategories": [
+        {
+            "name": "Pain Relief",
+            "description": "Pain killers, analgesics, and anti-inflammatory medicines for headache, fever, and body pain."
+        },
+        {
+            "name": "Antibiotics",
+            "description": "Antibiotic and antimicrobial medicines used to treat bacterial infections."
+        },
+        {
+            "name": "Cold & Flu",
+            "description": "Cold, cough, and flu products including antihistamines, decongestants, and throat lozenges."
+        },
+        {
+            "name": "Gastrointestinal",
+            "description": "Medicines for the digestive system including antacids, laxatives, anti-diarrhoeals, and antiemetics."
+        },
+        {
+            "name": "Diabetes Care",
+            "description": "Diabetes medicines, insulin, blood glucose monitors, test strips, and related supplies."
+        },
+        {
+            "name": "Cardiac Care",
+            "description": "Heart-related medicines including antihypertensives, statins, anticoagulants, and cardiac tonics."
+        },
+        {
+            "name": "Dermatology",
+            "description": "Skin-related medicines including antifungals, corticosteroids, and acne treatments."
+        },
+        {
+            "name": "Eye Care",
+            "description": "Eye drops, eye ointments, contact lens solutions, and ophthalmic medicines."
+        },
+        {
+            "name": "ENT Care",
+            "description": "Ear, nose, and throat products including nasal sprays, ear drops, and throat treatments."
+        },
+        {
+            "name": "Respiratory",
+            "description": "Respiratory medicines including inhalers, bronchodilators, and nebulizer solutions for asthma and COPD."
+        },
+        {
+            "name": "Neurology & CNS",
+            "description": "Medicines for the central nervous system including antiepileptics, migraine treatments, and neurological disorders."
+        },
+        {
+            "name": "Mental Health",
+            "description": "Psychiatric medicines including antidepressants, anxiolytics, antipsychotics, and sleep aids."
+        },
+        {
+            "name": "Antifungals",
+            "description": "Antifungal medicines for systemic and topical fungal infections."
+        },
+        {
+            "name": "Antivirals",
+            "description": "Antiviral medicines used to treat viral infections including hepatitis and herpes."
+        },
+        {
+            "name": "Hormones & Endocrine",
+            "description": "Hormone therapies, thyroid medicines, corticosteroids, and endocrine system treatments."
+        },
+        {
+            "name": "Orthopedic Care",
+            "description": "Medicines and topical products for joint pain, arthritis, bone health, and musculoskeletal conditions."
+        },
+        {
+            "name": "Vitamins",
+            "description": "Vitamin supplements including Vitamin C, Vitamin D, B-Complex, and multivitamins."
+        },
+        {
+            "name": "Protein Supplements",
+            "description": "Protein powders, amino acids, and fitness supplements for muscle recovery and growth."
+        },
+        {
+            "name": "Immunity Boosters",
+            "description": "Supplements and medicines designed to strengthen the immune system."
+        },
+        {
+            "name": "Skin Care",
+            "description": "Skin creams, lotions, moisturisers, sunscreens, and topical skincare treatments."
+        },
+        {
+            "name": "Hair Care",
+            "description": "Shampoos, conditioners, hair oils, and hair loss treatments."
+        },
+        {
+            "name": "Oral Care",
+            "description": "Toothpastes, toothbrushes, mouthwashes, and dental hygiene products."
+        },
+        {
+            "name": "Bath & Hygiene",
+            "description": "Soaps, body washes, antiseptic washes, and general personal hygiene products."
+        },
+        {
+            "name": "Feminine Hygiene",
+            "description": "Sanitary pads, tampons, intimate wash, and feminine care products."
+        },
+        {
+            "name": "Baby Food",
+            "description": "Infant formula, baby cereals, weaning foods, and nutritional products for babies and toddlers."
+        },
+        {
+            "name": "Baby Hygiene",
+            "description": "Diapers, baby wipes, baby powder, and other infant hygiene and care products."
+        },
+        {
+            "name": "Surgical Supplies",
+            "description": "Disposable surgical items including bandages, gauze, gloves, syringes, and wound dressings."
+        },
+        {
+            "name": "Wound Care",
+            "description": "Wound care products including antiseptics, adhesive plasters, and advanced wound dressings."
+        },
+        {
+            "name": "First Aid",
+            "description": "First aid kits, antiseptic solutions, burn creams, and emergency care products."
+        },
+        {
+            "name": "Medical Equipment",
+            "description": "Medical devices and equipment including blood pressure monitors, thermometers, and nebulizers."
+        },
+        {
+            "name": "Herbal & Unani",
+            "description": "Traditional herbal, unani, and natural health products including tonics, churans, and herbal remedies."
+        },
+        {
+            "name": "Beverages",
+            "description": "Water, juices, energy drinks, and health beverages available in pharmacy retail."
+        },
+        {
+            "name": "Snacks",
+            "description": "Chocolates, biscuits, energy bars, and light snacks sold in pharmacy retail."
+        },
+        {
+            "name": "Household Items",
+            "description": "General household products including cleaning supplies and basic home necessities."
+        },
+        {
+            "name": "Sexual Wellness",
+            "description": "Condoms, lubricants, and sexual health and wellness products."
+        }
+    ]
+}

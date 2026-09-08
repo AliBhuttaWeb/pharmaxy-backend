@@ -1,0 +1,50 @@
+{
+    "version": 1,
+    "description": "Seed-ready product type master data for a pharmacy platform.",
+    "productTypes": [
+        {
+            "name": "Medicine",
+            "description": "Prescription and over-the-counter medicines used for treating, preventing, or managing illness and disease."
+        },
+        {
+            "name": "Supplement",
+            "description": "Vitamins, minerals, amino acids, herbal extracts, and other dietary supplements intended to support health."
+        },
+        {
+            "name": "Medical Device",
+            "description": "Medical instruments, equipment, and devices such as blood pressure monitors, glucometers, and thermometers."
+        },
+        {
+            "name": "Surgical Item",
+            "description": "Disposable and reusable surgical and clinical-use items such as syringes, gloves, bandages, and gauze."
+        },
+        {
+            "name": "Personal Care",
+            "description": "Personal hygiene and grooming products including soaps, shampoos, deodorants, and dental care items."
+        },
+        {
+            "name": "Cosmetic",
+            "description": "Beauty and cosmetic products including skincare, makeup, fragrances, and topical beauty treatments."
+        },
+        {
+            "name": "Baby Care",
+            "description": "Products designed for infant and toddler care including diapers, baby wipes, baby food, and baby skincare."
+        },
+        {
+            "name": "FMCG",
+            "description": "Fast-moving consumer goods including everyday household and hygiene products sold at low cost and high volume."
+        },
+        {
+            "name": "Food & Beverage",
+            "description": "Packaged food, nutritional drinks, juices, and health beverages available in pharmacy retail."
+        },
+        {
+            "name": "Herbal & Unani",
+            "description": "Traditional herbal, unani, and natural medicine products used for holistic and alternative healthcare."
+        },
+        {
+            "name": "Other",
+            "description": "Miscellaneous retail products that do not fall under any other product type category."
+        }
+    ]
+}

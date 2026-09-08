@@ -1,0 +1,256 @@
+{
+    "version": 1,
+    "description": "Seed-ready manufacturer master data for a Pakistan-focused pharmacy platform.",
+    "manufacturers": [
+        {
+            "name": "Getz Pharma",
+            "description": "One of the largest pharmaceutical manufacturers in Pakistan, known for a wide range of prescription and OTC medicines.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "The Searle Company",
+            "description": "Pakistani pharmaceutical manufacturer producing branded medicines across multiple therapeutic categories.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Highnoon Laboratories",
+            "description": "Manufacturer of prescription and consumer healthcare products with a strong presence in Pakistan.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "AGP Limited",
+            "description": "Pharmaceutical and healthcare products manufacturer listed on the Pakistan Stock Exchange.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Hilton Pharma",
+            "description": "Manufacturer of branded pharmaceutical and nutraceutical products distributed across Pakistan.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Martin Dow",
+            "description": "Pharmaceutical manufacturer operating across Pakistan with a broad product portfolio including generics and branded medicines.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "GlaxoSmithKline Pakistan",
+            "description": "Local subsidiary of the global GSK group, manufacturing vaccines, prescription medicines, and consumer health products.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Pfizer Pakistan",
+            "description": "Subsidiary of Pfizer Inc., one of the world's leading pharmaceutical manufacturers, operating in Pakistan.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Abbott Laboratories Pakistan",
+            "description": "Subsidiary of Abbott, manufacturing healthcare and pharmaceutical products in Pakistan including nutritional supplements and diagnostics.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Sanofi Pakistan",
+            "description": "Subsidiary of French global pharmaceutical company Sanofi, offering medicines across cardiology, diabetes, and rare diseases.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Bosch Pharmaceuticals",
+            "description": "Pakistani pharmaceutical manufacturer with a product range spanning antibiotics, dermatology, and OTC medicines.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "SAMI Pharmaceuticals",
+            "description": "Pakistani pharmaceutical manufacturer offering a large portfolio of generic and branded medicines.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Barrett Hodgson Pakistan",
+            "description": "Established Pakistani pharmaceutical manufacturer producing branded generics across several therapeutic areas.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Ferozsons Laboratories",
+            "description": "One of Pakistan's oldest pharmaceutical manufacturers, specialising in oncology, hepatology, and general medicines.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Tabros Pharma",
+            "description": "Manufacturer of pharmaceutical products with expertise in tablet, capsule, and liquid dosage forms.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Pharmevo",
+            "description": "Pakistani pharmaceutical manufacturer with a broad range of prescription and OTC products.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "OBS Pakistan",
+            "description": "Healthcare and pharmaceutical company operating in the branded generics segment in Pakistan.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Herbion Pakistan",
+            "description": "Herbal and pharmaceutical manufacturer known for natural cough, cold, and wellness products.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Bayer Pakistan",
+            "description": "Subsidiary of Bayer AG, offering pharmaceuticals, consumer health, and crop science products in Pakistan.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Novartis Pakistan",
+            "description": "Subsidiary of Swiss global pharmaceutical company Novartis, providing innovative medicines in Pakistan.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Johnson & Johnson",
+            "description": "Global healthcare company with consumer, pharmaceutical, and medical device segments available in Pakistan.",
+            "country": "USA"
+        },
+        {
+            "name": "Procter & Gamble",
+            "description": "Multinational consumer health and pharmaceutical products company with brands like Vicks, Pampers, and Oral-B in Pakistan.",
+            "country": "USA"
+        },
+        {
+            "name": "AstraZeneca",
+            "description": "Global pharmaceutical and biotechnology company offering oncology, respiratory, and cardiovascular medicines.",
+            "country": "UK"
+        },
+        {
+            "name": "Reckitt",
+            "description": "Global consumer health and hygiene products company with brands such as Dettol, Disprin, Nurofen, and Durex in Pakistan.",
+            "country": "UK"
+        },
+        {
+            "name": "Merck",
+            "description": "Global pharmaceutical, life science, and performance materials company known for innovative healthcare products.",
+            "country": "Germany"
+        },
+        {
+            "name": "Allergan",
+            "description": "Global pharmaceutical company specialising in eye care, neurosciences, aesthetics, and women's health products.",
+            "country": "Ireland"
+        },
+        {
+            "name": "Servier",
+            "description": "International French pharmaceutical company focused on cardiovascular, oncology, and neurology treatments.",
+            "country": "France"
+        },
+        {
+            "name": "Beiersdorf",
+            "description": "Multinational skin care company known for NIVEA, Eucerin, and Hansaplast brands sold in Pakistan.",
+            "country": "Germany"
+        },
+        {
+            "name": "Leo Pharma",
+            "description": "Multinational pharmaceutical company specialising in dermatology and critical care products.",
+            "country": "Denmark"
+        },
+        {
+            "name": "Nestle",
+            "description": "Multinational food and nutrition company with infant formula, nutritional supplements, and health products distributed in Pakistan.",
+            "country": "Switzerland"
+        },
+        {
+            "name": "Kimberly-Clark",
+            "description": "Multinational personal care corporation known for Huggies and Kotex brands sold in Pakistan.",
+            "country": "USA"
+        },
+        {
+            "name": "Hamdard",
+            "description": "Iconic herbal and unani medicine manufacturer in Pakistan producing traditional remedies and health drinks like Rooh Afza.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Colgate-Palmolive",
+            "description": "Multinational consumer products company known for Colgate toothpaste and Palmolive personal care products.",
+            "country": "USA"
+        },
+        {
+            "name": "Alcon",
+            "description": "Global medical company specialising in eye care products including contact lenses, surgical equipment, and eye drops.",
+            "country": "Switzerland"
+        },
+        {
+            "name": "Unilever",
+            "description": "Multinational consumer goods company with health, hygiene, and personal care brands like Dove, Lifebuoy, and Vaseline in Pakistan.",
+            "country": "UK"
+        },
+        {
+            "name": "Haleon",
+            "description": "Multinational consumer healthcare company with brands including Panadol, Sensodyne, and Voltaren.",
+            "country": "UK"
+        },
+        {
+            "name": "Nutrifactor",
+            "description": "Leading nutraceutical and dietary supplement company in Pakistan with a wide range of vitamins and wellness products.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Herbiotics",
+            "description": "Pakistani nutritional supplements manufacturer offering herbal and vitamin-based health products.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Qarshi",
+            "description": "Leading natural and herbal products manufacturer in Pakistan, producing unani medicines, juices, and health tonics.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Safi",
+            "description": "Herbal blood-purifying medicine brand widely available in Pakistan.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Brookes Pharma",
+            "description": "Pharmaceutical company in Pakistan manufacturing a range of branded generics and OTC products.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "CCL Pharmaceuticals",
+            "description": "Pakistani pharmaceutical company known for cardiovascular and metabolic medicines.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Scilife Pharma",
+            "description": "Pharmaceutical company in Pakistan producing branded generics across multiple therapeutic areas.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Bona Papa",
+            "description": "Pakistani baby care manufacturer known for diapers, baby wipes, and infant hygiene products.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Hayat Kimya",
+            "description": "Global manufacturer of Molfix diapers and hygiene products distributed across Pakistan.",
+            "country": "Turkey"
+        },
+        {
+            "name": "Ontex",
+            "description": "Global hygiene solutions company producing adult incontinence, baby care, and feminine hygiene products.",
+            "country": "Belgium"
+        },
+        {
+            "name": "Mediceena Pharma",
+            "description": "Pharmaceutical company in Pakistan producing quality generics and prescription medicines.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Wilshire Laboratories",
+            "description": "Pakistani pharmaceutical manufacturer offering branded generics across various therapeutic categories.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Pacific Pharmaceuticals",
+            "description": "Pharmaceutical manufacturer in Pakistan producing a wide range of tablet, capsule, and liquid preparations.",
+            "country": "Pakistan"
+        },
+        {
+            "name": "Genome Pharmaceuticals",
+            "description": "Pakistani pharmaceutical company focused on generics and specialty medicines.",
+            "country": "Pakistan"
+        }
+    ]
+}

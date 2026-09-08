@@ -1,0 +1,126 @@
+{
+    "version": 1,
+    "description": "Seed-ready dosage form master data for a pharmacy platform.",
+    "dosageForms": [
+        {
+            "name": "Tablet",
+            "description": "Solid oral dosage form compressed from powdered ingredients, typically swallowed whole."
+        },
+        {
+            "name": "Capsule",
+            "description": "Solid oral dosage form enclosed in a hard or soft gelatin shell containing powder, pellets, or liquid fill."
+        },
+        {
+            "name": "Softgel",
+            "description": "Soft gelatin capsule containing a liquid or semi-solid fill, commonly used for oil-soluble supplements."
+        },
+        {
+            "name": "Chewable Tablet",
+            "description": "Tablet designed to be chewed before swallowing, often flavoured for palatability in children."
+        },
+        {
+            "name": "Effervescent Tablet",
+            "description": "Tablet dissolved in water before consumption that produces an effervescent solution."
+        },
+        {
+            "name": "Sublingual Tablet",
+            "description": "Tablet placed under the tongue for rapid absorption directly into the bloodstream."
+        },
+        {
+            "name": "Oral Strip",
+            "description": "Thin film strip placed on the tongue that dissolves rapidly for fast drug absorption."
+        },
+        {
+            "name": "Syrup",
+            "description": "Sweetened liquid oral dosage form with active ingredients dissolved in a sugar or sugar-free base."
+        },
+        {
+            "name": "Suspension",
+            "description": "Liquid dosage form containing undissolved fine particles dispersed in a liquid; must be shaken before use."
+        },
+        {
+            "name": "Liquid",
+            "description": "General liquid oral preparation not classified as a syrup or suspension."
+        },
+        {
+            "name": "Drops",
+            "description": "Concentrated liquid preparation administered in measured drops, used orally, ocularly, or nasally."
+        },
+        {
+            "name": "Nasal Drops",
+            "description": "Liquid preparation administered into the nasal cavity using a dropper."
+        },
+        {
+            "name": "Sachet",
+            "description": "Single-use sealed packet containing a measured dose of powder or granules dissolved in water before use."
+        },
+        {
+            "name": "Granules",
+            "description": "Small particle preparations of medicine typically dissolved in water or taken directly."
+        },
+        {
+            "name": "Powder",
+            "description": "Dry powdered preparation used for oral reconstitution, topical application, or inhalation."
+        },
+        {
+            "name": "Injection",
+            "description": "Sterile parenteral dosage form administered via intravenous, intramuscular, or subcutaneous routes."
+        },
+        {
+            "name": "IV Infusion",
+            "description": "Large-volume sterile solution administered slowly into a vein over an extended period."
+        },
+        {
+            "name": "Cream",
+            "description": "Semi-solid emulsion-based topical preparation for application to skin or mucous membranes."
+        },
+        {
+            "name": "Ointment",
+            "description": "Greasy, anhydrous or water-in-oil semi-solid topical preparation for prolonged skin contact."
+        },
+        {
+            "name": "Eye Ointment",
+            "description": "Sterile ointment formulated for application to the eye or eyelid margins."
+        },
+        {
+            "name": "Gel",
+            "description": "Semi-solid preparation with a gel-like consistency for topical use, offering a cooling effect."
+        },
+        {
+            "name": "Lotion",
+            "description": "Low-viscosity liquid topical preparation applied to the skin for moisturising or medicinal purposes."
+        },
+        {
+            "name": "Spray",
+            "description": "Liquid or aerosol preparation dispensed as a fine mist for nasal, oral, or topical application."
+        },
+        {
+            "name": "Inhaler",
+            "description": "Device that delivers medicine directly into the lungs as a metered aerosol or dry powder."
+        },
+        {
+            "name": "Nebulizer Solution",
+            "description": "Liquid medicine converted into a mist by a nebulizer device for inhalation into the lungs."
+        },
+        {
+            "name": "Patch",
+            "description": "Transdermal adhesive patch delivering a controlled dose of medicine through the skin over time."
+        },
+        {
+            "name": "Suppository",
+            "description": "Solid dosage form designed for insertion into the rectum, vagina, or urethra where it dissolves."
+        },
+        {
+            "name": "Emulsion",
+            "description": "Biphasic liquid preparation of oil and water stabilised by an emulsifier for oral or topical use."
+        },
+        {
+            "name": "Enema",
+            "description": "Liquid preparation administered rectally for bowel evacuation or local drug delivery."
+        },
+        {
+            "name": "Other",
+            "description": "Other or miscellaneous dosage form not covered by the standard categories."
+        }
+    ]
+}
