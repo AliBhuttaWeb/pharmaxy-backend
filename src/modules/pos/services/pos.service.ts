@@ -88,7 +88,7 @@ export class PosService {
                     quantity,
                 );
 
-                const unitPrice = Number(branchProduct.selling_price);
+                const unitPrice = branchProduct.selling_price;
 
                 const lineTotal = unitPrice * quantity;
 

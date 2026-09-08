@@ -66,7 +66,7 @@ export class HoldOrdersService {
 
                 const quantity = item.quantity;
 
-                const unitPrice = Number(branchProduct.selling_price);
+                const unitPrice = branchProduct.selling_price;
 
                 const lineSubtotal = quantity * unitPrice;
 
@@ -193,22 +193,22 @@ export class HoldOrdersService {
 
             notes: hold.notes,
 
-            subtotal: hold.subtotal.toString(),
+            subtotal: hold.subtotal,
 
-            discount_amount: hold.discount_amount.toString(),
+            discount_amount: hold.discount_amount,
 
-            tax_amount: hold.tax_amount.toString(),
+            tax_amount: hold.tax_amount,
 
-            grand_total: hold.grand_total.toString(),
+            grand_total: hold.grand_total,
 
             items: hold.items.map((item) => ({
                 branch_product_id: item.branch_product_id,
 
-                quantity: item.quantity.toString(),
+                quantity: item.quantity,
 
-                unit_price: item.unit_price.toString(),
+                unit_price: item.unit_price,
 
-                subtotal: item.subtotal.toString(),
+                subtotal: item.subtotal,
 
                 notes: item.notes,
             })),
