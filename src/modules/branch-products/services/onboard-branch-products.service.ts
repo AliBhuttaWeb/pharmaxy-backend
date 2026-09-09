@@ -96,7 +96,7 @@ export class OnboardBranchProductService {
                 tx,
             );
 
-            return this.branchProductsRepository.findById(branchProduct.id, tx);
+            return this.branchProductsRepository.findById(branchProduct.id, branchId, tx);
         });
     }
 }

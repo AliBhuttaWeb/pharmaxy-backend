@@ -140,11 +140,12 @@ export class BranchProductsRepository {
         };
     }
 
-    findById(id: string, tx?: Prisma.TransactionClient) {
+    findById(id: string, branchId: string, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).branchProduct.findFirst({
             where: {
                 id,
                 deleted_at: null,
+                branch_id: branchId
             },
             include: this.branchProductRelations,
         });

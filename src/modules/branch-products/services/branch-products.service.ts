@@ -19,6 +19,7 @@ import { ProductsService } from '@/modules/products/services/products.service';
 import { OnboardBranchProductService } from './onboard-branch-products.service';
 import { buildPaginationMeta } from '@/common/pagination';
 import { AuthenticatedUser } from '@/modules/auth/types';
+import { getActiveBranchId } from '@/common/helpers';
 
 @Injectable()
 export class BranchProductsService {
@@ -39,8 +40,10 @@ export class BranchProductsService {
         return { records, pagination };
     }
 
-    async findById(id: string) {
-        const branchProduct = await this.branchProductsRepository.findById(id);
+    async findById(id: string, user: AuthenticatedUser) {
+        const branchId = getActiveBranchId(user);
+        
+        const branchProduct = await this.branchProductsRepository.findById(id, branchId);
 
         if (!branchProduct) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
@@ -50,16 +53,14 @@ export class BranchProductsService {
     }
 
     async create(dto: CreateBranchProductDto, user: AuthenticatedUser) {
-        if (!user.branch_id) {
-            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ID_MISSING);
-        }
+        const branchId = getActiveBranchId(user);
 
-        await this.branchesService.findById(user.branch_id);
+        await this.branchesService.findById(branchId);
 
         await this.productsService.findById(dto.product_id);
 
         const existing = await this.branchProductsRepository.findByBranchAndProduct(
-            user.branch_id,
+            branchId,
             dto.product_id,
         );
 
@@ -67,11 +68,11 @@ export class BranchProductsService {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
         }
 
-        return this.branchProductsRepository.create(user.branch_id, dto);
+        return this.branchProductsRepository.create(branchId, dto);
     }
 
-    async update(id: string, dto: UpdateBranchProductDto) {
-        const branchProduct = await this.findById(id);
+    async update(id: string, dto: UpdateBranchProductDto, user: AuthenticatedUser) {
+        const branchProduct = await this.findById(id, user);
 
         const branchId = branchProduct.branch_id;
 
@@ -94,22 +95,20 @@ export class BranchProductsService {
         return this.branchProductsRepository.update(id, dto);
     }
 
-    async delete(id: string) {
-        await this.findById(id);
+    async delete(id: string, user: AuthenticatedUser) {
+        await this.findById(id, user);
 
         return this.branchProductsRepository.delete(id);
     }
 
-    onboard(dto: OnboardBranchProductDto, user: AuthenticatedUser) {
-        if (!user.branch_id) {
-            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ID_MISSING);
-        }
+    async onboard(dto: OnboardBranchProductDto, user: AuthenticatedUser) {
+        const branchId = getActiveBranchId(user);
 
-        return this.onboardBranchProductService.execute(dto, user.branch_id);
+        return this.onboardBranchProductService.execute(dto, branchId);
     }
 
-    async receiveStock(id: string, dto: ReceiveStockDto) {
-        await this.findById(id);
+    async receiveStock(id: string, dto: ReceiveStockDto, user: AuthenticatedUser) {
+        await this.findById(id, user);
 
         const batch = await this.branchProductsRepository.createBatch(id, dto);
 
@@ -119,8 +118,8 @@ export class BranchProductsService {
         };
     }
 
-    async findBatches(id: string) {
-        await this.findById(id);
+    async findBatches(id: string, user: AuthenticatedUser) {
+        await this.findById(id, user);
 
         return this.branchProductsRepository.findBatches(id);
     }

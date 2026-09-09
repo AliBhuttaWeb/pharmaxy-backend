@@ -61,6 +61,7 @@ export class PosService {
             for (const item of dto.items) {
                 const branchProduct = await this.branchProductsRepository.findById(
                     item.branch_product_id,
+                    branchId,
                     tx,
                 );
 
