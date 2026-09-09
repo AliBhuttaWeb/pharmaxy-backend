@@ -1,37 +1,35 @@
+import { Type } from 'class-transformer';
+import { IsDefined, IsObject, IsOptional, ValidateNested } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
+
+import { CreateProductDto } from '@/modules/products/dtos';
+
+import { CreateBranchProductItemDto } from './create-branch-product-item.dto';
+import { CreateInitialProductBatchDto } from './create-initial-product-batch.dto';
 
 export class CreateBranchProductDto {
-    @ApiProperty()
-    @IsUUID()
-    product_id!: string;
+    @ApiPropertyOptional({
+        type: CreateProductDto,
+    })
+    @IsOptional()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => CreateProductDto)
+    product?: CreateProductDto;
 
     @ApiProperty({
-        example: 250,
+        type: CreateBranchProductItemDto,
     })
-    @IsInt()
-    @Min(1)
-    selling_price!: number;
+    @IsDefined()
+    @ValidateNested()
+    @Type(() => CreateBranchProductItemDto)
+    branch_product!: CreateBranchProductItemDto;
 
-    @ApiPropertyOptional({
-        default: false,
+    @ApiProperty({
+        type: CreateInitialProductBatchDto,
     })
-    @IsOptional()
-    @IsBoolean()
-    is_controlled_drug?: boolean;
-
-    @ApiPropertyOptional({
-        maxLength: 1000,
-    })
-    @IsOptional()
-    @IsString()
-    @MaxLength(1000)
-    storage_instructions?: string;
-
-    @ApiPropertyOptional({
-        default: true,
-    })
-    @IsOptional()
-    @IsBoolean()
-    is_active?: boolean;
+    @IsDefined()
+    @ValidateNested()
+    @Type(() => CreateInitialProductBatchDto)
+    initial_batch!: CreateInitialProductBatchDto;
 }

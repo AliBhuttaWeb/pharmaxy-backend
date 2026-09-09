@@ -19,28 +19,17 @@ export class CreateProductDto {
     @MaxLength(255)
     name!: string;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         example: 'Paracetamol',
         maxLength: 255,
     })
-    @IsOptional()
     @IsString()
     @MaxLength(255)
-    generic_name?: string;
+    generic_name!: string;
 
-    @ApiPropertyOptional({
-        example: 'Paracetamol 500mg',
-        maxLength: 1000,
-    })
-    @IsOptional()
-    @IsString()
-    @MaxLength(1000)
-    formula?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty()
     @IsUUID()
-    manufacturer_id?: string;
+    manufacturer_id!: string;
 
     @ApiPropertyOptional()
     @IsOptional()
@@ -52,36 +41,32 @@ export class CreateProductDto {
     @IsUUID()
     retail_category_id?: string;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty()
     @IsUUID()
-    dosage_form_id?: string;
+    dosage_form_id!: string;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         example: '500mg',
         maxLength: 100,
     })
-    @IsOptional()
     @IsString()
     @MaxLength(100)
-    strength?: string;
+    strength!: string;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         example: 10,
     })
-    @IsOptional()
     @IsInt()
     @Min(1)
-    pack_quantity?: number;
+    pack_quantity!: number;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         example: 'Tablet',
         maxLength: 50,
     })
-    @IsOptional()
     @IsString()
     @MaxLength(50)
-    pack_unit?: string;
+    pack_unit!: string;
 
     @ApiPropertyOptional({
         example: '8964001234567',

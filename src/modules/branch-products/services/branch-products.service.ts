@@ -1,35 +1,35 @@
-import {
-    ConflictException,
-    ForbiddenException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BatchSourceType } from '@gen/prisma/client';
+
+import { PrismaService } from '@/database/prisma/prisma.service';
+import { buildPaginationMeta } from '@/common/pagination';
+import { AuthenticatedUser } from '@/modules/auth/types';
+import { getActiveBranchId } from '@/common/helpers';
+import { ProductsService } from '@/modules/products/services/products.service';
+import { BranchesService } from '@/modules/branches/services/branches.service';
 
 import { MESSAGES } from '../constants/messages.constants';
 import {
     BranchProductQueryDto,
     CreateBranchProductDto,
-    OnboardBranchProductDto,
     ReceiveStockDto,
     UpdateBranchProductDto,
 } from '../dtos';
 import { BranchProductsRepository } from '../repositories/branch-products.repository';
-import { BranchesService } from '@/modules/branches/services/branches.service';
-import { ProductsService } from '@/modules/products/services/products.service';
-import { OnboardBranchProductService } from './onboard-branch-products.service';
-import { buildPaginationMeta } from '@/common/pagination';
-import { AuthenticatedUser } from '@/modules/auth/types';
-import { getActiveBranchId } from '@/common/helpers';
+import { ProductBatchesRepository } from '../repositories/product-batches.repository';
 
 @Injectable()
 export class BranchProductsService {
     constructor(
+        private readonly prisma: PrismaService,
+
         private readonly branchProductsRepository: BranchProductsRepository,
+
+        private readonly productBatchesRepository: ProductBatchesRepository,
 
         private readonly branchesService: BranchesService,
 
         private readonly productsService: ProductsService,
-        private readonly onboardBranchProductService: OnboardBranchProductService,
     ) {}
 
     async findMany(query: BranchProductQueryDto, user) {
@@ -44,7 +44,7 @@ export class BranchProductsService {
 
     async findById(id: string, user: AuthenticatedUser) {
         const branchId = getActiveBranchId(user);
-        
+
         const branchProduct = await this.branchProductsRepository.findById(id, branchId);
 
         if (!branchProduct) {
@@ -57,20 +57,81 @@ export class BranchProductsService {
     async create(dto: CreateBranchProductDto, user: AuthenticatedUser) {
         const branchId = getActiveBranchId(user);
 
-        await this.branchesService.findById(branchId);
+        return this.prisma.$transaction(async (tx) => {
+            let productId = dto.branch_product.product_id;
 
-        await this.productsService.findById(dto.product_id);
+            /**
+             * Existing Product
+             */
+            if (productId) {
+                await this.productsService.findById(productId);
+            }
 
-        const existing = await this.branchProductsRepository.findByBranchAndProduct(
-            branchId,
-            dto.product_id,
-        );
+            /**
+             * New Product
+             */
+            else {
+                if (!dto.product) {
+                    throw new ConflictException(MESSAGES.ERROR.PRODUCT_REQUIRED);
+                }
 
-        if (existing) {
-            throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
-        }
+                const product = await this.productsService.create(dto.product, tx);
 
-        return this.branchProductsRepository.create(branchId, dto);
+                productId = product.id;
+            }
+
+            /**
+             * Duplicate check
+             */
+            const existing = await this.branchProductsRepository.findByBranchAndProduct(
+                branchId,
+                productId,
+                undefined,
+                tx,
+            );
+
+            if (existing) {
+                throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
+            }
+
+            /**
+             * Create Branch Product
+             */
+            const branchProduct = await this.branchProductsRepository.create(
+                branchId,
+                {
+                    ...dto.branch_product,
+                    product_id: productId,
+                },
+                tx,
+            );
+
+            /**
+             * Initial Batch
+             */
+            await this.productBatchesRepository.create(
+                {
+                    branch_product_id: branchProduct.id,
+
+                    batch_number: dto.initial_batch.batch_number,
+
+                    manufacturing_date: dto.initial_batch.manufacturing_date,
+
+                    expiry_date: dto.initial_batch.expiry_date,
+
+                    purchase_price: dto.initial_batch.purchase_price,
+
+                    mrp: dto.initial_batch.mrp,
+
+                    quantity: dto.initial_batch.quantity,
+
+                    source_type: BatchSourceType.PURCHASE_ORDER,
+                },
+                tx,
+            );
+
+            return this.branchProductsRepository.findById(branchProduct.id, branchId, tx);
+        });
     }
 
     async update(id: string, dto: UpdateBranchProductDto, user: AuthenticatedUser) {
@@ -101,12 +162,6 @@ export class BranchProductsService {
         await this.findById(id, user);
 
         return this.branchProductsRepository.delete(id);
-    }
-
-    async onboard(dto: OnboardBranchProductDto, user: AuthenticatedUser) {
-        const branchId = getActiveBranchId(user);
-
-        return this.onboardBranchProductService.execute(dto, branchId);
     }
 
     async receiveStock(id: string, dto: ReceiveStockDto, user: AuthenticatedUser) {

@@ -1,7 +1,6 @@
 import {
     BranchProductQueryDto,
     CreateBranchProductDto,
-    OnboardBranchProductDto,
     ReceiveStockDto,
     UpdateBranchProductDto,
 } from '../dtos';
@@ -32,12 +31,6 @@ export class BranchProductsConsoleController {
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_CREATE.name)
     create(@Body() dto: CreateBranchProductDto, @CurrentUser() user: AuthenticatedUser) {
         return this.branchProductsService.create(dto, user);
-    }
-
-    @Post('onboard')
-    @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_CREATE.name)
-    onboard(@Body() dto: OnboardBranchProductDto, @CurrentUser() user: AuthenticatedUser) {
-        return this.branchProductsService.onboard(dto, user);
     }
 
     @Patch(':id')

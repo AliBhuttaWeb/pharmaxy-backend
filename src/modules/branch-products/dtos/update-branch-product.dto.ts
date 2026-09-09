@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
 
-import { CreateBranchProductDto } from './create-branch-product.dto';
+import { BranchProductFieldsDto } from './branch-product-fields.dto';
 
-export class UpdateBranchProductDto extends PartialType(CreateBranchProductDto) {}
+export class UpdateBranchProductDto extends PartialType(BranchProductFieldsDto) {}

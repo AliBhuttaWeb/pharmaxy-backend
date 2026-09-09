@@ -5,7 +5,7 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 
 import {
     BranchProductQueryDto,
-    CreateBranchProductDto,
+    BranchProductFieldsDto,
     ReceiveStockDto,
     UpdateBranchProductDto,
 } from '../dtos';
@@ -172,7 +172,7 @@ export class BranchProductsRepository {
         });
     }
 
-    create(branchId: string, data: CreateBranchProductDto, tx?: Prisma.TransactionClient) {
+    create(branchId: string, data: BranchProductFieldsDto, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).branchProduct.create({
             data: { ...data, branch_id: branchId },
             include: this.branchProductRelations,

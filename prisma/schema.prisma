@@ -536,24 +536,24 @@ model Manufacturer {
 model Product {
   id String @id @default(uuid()) @db.Uuid
 
-  manufacturer_id String? @db.Uuid
+  manufacturer_id String @db.Uuid
 
   // Medicine Information
 
-  name         String  @db.VarChar(255)
-  generic_name String? @db.VarChar(255) //It's what we pakistani call formula
+  name         String @db.VarChar(255)
+  generic_name String @db.VarChar(255) //It's what we pakistani call formula
 
   product_type_id String? @db.Uuid
 
   retail_category_id String? @db.Uuid
 
-  dosage_form_id String? @db.Uuid
+  dosage_form_id String @db.Uuid
 
-  strength String? @db.VarChar(100)
+  strength String @db.VarChar(100)
 
-  pack_quantity Int?
+  pack_quantity Int
 
-  pack_unit String? @db.VarChar(50)
+  pack_unit String @db.VarChar(50)
 
   barcode String? @unique @db.VarChar(100)
 
@@ -573,13 +573,13 @@ model Product {
   // Relations
   //////////////////////////////////////////////////////
 
-  manufacturer Manufacturer? @relation(fields: [manufacturer_id], references: [id], onDelete: SetNull)
+  manufacturer Manufacturer @relation(fields: [manufacturer_id], references: [id], onDelete: Restrict)
 
   product_type ProductType? @relation(fields: [product_type_id], references: [id], onDelete: SetNull)
 
   retail_category RetailCategory? @relation(fields: [retail_category_id], references: [id], onDelete: SetNull)
 
-  dosage_form DosageForm? @relation(fields: [dosage_form_id], references: [id], onDelete: SetNull)
+  dosage_form DosageForm @relation(fields: [dosage_form_id], references: [id], onDelete: Restrict)
 
   branch_products BranchProduct[]
 
