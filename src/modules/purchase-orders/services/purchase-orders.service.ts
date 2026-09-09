@@ -292,8 +292,7 @@ export class PurchaseOrdersService {
                 );
 
                 const remainingQuantity =
-                    purchaseOrderItem.ordered_quantity -
-                    purchaseOrderItem.received_quantity;
+                    purchaseOrderItem.ordered_quantity - purchaseOrderItem.received_quantity;
 
                 if (receivedQuantity > remainingQuantity) {
                     throw new ConflictException(MESSAGES.ERROR.RECEIVED_QUANTITY_EXCEEDED);
@@ -359,8 +358,7 @@ export class PurchaseOrdersService {
                 await this.purchaseOrdersRepository.updatePurchaseOrderItem(
                     purchaseOrderItem.id,
                     {
-                        received_quantity:
-                            purchaseOrderItem.received_quantity + receivedQuantity,
+                        received_quantity: purchaseOrderItem.received_quantity + receivedQuantity,
                     },
                     tx,
                 );

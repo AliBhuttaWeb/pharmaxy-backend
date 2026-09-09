@@ -1,4 +1,9 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 
 import { MESSAGES } from '../constants/messages.constants';
 import {
@@ -45,10 +50,10 @@ export class BranchProductsService {
     }
 
     async create(dto: CreateBranchProductDto, user: AuthenticatedUser) {
-        if(!user.branch_id){
-            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ID_MISSING)
+        if (!user.branch_id) {
+            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ID_MISSING);
         }
-        
+
         await this.branchesService.findById(user.branch_id);
 
         await this.productsService.findById(dto.product_id);
@@ -96,10 +101,10 @@ export class BranchProductsService {
     }
 
     onboard(dto: OnboardBranchProductDto, user: AuthenticatedUser) {
-         if(!user.branch_id){
-            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ID_MISSING)
+        if (!user.branch_id) {
+            throw new ForbiddenException(MESSAGES.ERROR.BRANCH_ID_MISSING);
         }
-        
+
         return this.onboardBranchProductService.execute(dto, user.branch_id);
     }
 

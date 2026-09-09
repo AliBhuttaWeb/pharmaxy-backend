@@ -160,8 +160,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         permissions.MANUFACTURERS_PERMISSIONS.MANUFACTURER_VIEW_LIST,
 
         permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_LIST,
-        permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_DETAIL
-
+        permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_DETAIL,
     ),
 
     // =====================================================

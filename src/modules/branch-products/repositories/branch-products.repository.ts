@@ -15,8 +15,28 @@ export class BranchProductsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     private readonly branchProductRelations: Prisma.BranchProductInclude = {
-        branch: true,
-        product: true,
+        product: {
+            select: {
+                name: true,
+                generic_name: true,
+                strength: true,
+                pack_quantity: true,
+                pack_unit: true,
+                is_active: true,
+                manufacturer: {
+                    select: { name: true, description: true },
+                },
+                product_type: {
+                    select: { name: true, description: true },
+                },
+                retail_category: {
+                    select: { name: true, description: true },
+                },
+                dosage_form: {
+                    select: { name: true, description: true },
+                },
+            },
+        },
     };
 
     private getClient(tx?: Prisma.TransactionClient) {
