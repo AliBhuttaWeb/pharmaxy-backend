@@ -18,8 +18,8 @@ export class BranchProductsConsoleController {
 
     @Get()
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_LIST.name)
-    findMany(@Query() query: BranchProductQueryDto) {
-        return this.branchProductsService.findMany(query);
+    findMany(@Query() query: BranchProductQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.branchProductsService.findMany(query, user);
     }
 
     @Get(':id')

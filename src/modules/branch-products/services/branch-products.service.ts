@@ -32,7 +32,9 @@ export class BranchProductsService {
         private readonly onboardBranchProductService: OnboardBranchProductService,
     ) {}
 
-    async findMany(query: BranchProductQueryDto) {
+    async findMany(query: BranchProductQueryDto, user) {
+        query.branch_id = getActiveBranchId(user);
+
         const { limit, page } = query;
         const { records, total } = await this.branchProductsRepository.findMany(query);
         if (!total || !page || !limit) return { records };
