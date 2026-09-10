@@ -14,6 +14,13 @@ export class BranchProductsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     private readonly branchProductRelations: Prisma.BranchProductInclude = {
+        branch: {
+            select: {
+                id: true,
+                name: true,
+                pharmacy_id: true,
+            },
+        },
         product: {
             select: {
                 name: true,

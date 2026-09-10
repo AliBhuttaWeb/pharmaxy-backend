@@ -107,8 +107,19 @@ export class PosService {
                     allocations,
                 });
             }
+            const pharmacyId =
+                preparedItems[0]?.branchProduct?.branch?.pharmacy_id ??
+                user.pharmacy_id ??
+                (
+                    await this.prisma.branch.findUnique({
+                        where: { id: branchId },
+                        select: { pharmacy_id: true },
+                    })
+                )?.pharmacy_id;
 
-            const pharmacyId = preparedItems[0].branchProduct.branch.pharmacy_id;
+            if (!pharmacyId) {
+                throw new NotFoundException(MESSAGES.ERROR.PHARMACY_NOT_FOUND);
+            }
 
             // Validate Payments
             for (const payment of dto.payments) {
