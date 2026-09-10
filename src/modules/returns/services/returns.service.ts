@@ -48,6 +48,10 @@ export class ReturnsService {
                 throw new ConflictException(MESSAGES.ERROR.INVOICE_ALREADY_CANCELLED);
             }
 
+            if (invoice.status === InvoiceStatus.REFUNDED) {
+                throw new ConflictException(MESSAGES.ERROR.INVOICE_ALREADY_REFUNDED);
+            }
+
             const itemIds = dto.items.map((item) => item.invoice_item_id);
             if (new Set(itemIds).size !== itemIds.length) {
                 throw new ConflictException(MESSAGES.ERROR.DUPLICATE_RETURN_ITEM);
@@ -78,10 +82,19 @@ export class ReturnsService {
                     0,
                 );
 
-                const availableQuantity = Number(invoiceItem.quantity) - alreadyReturned;
+                const boughtQuantity = Number(invoiceItem.quantity);
+                const availableQuantity = boughtQuantity - alreadyReturned;
+
+                if (availableQuantity <= 0) {
+                    throw new ConflictException(MESSAGES.ERROR.ITEM_ALREADY_RETURNED);
+                }
+
+                if (requestedQuantity > boughtQuantity) {
+                    throw new ConflictException(MESSAGES.ERROR.INVALID_RETURN_QUANTITY);
+                }
 
                 if (requestedQuantity > availableQuantity) {
-                    throw new ConflictException(MESSAGES.ERROR.INVALID_RETURN_QUANTITY);
+                    throw new ConflictException(MESSAGES.ERROR.EXCEEDS_REMAINING_QUANTITY);
                 }
 
                 const invoiceItemBatches = await this.returnsRepository.findInvoiceItemBatches(
