@@ -171,7 +171,11 @@ export class BranchProductsRepository {
         });
     }
 
-    create(branchId: string, data: BranchProductFieldsDto, tx?: Prisma.TransactionClient) {
+    create(
+        branchId: string,
+        data: BranchProductFieldsDto & { quantity?: number },
+        tx?: Prisma.TransactionClient,
+    ) {
         return this.getClient(tx).branchProduct.create({
             data: { ...data, branch_id: branchId },
             include: this.branchProductRelations,
@@ -195,6 +199,34 @@ export class BranchProductsRepository {
             },
             data: {
                 quantity,
+            },
+            include: this.branchProductRelations,
+        });
+    }
+
+    incrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).branchProduct.update({
+            where: {
+                id,
+            },
+            data: {
+                quantity: {
+                    increment: quantity,
+                },
+            },
+            include: this.branchProductRelations,
+        });
+    }
+
+    decrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).branchProduct.update({
+            where: {
+                id,
+            },
+            data: {
+                quantity: {
+                    decrement: quantity,
+                },
             },
             include: this.branchProductRelations,
         });

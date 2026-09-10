@@ -177,6 +177,14 @@ export class ReturnsService {
                         tx,
                     );
                 }
+
+                await this.returnsRepository.restoreBranchProductQuantity(
+                    item.branch_product_id,
+
+                    item.quantity,
+
+                    tx,
+                );
             }
 
             return returnRecord;
@@ -201,7 +209,9 @@ export class ReturnsService {
                 break;
             }
 
-            const restoreQuantity = Math.min(Number(batch.quantity), remaining);
+            const available = Number(batch.quantity);
+
+            const restoreQuantity = Math.min(available, remaining);
 
             result.push({
                 product_batch_id: batch.product_batch_id,
@@ -274,6 +284,14 @@ export class ReturnsService {
                 if (remainingQuantity > 0) {
                     throw new ConflictException(MESSAGES.ERROR.INVALID_RETURN_QUANTITY);
                 }
+
+                await this.returnsRepository.decreaseBranchProductQuantity(
+                    (item as any).invoice_item.branch_product_id,
+
+                    Number(item.quantity),
+
+                    tx,
+                );
             }
 
             return this.returnsRepository.cancel(

@@ -149,6 +149,32 @@ export class ProductBatchesRepository {
         });
     }
 
+    incrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).productBatch.update({
+            where: {
+                id,
+            },
+            data: {
+                quantity: {
+                    increment: quantity,
+                },
+            },
+        });
+    }
+
+    decrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).productBatch.update({
+            where: {
+                id,
+            },
+            data: {
+                quantity: {
+                    decrement: quantity,
+                },
+            },
+        });
+    }
+
     findAvailableForSale(branchProductId: string, tx?: Prisma.TransactionClient) {
         return this.getClient(tx).productBatch.findMany({
             where: {
@@ -173,16 +199,6 @@ export class ProductBatchesRepository {
     }
 
     decreaseBatchQuantity(batchId: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.update({
-            where: {
-                id: batchId,
-            },
-
-            data: {
-                quantity: {
-                    decrement: quantity,
-                },
-            },
-        });
+        return this.decrementQuantity(batchId, quantity, tx);
     }
 }

@@ -136,7 +136,11 @@ export class ReturnsRepository {
             },
 
             include: {
-                items: true,
+                items: {
+                    include: {
+                        invoice_item: true,
+                    },
+                },
             },
         });
     }
@@ -249,6 +253,42 @@ export class ReturnsRepository {
         return this.getClient(tx).productBatch.update({
             where: {
                 id: batchId,
+            },
+
+            data: {
+                quantity: {
+                    decrement: quantity,
+                },
+            },
+        });
+    }
+
+    restoreBranchProductQuantity(
+        branchProductId: string,
+        quantity: number,
+        tx?: Prisma.TransactionClient,
+    ) {
+        return this.getClient(tx).branchProduct.update({
+            where: {
+                id: branchProductId,
+            },
+
+            data: {
+                quantity: {
+                    increment: quantity,
+                },
+            },
+        });
+    }
+
+    decreaseBranchProductQuantity(
+        branchProductId: string,
+        quantity: number,
+        tx?: Prisma.TransactionClient,
+    ) {
+        return this.getClient(tx).branchProduct.update({
+            where: {
+                id: branchProductId,
             },
 
             data: {

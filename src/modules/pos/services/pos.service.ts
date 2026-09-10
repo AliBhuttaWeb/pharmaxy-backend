@@ -253,16 +253,16 @@ export class PosService {
                         throw new NotFoundException(BRANCH_MESSAGES.ERROR.BATCH_NOT_FOUND);
                     }
 
-                    await this.productBatchesRepository.updateQuantity(
+                    await this.productBatchesRepository.decrementQuantity(
                         batch.id,
-                        Number(batch.quantity) - allocation.quantity,
+                        allocation.quantity,
                         tx,
                     );
                 }
 
-                await this.branchProductsRepository.updateQuantity(
+                await this.branchProductsRepository.decrementQuantity(
                     item.branchProduct.id,
-                    Number(item.branchProduct.quantity) - item.quantity,
+                    item.quantity,
                     tx,
                 );
             }

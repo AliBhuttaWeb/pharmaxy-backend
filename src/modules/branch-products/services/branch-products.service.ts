@@ -103,6 +103,7 @@ export class BranchProductsService {
                 {
                     ...dto.branch_product,
                     product_id: productId,
+                    quantity: dto.initial_batch.quantity,
                 },
                 tx,
             );
@@ -168,12 +169,32 @@ export class BranchProductsService {
     async receiveStock(id: string, dto: ReceiveStockDto, user: AuthenticatedUser) {
         await this.findById(id, user);
 
-        const batch = await this.productBatchesRepository.createBatch(id, dto);
+        return this.prisma.$transaction(async (tx) => {
+            const existingBatch =
+                await this.productBatchesRepository.findByBranchProductAndBatchNumber(
+                    id,
+                    dto.batch_number,
+                    tx,
+                );
 
-        return {
-            message: MESSAGES.SUCCESS.STOCK_RECEIVED,
-            batch,
-        };
+            let batch;
+            if (existingBatch) {
+                batch = await this.productBatchesRepository.incrementQuantity(
+                    existingBatch.id,
+                    dto.quantity,
+                    tx,
+                );
+            } else {
+                batch = await this.productBatchesRepository.createBatch(id, dto, tx);
+            }
+
+            await this.branchProductsRepository.incrementQuantity(id, dto.quantity, tx);
+
+            return {
+                message: MESSAGES.SUCCESS.STOCK_RECEIVED,
+                batch,
+            };
+        });
     }
 
     async findBatches(id: string, user: AuthenticatedUser, query: ProductBatchQueryDto) {
