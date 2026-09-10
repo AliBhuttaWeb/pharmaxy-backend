@@ -3,7 +3,7 @@ import { SubscriptionStatus } from '@gen/prisma/client';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { SubscriptionsRepository } from '../repositories/subscriptions.repository';
-import { MESSAGES, PREMIUM_FEATUIRES } from '../constants';
+import { MESSAGES } from '../constants';
 import { PremiumFeatures, ValidateBranchesLimit } from '../types';
 
 @Injectable()
@@ -69,7 +69,7 @@ export class SubscriptionConstraintService {
     }
 
     /**
-     * Validates feature availability for quick sale or nearby inventory..
+     * Validates feature availability for quick sale or nearby inventory.
      */
     async validateFeatureAccess(user: AuthenticatedUser, feature: PremiumFeatures): Promise<void> {
         if (!user.pharmacy_id) {
@@ -80,6 +80,22 @@ export class SubscriptionConstraintService {
 
         if (!subscription.plan[feature]) {
             throw new ConflictException(MESSAGES.ERROR.FEATURE_NOT_ALLOWED(feature));
+        }
+    }
+
+    /**
+     * Validates report history access limits against the active subscription plan.
+     */
+    async validateReportAccess(pharmacyId: string, days: number): Promise<void> {
+        const subscription = await this.ensureActiveSubscription(pharmacyId);
+        const reportHistoryMonths = subscription.plan.report_history_months;
+
+        if (reportHistoryMonths !== null && reportHistoryMonths !== undefined) {
+            const maxDays = reportHistoryMonths * 30;
+
+            if (days > maxDays) {
+                throw new ConflictException(MESSAGES.ERROR.REPORT_ACCESS_DENIED);
+            }
         }
     }
 }
