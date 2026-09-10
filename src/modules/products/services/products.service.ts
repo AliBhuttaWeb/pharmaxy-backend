@@ -83,6 +83,17 @@ export class ProductsService {
             }
         }
 
+        const duplicate = await this.productsRepository.findByNameAndGenericName(
+            dto.name,
+            dto.generic_name,
+            undefined,
+            tx,
+        );
+
+        if (duplicate) {
+            throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
+        }
+
         if (barcode) {
             const existing = await this.productsRepository.findByBarcode(barcode, undefined, tx);
 
@@ -98,6 +109,24 @@ export class ProductsService {
         await this.findById(id);
 
         await this.validateRelations(dto);
+
+        if (dto.name !== undefined || dto.generic_name !== undefined) {
+            // Fetch current values so we can check against the combined name+generic_name
+            const current = await this.productsRepository.findById(id);
+
+            const nameToCheck = dto.name ?? current!.name;
+            const genericNameToCheck = dto.generic_name ?? current!.generic_name;
+
+            const duplicate = await this.productsRepository.findByNameAndGenericName(
+                nameToCheck,
+                genericNameToCheck,
+                id,
+            );
+
+            if (duplicate) {
+                throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
+            }
+        }
 
         if (dto.barcode) {
             const existingProduct = await this.productsRepository.findByBarcode(dto.barcode, id);

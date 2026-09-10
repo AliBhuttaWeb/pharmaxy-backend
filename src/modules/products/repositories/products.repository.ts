@@ -19,6 +19,7 @@ export class ProductsRepository {
     private getClient(tx?: Prisma.TransactionClient) {
         return tx ?? this.prisma;
     }
+
     async findMany(query: ProductQueryDto) {
         const {
             search,
@@ -136,6 +137,33 @@ export class ProductsRepository {
         return this.getClient(tx).product.findFirst({
             where: {
                 barcode,
+                deleted_at: null,
+
+                ...(excludeId && {
+                    NOT: {
+                        id: excludeId,
+                    },
+                }),
+            },
+        });
+    }
+
+    findByNameAndGenericName(
+        name: string,
+        genericName: string,
+        excludeId?: string,
+        tx?: Prisma.TransactionClient,
+    ) {
+        return this.getClient(tx).product.findFirst({
+            where: {
+                name: {
+                    equals: name,
+                    mode: 'insensitive',
+                },
+                generic_name: {
+                    equals: genericName,
+                    mode: 'insensitive',
+                },
                 deleted_at: null,
 
                 ...(excludeId && {
