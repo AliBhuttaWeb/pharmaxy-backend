@@ -17,5 +17,6 @@ export const MESSAGES = {
         BRANCH_ID_REQUIRED: 'Branch id is required.',
         PHARMACY_ID_REQUIRED: 'Pharmacy id is required.',
         BRANCH_INACTIVE: 'Branch is inactive.',
+        PHARMACY_NOT_FOUND: "No Pharmacy found, please create it first."
     },
 } as const;
