@@ -29,6 +29,8 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { SubscriptionPlansModule } from './modules/subscription-plans/subscription-plans.module';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
 import { CommonModule } from './common/common.module';
+import { PharmacyPaymentMethodsModule } from './modules/pharmacy-payment-methods/pharmacy-payment-methods.module';
+import { PaymentMethodsModule } from './modules/payment-methods/payment-methods.module';
 
 @Module({
     imports: [
@@ -62,6 +64,8 @@ import { CommonModule } from './common/common.module';
         SubscriptionPlansModule,
         SubscriptionsModule,
         CommonModule,
+        PharmacyPaymentMethodsModule,
+        PaymentMethodsModule,
     ],
     providers: [
         {

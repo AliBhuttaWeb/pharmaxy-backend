@@ -1,29 +1,28 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { PrismaService } from '@/database/prisma/prisma.service';
-
 import { AuthenticatedUser } from '@/modules/auth/types/authenticated-user.type';
+import { getActivePharmacyId } from '@/common/helpers/auth.helper';
 
 import { CreatePharmacyPaymentMethodDto, UpdatePharmacyPaymentMethodDto } from '../dtos';
 import { PharmacyPaymentMethodsRepository } from '../repositories/pharmacy-payment-methods.repository';
+import { PaymentMethodsRepository } from '@/modules/payment-methods/repositories/payment-methods.repository';
 import { MESSAGES } from '../constants/messages.constants';
-import { assertPharmacyAccess } from '@/common/helpers/pharmacy-access.helper';
 
 @Injectable()
 export class PharmacyPaymentMethodsService {
     constructor(
-        private readonly prismaService: PrismaService,
         private readonly pharmacyPaymentMethodsRepository: PharmacyPaymentMethodsRepository,
+        private readonly paymentMethodsRepository: PaymentMethodsRepository,
     ) {}
 
-    async list(pharmacyId: string, user: AuthenticatedUser) {
-        assertPharmacyAccess(user, pharmacyId);
+    async list(user: AuthenticatedUser) {
+        const pharmacyId = getActivePharmacyId(user);
 
         return this.pharmacyPaymentMethodsRepository.findMany(pharmacyId);
     }
 
-    async findById(id: string, pharmacyId: string, user: AuthenticatedUser) {
-        assertPharmacyAccess(user, pharmacyId);
+    async findById(id: string, user: AuthenticatedUser) {
+        const pharmacyId = getActivePharmacyId(user);
 
         const pharmacyPaymentMethod = await this.pharmacyPaymentMethodsRepository.findById(
             id,
@@ -37,17 +36,13 @@ export class PharmacyPaymentMethodsService {
         return pharmacyPaymentMethod;
     }
 
-    async create(pharmacyId: string, dto: CreatePharmacyPaymentMethodDto, user: AuthenticatedUser) {
-        assertPharmacyAccess(user, pharmacyId);
+    async create(dto: CreatePharmacyPaymentMethodDto, user: AuthenticatedUser) {
+        const pharmacyId = getActivePharmacyId(user);
 
-        const paymentMethod = await this.prismaService.paymentMethod.findUnique({
-            where: {
-                id: dto.payment_method_id,
-            },
-        });
+        const paymentMethod = await this.paymentMethodsRepository.findById(dto.payment_method_id);
 
         if (!paymentMethod) {
-            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+            throw new NotFoundException(MESSAGES.ERROR.PAYMENT_METHOD_NOT_FOUND);
         }
 
         if (!paymentMethod.is_active) {
@@ -71,25 +66,26 @@ export class PharmacyPaymentMethodsService {
 
     async update(
         id: string,
-        pharmacyId: string,
         dto: UpdatePharmacyPaymentMethodDto,
         user: AuthenticatedUser,
     ) {
-        await this.findById(id, pharmacyId, user);
+        const pharmacyId = getActivePharmacyId(user);
+        await this.findById(id, user);
 
         return this.pharmacyPaymentMethodsRepository.update(id, pharmacyId, {
             display_order: dto.display_order,
         });
     }
 
-    async updateStatus(id: string, pharmacyId: string, isActive: boolean, user: AuthenticatedUser) {
-        await this.findById(id, pharmacyId, user);
+    async updateStatus(id: string, isActive: boolean, user: AuthenticatedUser) {
+        const pharmacyId = getActivePharmacyId(user);
+        await this.findById(id, user);
 
         return this.pharmacyPaymentMethodsRepository.updateStatus(id, pharmacyId, isActive);
     }
 
-    async remove(id: string, pharmacyId: string, user: AuthenticatedUser) {
-        await this.findById(id, pharmacyId, user);
+    async remove(id: string, user: AuthenticatedUser) {
+        await this.findById(id, user);
 
         return this.pharmacyPaymentMethodsRepository.delete(id);
     }

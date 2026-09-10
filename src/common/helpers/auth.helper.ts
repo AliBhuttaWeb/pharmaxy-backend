@@ -13,6 +13,14 @@ export function getActiveBranchId(user: AuthenticatedUser): string {
     return user.branch_id;
 }
 
+export function getActivePharmacyId(user: AuthenticatedUser): string {
+    if (!user.pharmacy_id) {
+        throw new ConflictException(MESSAGES.ERROR.PHARMACY_ACCESS_DENIED);
+    }
+
+    return user.pharmacy_id;
+}
+
 export function getPharmacyId(user: AuthenticatedUser): string | null {
     return user.pharmacy_id;
 }
