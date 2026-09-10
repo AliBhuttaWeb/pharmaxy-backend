@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
 
 export class CreatePurchaseOrderItemDto {
     @ApiProperty()
@@ -15,46 +15,46 @@ export class CreatePurchaseOrderItemDto {
     ordered_quantity!: number;
 
     @ApiProperty({
-        example: 250,
+        example: 2.5,
         description: 'Unit purchase cost',
     })
-    @IsInt()
-    @Min(1)
+    @IsNumber({ maxDecimalPlaces: 4 })
+    @Min(0.0001)
     unit_cost!: number;
 
     @ApiPropertyOptional({
-        example: 5,
+        example: 5.5,
         description: 'Discount percentage',
     })
     @IsOptional()
-    @IsInt()
+    @IsNumber({ maxDecimalPlaces: 2 })
     @Min(0)
     discount_percentage?: number;
 
     @ApiPropertyOptional({
-        example: 500,
+        example: 0.5,
         description: 'Discount amount',
     })
     @IsOptional()
-    @IsInt()
+    @IsNumber({ maxDecimalPlaces: 4 })
     @Min(0)
     discount_amount?: number;
 
     @ApiPropertyOptional({
-        example: 18,
+        example: 18.5,
         description: 'Tax percentage',
     })
     @IsOptional()
-    @IsInt()
+    @IsNumber({ maxDecimalPlaces: 2 })
     @Min(0)
     tax_percentage?: number;
 
     @ApiPropertyOptional({
-        example: 900,
+        example: 0.9,
         description: 'Tax amount',
     })
     @IsOptional()
-    @IsInt()
+    @IsNumber({ maxDecimalPlaces: 4 })
     @Min(0)
     tax_amount?: number;
 

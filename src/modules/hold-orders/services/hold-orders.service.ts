@@ -21,7 +21,7 @@ import { buildPaginationMeta } from '@/common/pagination';
 type PreparedHoldItem = {
     branch_product_id: string;
     quantity: number;
-    unit_price: number;
+    unit_price: number; // stored as Decimal in DB, converted to number here
     subtotal: number;
     notes?: string;
 };
@@ -67,7 +67,7 @@ export class HoldOrdersService {
 
                 const quantity = item.quantity;
 
-                const unitPrice = branchProduct.selling_price;
+                const unitPrice = branchProduct.selling_price.toNumber();
 
                 const lineSubtotal = quantity * unitPrice;
 

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
 
 export class BranchProductFieldsDto {
     @ApiProperty()
@@ -7,10 +7,10 @@ export class BranchProductFieldsDto {
     product_id!: string;
 
     @ApiProperty({
-        example: 250,
+        example: 2.5,
     })
-    @IsInt()
-    @Min(1)
+    @IsNumber({ maxDecimalPlaces: 4 })
+    @Min(0.0001)
     selling_price!: number;
 
     @ApiPropertyOptional({

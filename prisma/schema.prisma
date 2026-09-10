@@ -420,7 +420,7 @@ model SubscriptionPlan {
   description String? @db.Text
 
   billing_cycle BillingCycle
-  price         Int
+  price         Decimal @db.Decimal(19, 4)
 
   // Limits
   max_branches         Int?
@@ -491,7 +491,7 @@ model SubscriptionPayment {
 
   subscription_id String @db.Uuid
 
-  amount Int
+  amount Decimal @db.Decimal(19, 4)
 
   payment_status SubscriptionPaymentStatus @default(PENDING)
 
@@ -611,7 +611,7 @@ model BranchProduct {
 
   quantity Int @default(0)
 
-  selling_price Int
+  selling_price Decimal @db.Decimal(19, 4)
 
   is_controlled_drug   Boolean @default(false)
   storage_instructions String? @db.Text
@@ -736,8 +736,8 @@ model ProductBatch {
 
   expiry_date DateTime?
 
-  purchase_price Int
-  mrp            Int
+  purchase_price Decimal @db.Decimal(19, 4)
+  mrp            Decimal @db.Decimal(19, 4)
 
   quantity Int @default(0)
 
@@ -805,13 +805,13 @@ model PurchaseOrder {
   order_date             DateTime  @db.Date
   expected_delivery_date DateTime? @db.Date
 
-  subtotal        Int @default(0)
-  discount_amount Int @default(0)
-  tax_amount      Int @default(0)
-  shipping_amount Int @default(0)
-  other_charges   Int @default(0)
+  subtotal        Decimal @default(0) @db.Decimal(19, 4)
+  discount_amount Decimal @default(0) @db.Decimal(19, 4)
+  tax_amount      Decimal @default(0) @db.Decimal(19, 4)
+  shipping_amount Decimal @default(0) @db.Decimal(19, 4)
+  other_charges   Decimal @default(0) @db.Decimal(19, 4)
 
-  grand_total Int @default(0)
+  grand_total Decimal @default(0) @db.Decimal(19, 4)
 
   supplier_response_at DateTime?
   fulfilled_at         DateTime?
@@ -860,15 +860,15 @@ model PurchaseOrderItem {
   fulfilled_quantity Int @default(0)
   received_quantity  Int @default(0)
 
-  unit_cost Int
+  unit_cost Decimal @db.Decimal(19, 4)
 
-  discount_percentage Int?
-  discount_amount     Int  @default(0)
+  discount_percentage Decimal? @db.Decimal(5, 2)
+  discount_amount     Decimal  @default(0) @db.Decimal(19, 4)
 
-  tax_percentage Int?
-  tax_amount     Int  @default(0)
+  tax_percentage Decimal? @db.Decimal(5, 2)
+  tax_amount     Decimal  @default(0) @db.Decimal(19, 4)
 
-  line_total Int
+  line_total Decimal @db.Decimal(19, 4)
 
   remarks String? @db.Text
 
@@ -919,7 +919,7 @@ model Customer {
 
   loyalty_points Int @default(0)
 
-  total_spent Int @default(0)
+  total_spent Decimal @default(0) @db.Decimal(19, 4)
 
   total_orders Int @default(0)
 
@@ -1049,14 +1049,14 @@ model Invoice {
 
   status InvoiceStatus @default(DRAFT)
 
-  subtotal        Int @default(0)
-  discount_amount Int @default(0)
-  tax_amount      Int @default(0)
-  rounding_amount Int @default(0)
-  grand_total     Int @default(0)
+  subtotal        Decimal @default(0) @db.Decimal(19, 4)
+  discount_amount Decimal @default(0) @db.Decimal(19, 4)
+  tax_amount      Decimal @default(0) @db.Decimal(19, 4)
+  rounding_amount Decimal @default(0) @db.Decimal(19, 4)
+  grand_total     Decimal @default(0) @db.Decimal(19, 4)
 
-  paid_amount Int @default(0)
-  due_amount  Int @default(0)
+  paid_amount Decimal @default(0) @db.Decimal(19, 4)
+  due_amount  Decimal @default(0) @db.Decimal(19, 4)
 
   notes String? @db.Text
 
@@ -1098,13 +1098,13 @@ model InvoiceItem {
 
   quantity Int
 
-  unit_price Int
+  unit_price Decimal @db.Decimal(19, 4)
 
-  discount_amount Int @default(0)
+  discount_amount Decimal @default(0) @db.Decimal(19, 4)
 
-  tax_amount Int @default(0)
+  tax_amount Decimal @default(0) @db.Decimal(19, 4)
 
-  line_total Int
+  line_total Decimal @db.Decimal(19, 4)
 
   notes String? @db.Text
 
@@ -1163,7 +1163,7 @@ model InvoicePayment {
   invoice_id                 String @db.Uuid
   pharmacy_payment_method_id String @db.Uuid
 
-  amount Int
+  amount Decimal @db.Decimal(19, 4)
 
   status PaymentStatus @default(PENDING)
 
@@ -1201,10 +1201,10 @@ model HoldOrder {
 
   hold_number String @db.VarChar(50)
 
-  subtotal        Int @default(0)
-  discount_amount Int @default(0)
-  tax_amount      Int @default(0)
-  grand_total     Int @default(0)
+  subtotal        Decimal @default(0) @db.Decimal(19, 4)
+  discount_amount Decimal @default(0) @db.Decimal(19, 4)
+  tax_amount      Decimal @default(0) @db.Decimal(19, 4)
+  grand_total     Decimal @default(0) @db.Decimal(19, 4)
 
   notes String? @db.Text
 
@@ -1237,13 +1237,13 @@ model HoldOrderItem {
 
   quantity Int
 
-  unit_price Int
+  unit_price Decimal @db.Decimal(19, 4)
 
-  discount_amount Int @default(0)
+  discount_amount Decimal @default(0) @db.Decimal(19, 4)
 
-  tax_amount Int @default(0)
+  tax_amount Decimal @default(0) @db.Decimal(19, 4)
 
-  subtotal Int
+  subtotal Decimal @db.Decimal(19, 4)
 
   notes String? @db.Text
 
@@ -1280,7 +1280,7 @@ model Return {
 
   return_number String @db.VarChar(50)
 
-  refund_amount Int @default(0)
+  refund_amount Decimal @default(0) @db.Decimal(19, 4)
 
   status ReturnStatus @default(COMPLETED)
 
@@ -1319,7 +1319,7 @@ model ReturnItem {
 
   quantity Int
 
-  refund_amount Int
+  refund_amount Decimal @db.Decimal(19, 4)
 
   notes String? @db.Text
 

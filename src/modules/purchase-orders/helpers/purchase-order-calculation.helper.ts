@@ -53,13 +53,13 @@ export function calculatePurchaseOrderTotals(dto: CreatePurchaseOrderDto) {
 
             discount_percentage: item.discount_percentage,
 
-            discount_amount: Math.round(discountAmount),
+            discount_amount: discountAmount,
 
             tax_percentage: item.tax_percentage,
 
-            tax_amount: Math.round(taxAmount),
+            tax_amount: taxAmount,
 
-            line_total: Math.round(lineTotal),
+            line_total: lineTotal,
 
             remarks: item.remarks,
         };
@@ -76,13 +76,13 @@ export function calculatePurchaseOrderTotals(dto: CreatePurchaseOrderDto) {
     const grandTotal = subtotal - orderDiscount + orderTax + shippingAmount + otherCharges;
 
     return {
-        subtotal: Math.round(subtotal),
+        subtotal,
 
-        discountAmount: Math.round(totalDiscount + orderDiscount),
+        discountAmount: totalDiscount + orderDiscount,
 
-        taxAmount: Math.round(totalTax + orderTax),
+        taxAmount: totalTax + orderTax,
 
-        grandTotal: Math.round(grandTotal),
+        grandTotal,
 
         items,
     };

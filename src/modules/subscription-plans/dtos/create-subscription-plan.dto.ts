@@ -34,9 +34,9 @@ export class CreateSubscriptionPlanDto {
     billing_cycle!: BillingCycle;
 
     @ApiProperty({
-        example: 1999,
+        example: 19.99,
     })
-    @IsNumber()
+    @IsNumber({ maxDecimalPlaces: 4 })
     @IsPositive()
     price!: number;
 

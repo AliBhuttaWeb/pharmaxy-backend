@@ -24,7 +24,7 @@ import { POS_DEFAULTS } from '../constants/defaults.constants';
 type PreparedSaleItem = {
     branchProduct: any;
     quantity: number;
-    unitPrice: number;
+    unitPrice: number; // stored as Decimal in DB, converted to number here
     lineTotal: number;
     allocations: {
         product_batch_id: string;
@@ -89,7 +89,7 @@ export class PosService {
                     quantity,
                 );
 
-                const unitPrice = branchProduct.selling_price;
+                const unitPrice = branchProduct.selling_price.toNumber();
 
                 const lineTotal = unitPrice * quantity;
 

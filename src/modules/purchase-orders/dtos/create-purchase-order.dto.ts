@@ -4,7 +4,7 @@ import {
     ArrayMinSize,
     IsArray,
     IsDateString,
-    IsInt,
+    IsNumber,
     IsOptional,
     IsString,
     IsUUID,
@@ -42,38 +42,38 @@ export class CreatePurchaseOrderDto {
     expected_delivery_date?: string;
 
     @ApiPropertyOptional({
-        example: 500,
+        example: 0.5,
         default: 0,
     })
     @IsOptional()
-    @IsInt()
+    @IsNumber({ maxDecimalPlaces: 4 })
     @Min(0)
     discount_amount?: number;
 
     @ApiPropertyOptional({
-        example: 1800,
+        example: 1.8,
         default: 0,
     })
     @IsOptional()
-    @IsInt()
+    @IsNumber({ maxDecimalPlaces: 4 })
     @Min(0)
     tax_amount?: number;
 
     @ApiPropertyOptional({
-        example: 300,
+        example: 3.0,
         default: 0,
     })
     @IsOptional()
-    @IsInt()
+    @IsNumber({ maxDecimalPlaces: 4 })
     @Min(0)
     shipping_amount?: number;
 
     @ApiPropertyOptional({
-        example: 100,
+        example: 1.0,
         default: 0,
     })
     @IsOptional()
-    @IsInt()
+    @IsNumber({ maxDecimalPlaces: 4 })
     @Min(0)
     other_charges?: number;
 
