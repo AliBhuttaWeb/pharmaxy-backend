@@ -11,7 +11,7 @@ export const MESSAGES = {
         INVOICE_BRANCH_MISMATCH: 'Invoice does not belong to the active branch.',
         INVOICE_ALREADY_CANCELLED: 'Invoice is cancelled and cannot be returned.',
         RETURN_ITEM_NOT_FOUND: 'Return item not found.',
-        INVALID_RETURN_QUANTITY: 'Return quantity exceeds the remaining sale quantity.',
+        INVALID_RETURN_QUANTITY: 'Return quantity exceeds the maximum bought quantity.',
         INVALID_RETURN_AMOUNT: 'Invalid refund amount.',
         PRODUCT_BATCH_NOT_FOUND: 'Product batch not found.',
         BRANCH_PRODUCT_NOT_FOUND: 'Branch product not found.',
