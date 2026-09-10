@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { BranchesService } from '@/modules/branches/services/branches.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { RequestContext, RequestStore } from './request-context';
-import { isPharmacyAdmin, requiresBranchContext } from '../helpers';
+import { requiresBranchContext } from '../helpers';
 import { MESSAGES as BRANCH_MESSAGES } from '@/modules/branches/constants';
 
 @Injectable()
@@ -23,10 +23,6 @@ export class RequestContextInterceptor implements NestInterceptor {
         const user = request.user as AuthenticatedUser | undefined;
 
         if (user) {
-            if(isPharmacyAdmin(user.roles) && !user.pharmacy_id){
-                throw new BadRequestException(BRANCH_MESSAGES.ERROR.PHARMACY_NOT_FOUND);
-            }
-
             const branchId = request.cookies?.branch_id ?? request.headers['x-branch-id'];
 
             if (requiresBranchContext(user.roles) && !branchId) {
