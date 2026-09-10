@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 
 import { CreateDosageFormDto, DosageFormQueryDto, UpdateDosageFormDto } from '../dtos';
 import { DosageFormsService } from '../services/dosage-forms.service';
@@ -14,7 +14,7 @@ export class DosageFormsConsoleController {
     }
 
     @Get(':id')
-    findById(@Param('id') id: string) {
+    findById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.dosageFormService.findById(id);
     }
 
@@ -24,12 +24,12 @@ export class DosageFormsConsoleController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() dto: UpdateDosageFormDto) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateDosageFormDto) {
         return this.dosageFormService.update(id, dto);
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string) {
+    delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.dosageFormService.delete(id);
     }
 }

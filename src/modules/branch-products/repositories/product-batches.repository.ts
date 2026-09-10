@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@gen/prisma/client';
+import { BatchSourceType, Prisma } from '@gen/prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
+import { ReceiveStockDto } from '../dtos';
 
 @Injectable()
 export class ProductBatchesRepository {
@@ -20,6 +21,23 @@ export class ProductBatchesRepository {
         return this.getClient(tx).productBatch.create({
             data,
             include: this.productBatchRelations,
+        });
+    }
+
+    createBatch(branchProductId: string, data: ReceiveStockDto, tx?: Prisma.TransactionClient) {
+        return this.getClient(tx).productBatch.create({
+            data: {
+                branch_product_id: branchProductId,
+                batch_number: data.batch_number,
+                manufacturing_date: data.manufacturing_date
+                    ? new Date(data.manufacturing_date)
+                    : undefined,
+                expiry_date: data.expiry_date ? new Date(data.expiry_date) : undefined,
+                purchase_price: data.purchase_price,
+                mrp: data.mrp,
+                quantity: data.quantity,
+                source_type: BatchSourceType.PURCHASE_ORDER,
+            },
         });
     }
 
@@ -56,6 +74,41 @@ export class ProductBatchesRepository {
             },
         });
     }
+
+    async findMany(
+        branchProductId: string,
+        page?: number,
+        limit?: number,
+        tx?: Prisma.TransactionClient,
+    ) {
+        const where: Prisma.ProductBatchWhereInput = {
+            branch_product_id: branchProductId,
+            deleted_at: null,
+        };
+
+        const isPaginated = page !== undefined && limit !== undefined;
+
+        if (!isPaginated) {
+            const records = await this.prisma.productBatch.findMany({
+                where,
+                orderBy: { expiry_date: 'asc' },
+            });
+            return { records };
+        }
+
+        const [records, total] = await this.prisma.$transaction([
+            this.prisma.productBatch.findMany({
+                where,
+                orderBy: { expiry_date: 'asc' },
+                skip: (page - 1) * limit,
+                take: limit,
+            }),
+            this.prisma.productBatch.count({ where }),
+        ]);
+
+        return { records, total };
+    }
+
     findByBranchProductAndBatch(
         branchProductId: string,
         batchNumber: string,

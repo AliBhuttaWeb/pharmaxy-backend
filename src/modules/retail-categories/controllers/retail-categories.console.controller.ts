@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 
 import { CreateRetailCategoryDto, RetailCategoryQueryDto, UpdateRetailCategoryDto } from '../dtos';
 import { ConsoleController } from '@/common/decorators';
@@ -14,7 +14,7 @@ export class RetailCategoriesConsoleController {
     }
 
     @Get(':id')
-    findById(@Param('id') id: string) {
+    findById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.retailCategoryService.findById(id);
     }
 
@@ -24,12 +24,12 @@ export class RetailCategoriesConsoleController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() dto: UpdateRetailCategoryDto) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateRetailCategoryDto) {
         return this.retailCategoryService.update(id, dto);
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string) {
+    delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.retailCategoryService.delete(id);
     }
 }

@@ -1,6 +1,7 @@
 import {
     BranchProductQueryDto,
     CreateBranchProductDto,
+    ProductBatchQueryDto,
     ReceiveStockDto,
     UpdateBranchProductDto,
 } from '../dtos';
@@ -53,7 +54,11 @@ export class BranchProductsConsoleController {
 
     @Get(':id/batches')
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_DETAIL.name)
-    findBatches(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
-        return this.branchProductsService.findBatches(id, user);
+    findBatches(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @CurrentUser() user: AuthenticatedUser,
+        @Query() query: ProductBatchQueryDto,
+    ) {
+        return this.branchProductsService.findBatches(id, user, query);
     }
 }

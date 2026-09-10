@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query } from '@nestjs/common';
 
 import { ConsoleController, Permissions } from '@/common/decorators';
 
@@ -24,7 +24,7 @@ export class SuppliersConsoleController {
 
     @Get(':id')
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_VIEW_DETAIL.name)
-    get(@Param('id') id: string) {
+    get(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.suppliersService.get(id);
     }
 
@@ -36,19 +36,19 @@ export class SuppliersConsoleController {
 
     @Put(':id')
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_UPDATE.name)
-    update(@Param('id') id: string, @Body() dto: UpdateSupplierDto) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateSupplierDto) {
         return this.suppliersService.update(id, dto);
     }
 
     @Patch(':id/status')
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_UPDATE.name)
-    updateStatus(@Param('id') id: string, @Body() dto: UpdateSupplierStatusDto) {
+    updateStatus(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateSupplierStatusDto) {
         return this.suppliersService.updateStatus(id, dto);
     }
 
     @Delete(':id')
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_DELETE.name)
-    delete(@Param('id') id: string) {
+    delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.suppliersService.delete(id);
     }
 }

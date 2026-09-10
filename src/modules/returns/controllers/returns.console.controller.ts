@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 
@@ -36,13 +36,13 @@ export class ReturnsConsoleController {
 
     @Get(':id')
     @Permissions(RETURNS_PERMISSIONS.RETURN_VIEW_DETAIL.name)
-    findById(@Param('id') id: string) {
+    findById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.returnsService.findById(id);
     }
 
     @Delete(':id')
     @Permissions(RETURNS_PERMISSIONS.RETURN_CANCEL.name)
-    cancel(@Param('id') id: string) {
+    cancel(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.returnsService.cancel(id);
     }
 }

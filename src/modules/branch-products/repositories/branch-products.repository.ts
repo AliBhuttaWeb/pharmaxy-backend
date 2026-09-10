@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { BatchSourceType, Prisma } from '@gen/prisma/client';
+import { Prisma } from '@gen/prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 
 import {
     BranchProductQueryDto,
     BranchProductFieldsDto,
-    ReceiveStockDto,
     UpdateBranchProductDto,
 } from '../dtos';
 
@@ -145,7 +144,7 @@ export class BranchProductsRepository {
             where: {
                 id,
                 deleted_at: null,
-                branch_id: branchId
+                branch_id: branchId,
             },
             include: this.branchProductRelations,
         });
@@ -220,35 +219,6 @@ export class BranchProductsRepository {
                 deleted_at: null,
             },
             include: this.branchProductRelations,
-        });
-    }
-
-    createBatch(branchProductId: string, data: ReceiveStockDto, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.create({
-            data: {
-                branch_product_id: branchProductId,
-                batch_number: data.batch_number,
-                manufacturing_date: data.manufacturing_date
-                    ? new Date(data.manufacturing_date)
-                    : undefined,
-                expiry_date: data.expiry_date ? new Date(data.expiry_date) : undefined,
-                purchase_price: data.purchase_price,
-                mrp: data.mrp,
-                quantity: data.quantity,
-                source_type: BatchSourceType.PURCHASE_ORDER,
-            },
-        });
-    }
-
-    findBatches(branchProductId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.findMany({
-            where: {
-                branch_product_id: branchProductId,
-                deleted_at: null,
-            },
-            orderBy: {
-                expiry_date: 'asc',
-            },
         });
     }
 }

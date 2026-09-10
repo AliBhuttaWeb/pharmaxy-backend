@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Post, Put, Query } from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 import { USERS_PERMISSIONS } from '@/common/constants';
@@ -25,19 +25,19 @@ export class UsersConsoleController {
 
     @Get(':id')
     @Permissions(USERS_PERMISSIONS.USER_VIEW_DETAIL.name)
-    get(@Param('id') id: string) {
+    get(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.usersService.get(id);
     }
 
     @Put(':id')
     @Permissions(USERS_PERMISSIONS.USER_UPDATE.name)
-    update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateUserDto) {
         return this.usersService.update(id, dto);
     }
 
     @Delete(':id')
     @Permissions(USERS_PERMISSIONS.USER_DELETE.name)
-    delete(@Param('id') id: string) {
+    delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.usersService.delete(id);
     }
 }

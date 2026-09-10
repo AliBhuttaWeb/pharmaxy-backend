@@ -1,4 +1,4 @@
-import { Body, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 
@@ -26,7 +26,7 @@ export class PurchaseOrdersConsoleController {
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_VIEW_DETAIL.name)
     @Get(':id')
-    findById(@Param('id') id: string) {
+    findById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.purchaseOrdersService.findById(id);
     }
 
@@ -38,26 +38,26 @@ export class PurchaseOrdersConsoleController {
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_UPDATE.name)
     @Patch(':id')
-    update(@Param('id') id: string, @Body() dto: UpdatePurchaseOrderDto) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdatePurchaseOrderDto) {
         return this.purchaseOrdersService.update(id, dto);
     }
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_APPROVE.name)
     @Patch(':id/approve')
-    approve(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    approve(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
         return this.purchaseOrdersService.approve(id, user);
     }
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_CANCEL.name)
     @Patch(':id/cancel')
-    cancel(@Param('id') id: string) {
+    cancel(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.purchaseOrdersService.cancel(id);
     }
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_APPROVE.name)
     @Post(':id/receive')
     receive(
-        @Param('id') id: string,
+        @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: ReceivePurchaseOrderDto,
         @CurrentUser() user: AuthenticatedUser,
     ) {

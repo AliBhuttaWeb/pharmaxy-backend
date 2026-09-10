@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 
@@ -36,19 +36,19 @@ export class HoldOrdersConsoleController {
 
     @Get(':id')
     @Permissions(HOLD_ORDERS_PERMISSIONS.HOLD_ORDER_VIEW_DETAIL.name)
-    findById(@Param('id') id: string) {
+    findById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.holdOrdersService.findById(id);
     }
 
     @Delete(':id')
     @Permissions(HOLD_ORDERS_PERMISSIONS.HOLD_ORDER_CANCEL.name)
-    cancel(@Param('id') id: string) {
+    cancel(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.holdOrdersService.cancel(id);
     }
 
     @Post(':id/resume')
     @Permissions(HOLD_ORDERS_PERMISSIONS.HOLD_ORDER_RESUME.name)
-    resume(@Param('id') id: string) {
+    resume(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.holdOrdersService.resume(id);
     }
 }

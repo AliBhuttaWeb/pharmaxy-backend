@@ -1,4 +1,4 @@
-import { Get, Param, Query } from '@nestjs/common';
+import { Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 import { PERMISSIONS_PERMISSIONS } from '@/common/constants';
@@ -19,7 +19,7 @@ export class PermissionsConsoleController {
 
     @Get(':id')
     @Permissions(PERMISSIONS_PERMISSIONS.PERMISSION_VIEW_DETAIL.name)
-    get(@Param('id') id: string) {
+    get(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.permissionsService.get(id);
     }
 

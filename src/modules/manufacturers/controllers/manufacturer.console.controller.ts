@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Post, Put, Query } from '@nestjs/common';
 
 import { ConsoleController, Permissions } from '@/common/decorators';
 
@@ -18,7 +18,7 @@ export class ManufacturersConsoleController {
 
     @Get(':id')
     @Permissions(MANUFACTURERS_PERMISSIONS.MANUFACTURER_VIEW_DETAIL.name)
-    get(@Param('id') id: string) {
+    get(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.manufacturersService.get(id);
     }
 
@@ -30,13 +30,13 @@ export class ManufacturersConsoleController {
 
     @Put(':id')
     @Permissions(MANUFACTURERS_PERMISSIONS.MANUFACTURER_UPDATE.name)
-    update(@Param('id') id: string, @Body() dto: UpdateManufacturerDto) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateManufacturerDto) {
         return this.manufacturersService.update(id, dto);
     }
 
     @Delete(':id')
     @Permissions(MANUFACTURERS_PERMISSIONS.MANUFACTURER_DELETE.name)
-    delete(@Param('id') id: string) {
+    delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.manufacturersService.delete(id);
     }
 }

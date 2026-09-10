@@ -12,6 +12,7 @@ import { MESSAGES } from '../constants/messages.constants';
 import {
     BranchProductQueryDto,
     CreateBranchProductDto,
+    ProductBatchQueryDto,
     ReceiveStockDto,
     UpdateBranchProductDto,
 } from '../dtos';
@@ -167,7 +168,7 @@ export class BranchProductsService {
     async receiveStock(id: string, dto: ReceiveStockDto, user: AuthenticatedUser) {
         await this.findById(id, user);
 
-        const batch = await this.branchProductsRepository.createBatch(id, dto);
+        const batch = await this.productBatchesRepository.createBatch(id, dto);
 
         return {
             message: MESSAGES.SUCCESS.STOCK_RECEIVED,
@@ -175,9 +176,17 @@ export class BranchProductsService {
         };
     }
 
-    async findBatches(id: string, user: AuthenticatedUser) {
+    async findBatches(id: string, user: AuthenticatedUser, query: ProductBatchQueryDto) {
         await this.findById(id, user);
 
-        return this.branchProductsRepository.findBatches(id);
+        const { page, limit } = query;
+
+        const { records, total } = await this.productBatchesRepository.findMany(id, page, limit);
+
+        if (!total || !page || !limit) return { records };
+
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+
+        return { records, pagination };
     }
 }

@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 
@@ -23,7 +23,7 @@ export class CustomersConsoleController {
 
     @Get(':id')
     @Permissions(CUSTOMERS_PERMISSIONS.CUSTOMER_VIEW_DETAIL.name)
-    findById(@Param('id') id: string) {
+    findById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.customersService.findById(id);
     }
 
@@ -36,7 +36,7 @@ export class CustomersConsoleController {
     @Patch(':id')
     @Permissions(CUSTOMERS_PERMISSIONS.CUSTOMER_UPDATE.name)
     update(
-        @Param('id') id: string,
+        @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: UpdateCustomerDto,
         @CurrentUser() user: AuthenticatedUser,
     ) {
@@ -45,7 +45,7 @@ export class CustomersConsoleController {
 
     @Delete(':id')
     @Permissions(CUSTOMERS_PERMISSIONS.CUSTOMER_DELETE.name)
-    delete(@Param('id') id: string) {
+    delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.customersService.delete(id);
     }
 }
