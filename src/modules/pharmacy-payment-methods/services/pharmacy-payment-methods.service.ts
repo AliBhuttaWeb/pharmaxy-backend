@@ -3,10 +3,11 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { AuthenticatedUser } from '@/modules/auth/types/authenticated-user.type';
 import { getActivePharmacyId } from '@/common/helpers/auth.helper';
 
-import { CreatePharmacyPaymentMethodDto, UpdatePharmacyPaymentMethodDto } from '../dtos';
+import { CreatePharmacyPaymentMethodDto, PharmacyPaymentMethodQueryDto, UpdatePharmacyPaymentMethodDto } from '../dtos';
 import { PharmacyPaymentMethodsRepository } from '../repositories/pharmacy-payment-methods.repository';
 import { PaymentMethodsRepository } from '@/modules/payment-methods/repositories/payment-methods.repository';
 import { MESSAGES } from '../constants/messages.constants';
+import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class PharmacyPaymentMethodsService {
@@ -15,10 +16,23 @@ export class PharmacyPaymentMethodsService {
         private readonly paymentMethodsRepository: PaymentMethodsRepository,
     ) {}
 
-    async list(user: AuthenticatedUser) {
+    async list(user: AuthenticatedUser, query?: PharmacyPaymentMethodQueryDto) {
         const pharmacyId = getActivePharmacyId(user);
 
-        return this.pharmacyPaymentMethodsRepository.findMany(pharmacyId);
+        const { records, total } = await this.pharmacyPaymentMethodsRepository.findMany(
+            pharmacyId,
+            query,
+        );
+
+        if (!total || !query?.page || !query?.limit) return { records };
+
+        const pagination = buildPaginationMeta({
+            currentPage: query.page,
+            limit: query.limit,
+            totalRecords: total,
+        });
+
+        return { records, pagination };
     }
 
     async findById(id: string, user: AuthenticatedUser) {

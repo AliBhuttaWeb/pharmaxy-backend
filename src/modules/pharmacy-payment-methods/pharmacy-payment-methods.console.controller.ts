@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 
 import { Permissions } from '@/common/decorators/permissions.decorator';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
@@ -7,6 +7,7 @@ import { AuthenticatedUser } from '@/modules/auth/types/authenticated-user.type'
 
 import {
     CreatePharmacyPaymentMethodDto,
+    PharmacyPaymentMethodQueryDto,
     UpdatePharmacyPaymentMethodDto,
     UpdatePharmacyPaymentMethodStatusDto,
 } from './dtos';
@@ -20,8 +21,11 @@ export class PharmacyPaymentMethodsController {
 
     @Get()
     @Permissions(PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_VIEW_LIST.name)
-    list(@CurrentUser() user: AuthenticatedUser) {
-        return this.pharmacyPaymentMethodsService.list(user);
+    list(
+        @CurrentUser() user: AuthenticatedUser,
+        @Query() query: PharmacyPaymentMethodQueryDto,
+    ) {
+        return this.pharmacyPaymentMethodsService.list(user, query);
     }
 
     @Get(':id')

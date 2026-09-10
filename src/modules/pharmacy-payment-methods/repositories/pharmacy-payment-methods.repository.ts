@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@gen/prisma/client';
 import { PrismaService } from '@/database/prisma/prisma.service';
+import { PharmacyPaymentMethodQueryDto } from '../dtos';
 
 @Injectable()
 export class PharmacyPaymentMethodsRepository {
@@ -25,22 +26,64 @@ export class PharmacyPaymentMethodsRepository {
         });
     }
 
-    findMany(pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).pharmacyPaymentMethod.findMany({
-            where: {
-                pharmacy_id: pharmacyId,
-            },
-            include: {
-                payment_method: {
-                    include: {
-                        provider: true,
+    async findMany(
+        pharmacyId: string,
+        query?: PharmacyPaymentMethodQueryDto,
+        tx?: Prisma.TransactionClient,
+    ) {
+        const { page, limit, is_active } = query ?? {};
+
+        const where: Prisma.PharmacyPaymentMethodWhereInput = {
+            pharmacy_id: pharmacyId,
+            ...(is_active !== undefined && {
+                is_active,
+            }),
+        };
+
+        const isPaginated = page !== undefined && limit !== undefined;
+
+        if (!isPaginated) {
+            const records = await this.getClient(tx).pharmacyPaymentMethod.findMany({
+                where,
+                include: {
+                    payment_method: {
+                        include: {
+                            provider: true,
+                        },
                     },
                 },
-            },
-            orderBy: {
-                display_order: 'asc',
-            },
-        });
+                orderBy: {
+                    display_order: 'asc',
+                },
+            });
+            return { records };
+        }
+
+        const [records, total] = await this.getClient(tx).$transaction([
+            this.prisma.pharmacyPaymentMethod.findMany({
+                where,
+                include: {
+                    payment_method: {
+                        include: {
+                            provider: true,
+                        },
+                    },
+                },
+                orderBy: {
+                    display_order: 'asc',
+                },
+                skip: (page - 1) * limit,
+                take: limit,
+            }),
+            this.prisma.pharmacyPaymentMethod.count({
+                where,
+            }),
+        ]);
+
+        return {
+            records,
+            total,
+        };
     }
 
     findById(id: string, pharmacyId: string, tx?: Prisma.TransactionClient) {
