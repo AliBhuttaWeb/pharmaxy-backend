@@ -45,10 +45,6 @@ export class BranchProductsRepository {
         },
     };
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     private buildWhere(query: BranchProductQueryDto): Prisma.BranchProductWhereInput {
         const { search, branch_id, product_id, is_controlled_drug, is_active } = query;
 
@@ -147,7 +143,7 @@ export class BranchProductsRepository {
     }
 
     findById(id: string, branchId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).branchProduct.findFirst({
+        return this.prisma.getClient(tx).branchProduct.findFirst({
             where: {
                 id,
                 deleted_at: null,
@@ -163,7 +159,7 @@ export class BranchProductsRepository {
         excludeId?: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).branchProduct.findFirst({
+        return this.prisma.getClient(tx).branchProduct.findFirst({
             where: {
                 branch_id: branchId,
                 product_id: productId,
@@ -183,14 +179,14 @@ export class BranchProductsRepository {
         data: BranchProductFieldsDto & { quantity?: number },
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).branchProduct.create({
+        return this.prisma.getClient(tx).branchProduct.create({
             data: { ...data, branch_id: branchId },
             include: this.branchProductRelations,
         });
     }
 
     update(id: string, data: UpdateBranchProductDto, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).branchProduct.update({
+        return this.prisma.getClient(tx).branchProduct.update({
             where: {
                 id,
             },
@@ -200,7 +196,7 @@ export class BranchProductsRepository {
     }
 
     updateQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).branchProduct.update({
+        return this.prisma.getClient(tx).branchProduct.update({
             where: {
                 id,
             },
@@ -212,7 +208,7 @@ export class BranchProductsRepository {
     }
 
     incrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).branchProduct.update({
+        return this.prisma.getClient(tx).branchProduct.update({
             where: {
                 id,
             },
@@ -226,7 +222,7 @@ export class BranchProductsRepository {
     }
 
     decrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).branchProduct.update({
+        return this.prisma.getClient(tx).branchProduct.update({
             where: {
                 id,
             },
@@ -240,7 +236,7 @@ export class BranchProductsRepository {
     }
 
     delete(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).branchProduct.update({
+        return this.prisma.getClient(tx).branchProduct.update({
             where: {
                 id,
             },

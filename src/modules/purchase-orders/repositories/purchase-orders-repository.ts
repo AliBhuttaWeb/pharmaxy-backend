@@ -21,10 +21,6 @@ export class PurchaseOrdersRepository {
         },
     };
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     private buildWhere(query: PurchaseOrderQueryDto): Prisma.PurchaseOrderWhereInput {
         const { search, branch_id, supplier_id, status, from_date, to_date } = query;
 
@@ -124,7 +120,7 @@ export class PurchaseOrdersRepository {
     }
 
     findById(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).purchaseOrder.findFirst({
+        return this.prisma.getClient(tx).purchaseOrder.findFirst({
             where: {
                 id,
                 deleted_at: null,
@@ -134,7 +130,7 @@ export class PurchaseOrdersRepository {
     }
 
     findLatestPurchaseOrder(branchId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).purchaseOrder.findFirst({
+        return this.prisma.getClient(tx).purchaseOrder.findFirst({
             where: {
                 branch_id: branchId,
                 deleted_at: null,
@@ -154,7 +150,7 @@ export class PurchaseOrdersRepository {
         excludeId?: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).purchaseOrder.findFirst({
+        return this.prisma.getClient(tx).purchaseOrder.findFirst({
             where: {
                 branch_id: branchId,
                 purchase_order_number: purchaseOrderNumber,
@@ -170,14 +166,14 @@ export class PurchaseOrdersRepository {
     }
 
     create(data: Prisma.PurchaseOrderCreateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).purchaseOrder.create({
+        return this.prisma.getClient(tx).purchaseOrder.create({
             data,
             include: this.purchaseOrderRelations,
         });
     }
 
     update(id: string, data: Prisma.PurchaseOrderUpdateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).purchaseOrder.update({
+        return this.prisma.getClient(tx).purchaseOrder.update({
             where: {
                 id,
             },
@@ -187,7 +183,7 @@ export class PurchaseOrdersRepository {
     }
 
     delete(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).purchaseOrder.update({
+        return this.prisma.getClient(tx).purchaseOrder.update({
             where: {
                 id,
             },
@@ -198,7 +194,7 @@ export class PurchaseOrdersRepository {
     }
 
     findPurchaseOrderItemById(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).purchaseOrderItem.findUnique({
+        return this.prisma.getClient(tx).purchaseOrderItem.findUnique({
             where: {
                 id,
             },
@@ -215,7 +211,7 @@ export class PurchaseOrdersRepository {
         data: Prisma.PurchaseOrderItemUpdateInput,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).purchaseOrderItem.update({
+        return this.prisma.getClient(tx).purchaseOrderItem.update({
             where: {
                 id,
             },

@@ -13,10 +13,6 @@ export class CustomersRepository {
         pharmacy: true,
     };
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     private buildWhere(pharmacyId: string, query: CustomerQueryDto): Prisma.CustomerWhereInput {
         const { search, is_active, is_walk_in } = query;
 
@@ -124,7 +120,7 @@ export class CustomersRepository {
     }
 
     findById(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).customer.findFirst({
+        return this.prisma.getClient(tx).customer.findFirst({
             where: {
                 id,
 
@@ -141,7 +137,7 @@ export class CustomersRepository {
         excludeId?: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).customer.findFirst({
+        return this.prisma.getClient(tx).customer.findFirst({
             where: {
                 pharmacy_id: pharmacyId,
 
@@ -164,7 +160,7 @@ export class CustomersRepository {
         excludeId?: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).customer.findFirst({
+        return this.prisma.getClient(tx).customer.findFirst({
             where: {
                 pharmacy_id: pharmacyId,
 
@@ -182,7 +178,7 @@ export class CustomersRepository {
     }
 
     findLatestCustomer(pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).customer.findFirst({
+        return this.prisma.getClient(tx).customer.findFirst({
             where: {
                 pharmacy_id: pharmacyId,
 
@@ -200,7 +196,7 @@ export class CustomersRepository {
     }
 
     create(data: Prisma.CustomerCreateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).customer.create({
+        return this.prisma.getClient(tx).customer.create({
             data,
 
             include: this.customerRelations,
@@ -208,7 +204,7 @@ export class CustomersRepository {
     }
 
     update(id: string, data: Prisma.CustomerUpdateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).customer.update({
+        return this.prisma.getClient(tx).customer.update({
             where: {
                 id,
             },
@@ -220,7 +216,7 @@ export class CustomersRepository {
     }
 
     delete(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).customer.update({
+        return this.prisma.getClient(tx).customer.update({
             where: {
                 id,
             },

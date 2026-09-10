@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
+import { InvoiceStatus } from '@gen/prisma/enums';
 import { AuthenticatedUser } from '@/modules/auth/types';
 
 import { CustomersService } from '@/modules/customers/services/customers.service';
@@ -173,6 +174,10 @@ export class PosService {
 
             const invoiceNumber = generateInvoiceNumber(latestInvoice?.invoice_number);
 
+            const totalPaid = dto.payments.reduce((sum, p) => sum + Number(p.amount), 0);
+            const dueAmount = Math.max(0, subtotal - totalPaid);
+            const isFullyPaid = totalPaid >= subtotal;
+
             const invoice = await this.posRepository.createInvoice(
                 {
                     invoice_number: invoiceNumber,
@@ -201,8 +206,14 @@ export class PosService {
                         },
                     },
 
+                    status: isFullyPaid ? InvoiceStatus.COMPLETED : InvoiceStatus.DRAFT,
+
                     subtotal,
                     grand_total: subtotal,
+                    paid_amount: totalPaid,
+                    due_amount: dueAmount,
+                    completed_at: isFullyPaid ? new Date() : null,
+                    notes: dto.notes,
 
                     items: {
                         create: preparedItems.map((item) => ({

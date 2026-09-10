@@ -7,16 +7,12 @@ import { PharmacyPaymentMethodQueryDto } from '../dtos';
 export class PharmacyPaymentMethodsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     findByPaymentMethodId(
         pharmacyId: string,
         paymentMethodId: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).pharmacyPaymentMethod.findUnique({
+        return this.prisma.getClient(tx).pharmacyPaymentMethod.findUnique({
             where: {
                 pharmacy_id_payment_method_id: {
                     pharmacy_id: pharmacyId,
@@ -43,7 +39,7 @@ export class PharmacyPaymentMethodsRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            const records = await this.getClient(tx).pharmacyPaymentMethod.findMany({
+            const records = await this.prisma.getClient(tx).pharmacyPaymentMethod.findMany({
                 where,
                 include: {
                     payment_method: {
@@ -59,7 +55,7 @@ export class PharmacyPaymentMethodsRepository {
             return { records };
         }
 
-        const [records, total] = await this.getClient(tx).$transaction([
+        const [records, total] = await this.prisma.getClient(tx).$transaction([
             this.prisma.pharmacyPaymentMethod.findMany({
                 where,
                 include: {
@@ -87,7 +83,7 @@ export class PharmacyPaymentMethodsRepository {
     }
 
     findById(id: string, pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).pharmacyPaymentMethod.findFirst({
+        return this.prisma.getClient(tx).pharmacyPaymentMethod.findFirst({
             where: {
                 id,
                 pharmacy_id: pharmacyId,
@@ -103,7 +99,7 @@ export class PharmacyPaymentMethodsRepository {
     }
 
     create(data: Prisma.PharmacyPaymentMethodUncheckedCreateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).pharmacyPaymentMethod.create({
+        return this.prisma.getClient(tx).pharmacyPaymentMethod.create({
             data,
             include: {
                 payment_method: {
@@ -121,7 +117,7 @@ export class PharmacyPaymentMethodsRepository {
         data: Prisma.PharmacyPaymentMethodUncheckedUpdateInput,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).pharmacyPaymentMethod.update({
+        return this.prisma.getClient(tx).pharmacyPaymentMethod.update({
             where: {
                 id,
             },
@@ -137,7 +133,7 @@ export class PharmacyPaymentMethodsRepository {
     }
 
     updateStatus(id: string, pharmacyId: string, isActive: boolean, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).pharmacyPaymentMethod.updateMany({
+        return this.prisma.getClient(tx).pharmacyPaymentMethod.updateMany({
             where: {
                 id,
                 pharmacy_id: pharmacyId,
@@ -149,7 +145,7 @@ export class PharmacyPaymentMethodsRepository {
     }
 
     delete(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).pharmacyPaymentMethod.delete({
+        return this.prisma.getClient(tx).pharmacyPaymentMethod.delete({
             where: {
                 id,
             },

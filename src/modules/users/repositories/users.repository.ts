@@ -9,10 +9,6 @@ import { FindUsersQueryDto } from '../dtos';
 export class UsersRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     async findMany(query: FindUsersQueryDto) {
         const { search, status, page, limit, sort_by, sort_order } = query;
 
@@ -121,7 +117,7 @@ export class UsersRepository {
     }
 
     findById(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).user.findUnique({
+        return this.prisma.getClient(tx).user.findUnique({
             where: {
                 id,
             },
@@ -157,7 +153,7 @@ export class UsersRepository {
     }
 
     create(data: Prisma.UserUncheckedCreateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).user.create({
+        return this.prisma.getClient(tx).user.create({
             data,
             include: {
                 user_roles: {
@@ -215,7 +211,7 @@ export class UsersRepository {
     }
 
     countByPharmacyId(pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).user.count({
+        return this.prisma.getClient(tx).user.count({
             where: {
                 pharmacy_id: pharmacyId,
             },
@@ -223,7 +219,7 @@ export class UsersRepository {
     }
 
     async updatePharmacy(userId: string, pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).user.update({
+        return this.prisma.getClient(tx).user.update({
             where: {
                 id: userId,
             },

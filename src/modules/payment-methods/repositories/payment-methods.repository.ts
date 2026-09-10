@@ -7,10 +7,6 @@ import { CreatePaymentMethodDto, PaymentMethodQueryDto, UpdatePaymentMethodDto }
 export class PaymentMethodsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     private readonly paymentMethodRelations: Prisma.PaymentMethodInclude = {
         provider: true,
     };
@@ -68,7 +64,7 @@ export class PaymentMethodsRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            const records = await this.getClient(tx).paymentMethod.findMany({
+            const records = await this.prisma.getClient(tx).paymentMethod.findMany({
                 where,
                 orderBy,
                 include: this.paymentMethodRelations,
@@ -76,7 +72,7 @@ export class PaymentMethodsRepository {
             return { records };
         }
 
-        const [records, total] = await this.getClient(tx).$transaction([
+        const [records, total] = await this.prisma.getClient(tx).$transaction([
             this.prisma.paymentMethod.findMany({
                 where,
                 orderBy,
@@ -96,7 +92,7 @@ export class PaymentMethodsRepository {
     }
 
     findById(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).paymentMethod.findUnique({
+        return this.prisma.getClient(tx).paymentMethod.findUnique({
             where: {
                 id,
             },
@@ -105,7 +101,7 @@ export class PaymentMethodsRepository {
     }
 
     findByName(name: string, excludeId?: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).paymentMethod.findFirst({
+        return this.prisma.getClient(tx).paymentMethod.findFirst({
             where: {
                 name: {
                     equals: name,
@@ -121,7 +117,7 @@ export class PaymentMethodsRepository {
     }
 
     findByCode(code: string, excludeId?: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).paymentMethod.findFirst({
+        return this.prisma.getClient(tx).paymentMethod.findFirst({
             where: {
                 code: {
                     equals: code,
@@ -137,14 +133,14 @@ export class PaymentMethodsRepository {
     }
 
     create(data: CreatePaymentMethodDto, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).paymentMethod.create({
+        return this.prisma.getClient(tx).paymentMethod.create({
             data,
             include: this.paymentMethodRelations,
         });
     }
 
     update(id: string, data: UpdatePaymentMethodDto, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).paymentMethod.update({
+        return this.prisma.getClient(tx).paymentMethod.update({
             where: {
                 id,
             },
@@ -154,7 +150,7 @@ export class PaymentMethodsRepository {
     }
 
     delete(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).paymentMethod.delete({
+        return this.prisma.getClient(tx).paymentMethod.delete({
             where: {
                 id,
             },

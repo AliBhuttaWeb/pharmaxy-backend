@@ -18,10 +18,6 @@ export class SubscriptionsRepository {
         payments: true,
     };
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     private buildWhere(query: SubscriptionQueryDto): Prisma.SubscriptionWhereInput {
         const { pharmacy_id, status } = query;
 
@@ -91,7 +87,7 @@ export class SubscriptionsRepository {
     }
 
     findById(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscription.findUnique({
+        return this.prisma.getClient(tx).subscription.findUnique({
             where: {
                 id,
             },
@@ -101,7 +97,7 @@ export class SubscriptionsRepository {
     }
 
     findActiveByPharmacyId(pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscription.findFirst({
+        return this.prisma.getClient(tx).subscription.findFirst({
             where: {
                 pharmacy_id: pharmacyId,
 
@@ -119,7 +115,7 @@ export class SubscriptionsRepository {
     }
 
     findLatestByPharmacyId(pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscription.findFirst({
+        return this.prisma.getClient(tx).subscription.findFirst({
             where: {
                 pharmacy_id: pharmacyId,
             },
@@ -133,7 +129,7 @@ export class SubscriptionsRepository {
     }
 
     create(data: Prisma.SubscriptionCreateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscription.create({
+        return this.prisma.getClient(tx).subscription.create({
             data,
 
             include: this.subscriptionRelations,
@@ -141,7 +137,7 @@ export class SubscriptionsRepository {
     }
 
     update(id: string, data: Prisma.SubscriptionUpdateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscription.update({
+        return this.prisma.getClient(tx).subscription.update({
             where: {
                 id,
             },

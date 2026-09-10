@@ -8,24 +8,20 @@ import { ReceiveStockDto } from '../dtos';
 export class ProductBatchesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     private readonly productBatchRelations: Prisma.ProductBatchInclude = {
         branch_product: true,
         purchase_order_item: true,
     };
 
     create(data: Prisma.ProductBatchUncheckedCreateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.create({
+        return this.prisma.getClient(tx).productBatch.create({
             data,
             include: this.productBatchRelations,
         });
     }
 
     createBatch(branchProductId: string, data: ReceiveStockDto, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.create({
+        return this.prisma.getClient(tx).productBatch.create({
             data: {
                 branch_product_id: branchProductId,
                 batch_number: data.batch_number,
@@ -46,7 +42,7 @@ export class ProductBatchesRepository {
         data: Prisma.ProductBatchUncheckedUpdateInput,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).productBatch.update({
             where: {
                 id,
             },
@@ -55,7 +51,7 @@ export class ProductBatchesRepository {
     }
 
     findById(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.findUnique({
+        return this.prisma.getClient(tx).productBatch.findUnique({
             where: {
                 id,
             },
@@ -63,7 +59,7 @@ export class ProductBatchesRepository {
     }
 
     findManyByBranchProduct(branchProductId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.findMany({
+        return this.prisma.getClient(tx).productBatch.findMany({
             where: {
                 branch_product_id: branchProductId,
                 deleted_at: null,
@@ -114,7 +110,7 @@ export class ProductBatchesRepository {
         batchNumber: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).productBatch.findFirst({
+        return this.prisma.getClient(tx).productBatch.findFirst({
             where: {
                 branch_product_id: branchProductId,
                 batch_number: batchNumber,
@@ -128,7 +124,7 @@ export class ProductBatchesRepository {
         batchNumber: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).productBatch.findFirst({
+        return this.prisma.getClient(tx).productBatch.findFirst({
             where: {
                 branch_product_id: branchProductId,
                 batch_number: batchNumber,
@@ -138,7 +134,7 @@ export class ProductBatchesRepository {
     }
 
     updateQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).productBatch.update({
             where: {
                 id,
             },
@@ -150,7 +146,7 @@ export class ProductBatchesRepository {
     }
 
     incrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).productBatch.update({
             where: {
                 id,
             },
@@ -163,7 +159,7 @@ export class ProductBatchesRepository {
     }
 
     decrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).productBatch.update({
             where: {
                 id,
             },
@@ -176,7 +172,7 @@ export class ProductBatchesRepository {
     }
 
     findAvailableForSale(branchProductId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.findMany({
+        return this.prisma.getClient(tx).productBatch.findMany({
             where: {
                 branch_product_id: branchProductId,
 

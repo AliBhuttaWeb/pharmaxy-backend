@@ -16,5 +16,6 @@ export const MESSAGES = {
         PRODUCT_BATCH_NOT_FOUND: 'Product batch not found.',
         BRANCH_PRODUCT_NOT_FOUND: 'Branch product not found.',
         ALREADY_CANCELLED: 'Sale return is already cancelled.',
+        DUPLICATE_RETURN_ITEM: 'Duplicate return items found in request.',
     },
 } as const;

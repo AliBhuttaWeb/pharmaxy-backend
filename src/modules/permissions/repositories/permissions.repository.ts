@@ -8,10 +8,6 @@ import { FindPermissionsQueryDto } from '../dtos';
 export class PermissionsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     async getRolePermissions(
         roleIds: string[],
         tx?: Prisma.TransactionClient,
@@ -20,7 +16,7 @@ export class PermissionsRepository {
             return new Set();
         }
 
-        const rolePermissions = await this.getClient(tx).rolePermission.findMany({
+        const rolePermissions = await this.prisma.getClient(tx).rolePermission.findMany({
             where: {
                 role_id: {
                     in: roleIds,
@@ -38,7 +34,7 @@ export class PermissionsRepository {
         userId: string,
         tx?: Prisma.TransactionClient,
     ): Promise<Map<string, UserPermission>> {
-        const overrides = await this.getClient(tx).userPermission.findMany({
+        const overrides = await this.prisma.getClient(tx).userPermission.findMany({
             where: {
                 user_id: userId,
             },
@@ -52,7 +48,7 @@ export class PermissionsRepository {
             return;
         }
 
-        await this.getClient(tx).userPermission.deleteMany({
+        await this.prisma.getClient(tx).userPermission.deleteMany({
             where: {
                 id: {
                     in: ids,
@@ -66,7 +62,7 @@ export class PermissionsRepository {
         effect: PermissionEffect,
         tx?: Prisma.TransactionClient,
     ): Promise<void> {
-        await this.getClient(tx).userPermission.update({
+        await this.prisma.getClient(tx).userPermission.update({
             where: {
                 id,
             },
@@ -82,7 +78,7 @@ export class PermissionsRepository {
         effect: PermissionEffect,
         tx?: Prisma.TransactionClient,
     ): Promise<void> {
-        await this.getClient(tx).userPermission.create({
+        await this.prisma.getClient(tx).userPermission.create({
             data: {
                 user_id: userId,
                 permission_id: permissionId,

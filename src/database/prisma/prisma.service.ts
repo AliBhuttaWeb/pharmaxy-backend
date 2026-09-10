@@ -21,6 +21,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
         } satisfies ConstructorParameters<typeof PrismaClient>[0];
     }
 
+    getClient(tx?: Prisma.TransactionClient) {
+        return tx ?? this;
+    }
+
     async transaction<T>(callback: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
         return this.$transaction(callback);
     }

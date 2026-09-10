@@ -14,10 +14,6 @@ export class SubscriptionPlansRepository {
         subscriptions: false,
     };
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     private buildWhere(query: SubscriptionPlanQueryDto): Prisma.SubscriptionPlanWhereInput {
         const { search, billing_cycle, is_active } = query;
 
@@ -100,7 +96,7 @@ export class SubscriptionPlansRepository {
     }
 
     findById(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscriptionPlan.findUnique({
+        return this.prisma.getClient(tx).subscriptionPlan.findUnique({
             where: {
                 id,
             },
@@ -110,7 +106,7 @@ export class SubscriptionPlansRepository {
     }
 
     findByName(name: string, excludeId?: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscriptionPlan.findFirst({
+        return this.prisma.getClient(tx).subscriptionPlan.findFirst({
             where: {
                 name,
 
@@ -124,7 +120,7 @@ export class SubscriptionPlansRepository {
     }
 
     create(data: Prisma.SubscriptionPlanCreateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscriptionPlan.create({
+        return this.prisma.getClient(tx).subscriptionPlan.create({
             data,
 
             include: this.subscriptionPlanRelations,
@@ -132,7 +128,7 @@ export class SubscriptionPlansRepository {
     }
 
     update(id: string, data: Prisma.SubscriptionPlanUpdateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscriptionPlan.update({
+        return this.prisma.getClient(tx).subscriptionPlan.update({
             where: {
                 id,
             },
@@ -144,7 +140,7 @@ export class SubscriptionPlansRepository {
     }
 
     updateStatus(id: string, is_active: boolean, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).subscriptionPlan.update({
+        return this.prisma.getClient(tx).subscriptionPlan.update({
             where: {
                 id,
             },

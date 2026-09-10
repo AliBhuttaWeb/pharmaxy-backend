@@ -13,7 +13,7 @@ import { ReturnsRepository } from '../repositories/returns.repository';
 import { MESSAGES } from '../constants';
 
 import { PreparedReturnBatch, PreparedReturnItem } from '../types';
-import { ReturnStatus } from '@gen/prisma/enums';
+import { InvoiceStatus, ReturnStatus } from '@gen/prisma/enums';
 import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
@@ -44,6 +44,15 @@ export class ReturnsService {
                 throw new ConflictException(MESSAGES.ERROR.INVOICE_BRANCH_MISMATCH);
             }
 
+            if (invoice.status === InvoiceStatus.CANCELLED) {
+                throw new ConflictException(MESSAGES.ERROR.INVOICE_ALREADY_CANCELLED);
+            }
+
+            const itemIds = dto.items.map((item) => item.invoice_item_id);
+            if (new Set(itemIds).size !== itemIds.length) {
+                throw new ConflictException(MESSAGES.ERROR.DUPLICATE_RETURN_ITEM);
+            }
+
             let refundAmount = 0;
 
             const preparedItems: PreparedReturnItem[] = [];
@@ -58,6 +67,10 @@ export class ReturnsService {
                 }
 
                 const requestedQuantity = Number(item.quantity);
+
+                if (requestedQuantity <= 0) {
+                    throw new ConflictException(MESSAGES.ERROR.INVALID_RETURN_QUANTITY);
+                }
 
                 const alreadyReturned = invoiceItem.return_items.reduce(
                     (sum, returnItem) => sum + Number(returnItem.quantity),
@@ -187,6 +200,29 @@ export class ReturnsService {
                 );
             }
 
+            let totalSoldOnInvoice = 0;
+            let totalReturnedOnInvoice = 0;
+
+            for (const invItem of invoice.items) {
+                totalSoldOnInvoice += Number(invItem.quantity);
+                const prevReturned = invItem.return_items.reduce(
+                    (sum, retItem) => sum + Number(retItem.quantity),
+                    0,
+                );
+                totalReturnedOnInvoice += prevReturned;
+            }
+
+            for (const item of preparedItems) {
+                totalReturnedOnInvoice += item.quantity;
+            }
+
+            const newInvoiceStatus =
+                totalReturnedOnInvoice >= totalSoldOnInvoice
+                    ? InvoiceStatus.REFUNDED
+                    : InvoiceStatus.PARTIALLY_REFUNDED;
+
+            await this.returnsRepository.updateInvoiceStatus(invoice.id, newInvoiceStatus, tx);
+
             return returnRecord;
         });
     }
@@ -294,11 +330,39 @@ export class ReturnsService {
                 );
             }
 
-            return this.returnsRepository.cancel(
+            const cancelledRecord = await this.returnsRepository.cancel(
                 id,
 
                 tx,
             );
+
+            const invoice = await this.returnsRepository.findInvoiceForReturn(
+                returnRecord.invoice_id,
+                tx,
+            );
+
+            if (invoice) {
+                let remainingReturned = 0;
+                for (const invItem of invoice.items) {
+                    remainingReturned += invItem.return_items.reduce(
+                        (sum, retItem) => sum + Number(retItem.quantity),
+                        0,
+                    );
+                }
+
+                const updatedInvoiceStatus =
+                    remainingReturned > 0
+                        ? InvoiceStatus.PARTIALLY_REFUNDED
+                        : InvoiceStatus.COMPLETED;
+
+                await this.returnsRepository.updateInvoiceStatus(
+                    invoice.id,
+                    updatedInvoiceStatus,
+                    tx,
+                );
+            }
+
+            return cancelledRecord;
         });
     }
 }

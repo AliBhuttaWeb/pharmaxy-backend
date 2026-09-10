@@ -12,10 +12,6 @@ import { isPharmacyAdmin } from '@/common/helpers';
 export class BranchesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     async findMany(query: FindBranchesQueryDto) {
         const { search, pharmacy_id, is_active, is_main, page, limit, sort_by, sort_order } = query;
 
@@ -213,7 +209,7 @@ export class BranchesRepository {
     }
 
     countByPharmacyId(pharmacyId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).branch.count({
+        return this.prisma.getClient(tx).branch.count({
             where: {
                 pharmacy_id: pharmacyId,
                 deleted_at: null,

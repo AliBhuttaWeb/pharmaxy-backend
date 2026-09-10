@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@gen/prisma/client';
+import { InvoiceStatus, ReturnStatus } from '@gen/prisma/enums';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 
@@ -32,10 +33,6 @@ export class ReturnsRepository {
             },
         },
     };
-
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
 
     private buildWhere(
         branchId: string,
@@ -116,7 +113,7 @@ export class ReturnsRepository {
 
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).return.findUnique({
+        return this.prisma.getClient(tx).return.findUnique({
             where: {
                 id,
             },
@@ -130,7 +127,7 @@ export class ReturnsRepository {
 
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).return.findUnique({
+        return this.prisma.getClient(tx).return.findUnique({
             where: {
                 id,
             },
@@ -150,7 +147,7 @@ export class ReturnsRepository {
 
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).return.findFirst({
+        return this.prisma.getClient(tx).return.findFirst({
             where: {
                 branch_id: branchId,
             },
@@ -170,7 +167,7 @@ export class ReturnsRepository {
 
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).invoice.findUnique({
+        return this.prisma.getClient(tx).invoice.findUnique({
             where: {
                 id: invoiceId,
             },
@@ -184,9 +181,32 @@ export class ReturnsRepository {
 
                         branch_product: true,
 
-                        return_items: true,
+                        return_items: {
+                            where: {
+                                return: {
+                                    status: {
+                                        not: ReturnStatus.CANCELLED,
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
+            },
+        });
+    }
+
+    updateInvoiceStatus(
+        invoiceId: string,
+        status: InvoiceStatus,
+        tx?: Prisma.TransactionClient,
+    ) {
+        return this.prisma.getClient(tx).invoice.update({
+            where: {
+                id: invoiceId,
+            },
+            data: {
+                status,
             },
         });
     }
@@ -196,7 +216,7 @@ export class ReturnsRepository {
 
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).invoiceItemBatch.findMany({
+        return this.prisma.getClient(tx).invoiceItemBatch.findMany({
             where: {
                 invoice_item_id: invoiceItemId,
             },
@@ -212,7 +232,7 @@ export class ReturnsRepository {
 
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).return.create({
+        return this.prisma.getClient(tx).return.create({
             data,
 
             include: this.returnRelations,
@@ -224,7 +244,7 @@ export class ReturnsRepository {
 
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).return.update({
+        return this.prisma.getClient(tx).return.update({
             where: {
                 id,
             },
@@ -236,7 +256,7 @@ export class ReturnsRepository {
     }
 
     restoreBatchQuantity(batchId: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).productBatch.update({
             where: {
                 id: batchId,
             },
@@ -250,7 +270,7 @@ export class ReturnsRepository {
     }
 
     decreaseBatchQuantity(batchId: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).productBatch.update({
             where: {
                 id: batchId,
             },
@@ -268,7 +288,7 @@ export class ReturnsRepository {
         quantity: number,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).branchProduct.update({
+        return this.prisma.getClient(tx).branchProduct.update({
             where: {
                 id: branchProductId,
             },
@@ -286,7 +306,7 @@ export class ReturnsRepository {
         quantity: number,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.getClient(tx).branchProduct.update({
+        return this.prisma.getClient(tx).branchProduct.update({
             where: {
                 id: branchProductId,
             },

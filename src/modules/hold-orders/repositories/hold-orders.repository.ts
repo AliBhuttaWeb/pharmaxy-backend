@@ -25,10 +25,6 @@ export class HoldOrdersRepository {
         },
     };
 
-    private getClient(tx?: Prisma.TransactionClient) {
-        return tx ?? this.prisma;
-    }
-
     private buildWhere(branchId: string): Prisma.HoldOrderWhereInput {
         return {
             branch_id: branchId,
@@ -76,7 +72,7 @@ export class HoldOrdersRepository {
     }
 
     findById(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).holdOrder.findUnique({
+        return this.prisma.getClient(tx).holdOrder.findUnique({
             where: {
                 id,
             },
@@ -86,7 +82,7 @@ export class HoldOrdersRepository {
     }
 
     findLatest(branchId: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).holdOrder.findFirst({
+        return this.prisma.getClient(tx).holdOrder.findFirst({
             where: {
                 branch_id: branchId,
             },
@@ -102,14 +98,14 @@ export class HoldOrdersRepository {
     }
 
     create(data: Prisma.HoldOrderCreateInput, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).holdOrder.create({
+        return this.prisma.getClient(tx).holdOrder.create({
             data,
             include: this.relations,
         });
     }
 
     delete(id: string, tx?: Prisma.TransactionClient) {
-        return this.getClient(tx).holdOrder.delete({
+        return this.prisma.getClient(tx).holdOrder.delete({
             where: {
                 id,
             },
