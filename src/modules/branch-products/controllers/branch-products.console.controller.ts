@@ -6,7 +6,7 @@ import {
 } from '../dtos';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
-import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 import { BranchProductsService } from '../services/branch-products.service';
 import { BRANCH_PRODUCTS_PERMISSIONS } from '@/common/constants/permissions/branch-products.permissions';
 import { AuthenticatedUser } from '@/modules/auth/types';
@@ -23,7 +23,7 @@ export class BranchProductsConsoleController {
 
     @Get(':id')
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_DETAIL.name)
-    findById(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    findById(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
         return this.branchProductsService.findById(id, user);
     }
 
@@ -35,25 +35,25 @@ export class BranchProductsConsoleController {
 
     @Patch(':id')
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_UPDATE.name)
-    update(@Param('id') id: string, @Body() dto: UpdateBranchProductDto, @CurrentUser() user: AuthenticatedUser) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateBranchProductDto, @CurrentUser() user: AuthenticatedUser) {
         return this.branchProductsService.update(id, dto, user);
     }
 
     @Delete(':id')
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_DELETE.name)
-    delete(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    delete(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
         return this.branchProductsService.delete(id, user);
     }
 
     @Post(':id/receive-stock')
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_UPDATE.name)
-    receiveStock(@Param('id') id: string, @Body() dto: ReceiveStockDto, @CurrentUser() user: AuthenticatedUser) {
+    receiveStock(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: ReceiveStockDto, @CurrentUser() user: AuthenticatedUser) {
         return this.branchProductsService.receiveStock(id, dto, user);
     }
 
     @Get(':id/batches')
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_DETAIL.name)
-    findBatches(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    findBatches(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
         return this.branchProductsService.findBatches(id, user);
     }
 }
