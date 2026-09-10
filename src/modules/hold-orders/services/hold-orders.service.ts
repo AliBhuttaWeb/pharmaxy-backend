@@ -7,14 +7,17 @@ import { AuthenticatedUser } from '@/modules/auth/types';
 import { BranchContextService } from '@/common/services/branch-context.service';
 
 import { BranchProductsRepository } from '@/modules/branch-products/repositories/branch-products.repository';
+import { ProductBatchesRepository } from '@/modules/branch-products/repositories/product-batches.repository';
 
 import { CreateHoldOrderDto, HoldOrderQueryDto } from '../dtos';
 
 import { HoldOrdersRepository } from '../repositories/hold-orders.repository';
 
 import { MESSAGES } from '../constants';
+import { MESSAGES as PRODUCT_MESSAGES } from '@/modules/products/constants/messages.constants';
 
 import { generateHoldNumber } from '../helpers/generate-hold-number';
+import { allocateStock } from '@/modules/pos/helpers/allocate-stock';
 import { Prisma } from '@gen/prisma/client';
 import { buildPaginationMeta } from '@/common/pagination';
 
@@ -35,6 +38,8 @@ export class HoldOrdersService {
 
         private readonly branchProductsRepository: BranchProductsRepository,
 
+        private readonly productBatchesRepository: ProductBatchesRepository,
+
         private readonly branchContextService: BranchContextService,
     ) {}
 
@@ -54,7 +59,7 @@ export class HoldOrdersService {
                 );
 
                 if (!branchProduct) {
-                    throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+                    throw new NotFoundException(PRODUCT_MESSAGES.ERROR.NOT_FOUND);
                 }
 
                 if (branchProduct.branch_id !== branchId) {
@@ -65,7 +70,24 @@ export class HoldOrdersService {
                     throw new ConflictException(MESSAGES.ERROR.PRODUCT_INACTIVE);
                 }
 
-                const quantity = item.quantity;
+                const quantity = Number(item.quantity);
+
+                if (Number(branchProduct.quantity) < quantity) {
+                    throw new ConflictException(PRODUCT_MESSAGES.ERROR.INSUFFIENT_STOCK);
+                }
+
+                const batches = await this.productBatchesRepository.findAvailableForSale(
+                    branchProduct.id,
+                    tx,
+                );
+
+                allocateStock(
+                    batches.map((batch) => ({
+                        id: batch.id,
+                        quantity: Number(batch.quantity),
+                    })),
+                    quantity,
+                );
 
                 const unitPrice = branchProduct.selling_price.toNumber();
 

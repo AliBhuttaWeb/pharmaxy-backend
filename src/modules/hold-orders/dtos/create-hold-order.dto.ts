@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsUUID, IsString, IsArray, ArrayMinSize, IsObject } from 'class-validator';
+import { IsOptional, IsUUID, IsString, IsArray, ArrayMinSize, IsObject, IsDefined, ValidateNested } from 'class-validator';
 import { CreateHoldOrderItemDto } from './create-hold-order-item.dto';
 import { Type } from 'class-transformer';
 
@@ -13,8 +13,9 @@ export class CreateHoldOrderDto {
         type: [CreateHoldOrderItemDto],
     })
     @IsArray()
-    @ArrayMinSize(1)
     @IsObject({ each: true })
+    @ArrayMinSize(1)
+    @ValidateNested()
     @Type(() => CreateHoldOrderItemDto)
     items!: CreateHoldOrderItemDto[];
 

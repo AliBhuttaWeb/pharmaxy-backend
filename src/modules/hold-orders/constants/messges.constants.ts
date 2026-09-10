@@ -15,5 +15,6 @@ export const MESSAGES = {
         PRODUCT_INACTIVE: 'Selected product is inactive.',
         INVALID_BRANCH: 'The selected product does not belong to the active branch.',
         NO_ACTIVE_BRANCH_SELECTED: 'No active branch selected.',
+        INSUFFICIENT_STOCK: 'Insufficient stock.',
     },
 } as const;
