@@ -161,6 +161,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
 
         permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_LIST,
         permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_DETAIL,
+
+        // Hold Orders
+        ...Object.values(permissions.HOLD_ORDERS_PERMISSIONS),  
     ),
 
     // =====================================================
@@ -201,6 +204,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
 
         // Pharmacy Payment Methods
         permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_VIEW_LIST,
+
+        // Hold Orders
+        ...Object.values(permissions.HOLD_ORDERS_PERMISSIONS),        
     ),
 
     // =====================================================
