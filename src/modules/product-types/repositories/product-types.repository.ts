@@ -37,9 +37,19 @@ export class ProductTypesRepository {
             }),
         };
 
+        const sortableFields = ['name', 'is_active', 'created_at', 'updated_at'] as const;
+        type SortableField = (typeof sortableFields)[number];
+
+        const requestedSortBy = (query as any).sort_by || sortBy;
+        const requestedSortOrder = (query as any).sort_order || sortOrder || 'asc';
+
+        const field: SortableField =
+            requestedSortBy && sortableFields.includes(requestedSortBy as SortableField)
+                ? (requestedSortBy as SortableField)
+                : 'name';
+
         const orderBy: Prisma.ProductTypeOrderByWithRelationInput = {
-            [(sortBy ?? 'name') as keyof Prisma.ProductTypeOrderByWithRelationInput]:
-                sortOrder ?? 'asc',
+            [field]: requestedSortOrder,
         };
 
         const isPaginated = page !== undefined && limit !== undefined;

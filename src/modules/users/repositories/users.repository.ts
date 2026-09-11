@@ -58,10 +58,18 @@ export class UsersRepository {
             'last_login_at',
         ] as const;
 
+        type SortableField = (typeof sortableFields)[number];
+
+        const requestedSortBy = (query as any).sortBy || sort_by;
+        const requestedSortOrder = (query as any).sortOrder || sort_order || 'desc';
+
+        const field: SortableField =
+            requestedSortBy && sortableFields.includes(requestedSortBy as SortableField)
+                ? (requestedSortBy as SortableField)
+                : 'created_at';
+
         const orderBy: Prisma.UserOrderByWithRelationInput = {
-            [sortableFields.includes((sort_by as (typeof sortableFields)[number]) ?? 'created_at')
-                ? (sort_by as keyof Prisma.UserOrderByWithRelationInput)
-                : 'created_at']: sort_order ?? 'desc',
+            [field]: requestedSortOrder,
         };
 
         const isPaginated = page !== undefined && limit !== undefined;
