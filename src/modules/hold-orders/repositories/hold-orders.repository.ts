@@ -111,4 +111,42 @@ export class HoldOrdersRepository {
             },
         });
     }
+
+    async getActiveHeldQuantities(
+        branchId: string,
+        branchProductIds: string[],
+        tx?: Prisma.TransactionClient,
+    ): Promise<Record<string, number>> {
+        if (!branchProductIds.length) {
+            return {};
+        }
+
+        const now = new Date();
+        const items = await this.prisma.getClient(tx).holdOrderItem.findMany({
+            where: {
+                branch_product_id: {
+                    in: branchProductIds,
+                },
+                hold_order: {
+                    branch_id: branchId,
+                    OR: [
+                        { expires_at: null },
+                        { expires_at: { gt: now } },
+                    ],
+                },
+            },
+            select: {
+                branch_product_id: true,
+                quantity: true,
+            },
+        });
+
+        const quantities: Record<string, number> = {};
+        for (const item of items) {
+            quantities[item.branch_product_id] =
+                (quantities[item.branch_product_id] || 0) + item.quantity;
+        }
+
+        return quantities;
+    }
 }

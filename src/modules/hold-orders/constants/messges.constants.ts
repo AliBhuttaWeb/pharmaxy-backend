@@ -16,5 +16,6 @@ export const MESSAGES = {
         INVALID_BRANCH: 'The selected product does not belong to the active branch.',
         NO_ACTIVE_BRANCH_SELECTED: 'No active branch selected.',
         INSUFFICIENT_STOCK: 'Insufficient stock.',
+        HELD_STOCK_INSUFFICIENT: "Some orders are on hold and due to limited stock can't hold this order.",
     },
 } as const;

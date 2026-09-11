@@ -7,7 +7,7 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 export class DashboardRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async overview(branchId: string, days: number = 7) {
+    async overview(branchId: string, days: number = 7, cashierId?: string) {
         const todayStart = new Date();
         todayStart.setHours(0, 0, 0, 0);
 
@@ -31,21 +31,21 @@ export class DashboardRepository {
             topSellingProducts,
             paymentMethods,
         ] = await Promise.all([
-            this.getTodaySales(branchId, todayStart, todayEnd),
-            this.getTodayTransactions(branchId, todayStart, todayEnd),
-            this.getTodayReturnedItems(branchId, todayStart, todayEnd),
-            this.getTodayReturns(branchId, todayStart, todayEnd),
-            this.getTodayRefundAmount(branchId, todayStart, todayEnd),
+            this.getTodaySales(branchId, todayStart, todayEnd, cashierId),
+            this.getTodayTransactions(branchId, todayStart, todayEnd, cashierId),
+            this.getTodayReturnedItems(branchId, todayStart, todayEnd, cashierId),
+            this.getTodayReturns(branchId, todayStart, todayEnd, cashierId),
+            this.getTodayRefundAmount(branchId, todayStart, todayEnd, cashierId),
             this.getTotalProducts(branchId),
             this.getLowStockProducts(branchId),
             this.getExpiringProducts(branchId),
-            this.getPendingPurchaseOrders(branchId),
-            this.getAwaitingDeliveryPurchaseOrders(branchId),
-            this.getPendingHoldOrders(branchId),
-            this.getTotalCustomers(branchId),
-            this.getSalesTrend(branchId, days),
-            this.getTopSellingProducts(branchId, 5),
-            this.getPaymentMethodsBreakdown(branchId),
+            this.getPendingPurchaseOrders(branchId, cashierId),
+            this.getAwaitingDeliveryPurchaseOrders(branchId, cashierId),
+            this.getPendingHoldOrders(branchId, cashierId),
+            this.getTotalCustomers(branchId, cashierId),
+            this.getSalesTrend(branchId, days, cashierId),
+            this.getTopSellingProducts(branchId, 5, cashierId),
+            this.getPaymentMethodsBreakdown(branchId, cashierId),
         ]);
 
         return {
@@ -67,7 +67,7 @@ export class DashboardRepository {
         };
     }
 
-    private getTodaySales(branchId: string, start: Date, end: Date) {
+    private getTodaySales(branchId: string, start: Date, end: Date, cashierId?: string) {
         return this.prisma.invoice
             .aggregate({
                 where: {
@@ -80,6 +80,7 @@ export class DashboardRepository {
                         not: InvoiceStatus.CANCELLED,
                     },
                     deleted_at: null,
+                    ...(cashierId ? { cashier_id: cashierId } : {}),
                 },
                 _sum: {
                     grand_total: true,
@@ -88,7 +89,7 @@ export class DashboardRepository {
             .then((result) => Number(result._sum.grand_total ?? 0));
     }
 
-    private getTodayTransactions(branchId: string, start: Date, end: Date) {
+    private getTodayTransactions(branchId: string, start: Date, end: Date, cashierId?: string) {
         return this.prisma.invoice.count({
             where: {
                 branch_id: branchId,
@@ -100,11 +101,12 @@ export class DashboardRepository {
                     not: InvoiceStatus.CANCELLED,
                 },
                 deleted_at: null,
+                ...(cashierId ? { cashier_id: cashierId } : {}),
             },
         });
     }
 
-    private getTodayReturnedItems(branchId: string, start: Date, end: Date) {
+    private getTodayReturnedItems(branchId: string, start: Date, end: Date, cashierId?: string) {
         return this.prisma.returnItem
             .aggregate({
                 where: {
@@ -115,6 +117,7 @@ export class DashboardRepository {
                             gte: start,
                             lte: end,
                         },
+                        ...(cashierId ? { cashier_id: cashierId } : {}),
                     },
                 },
                 _sum: {
@@ -124,7 +127,7 @@ export class DashboardRepository {
             .then((result) => Number(result._sum.quantity ?? 0));
     }
 
-    private getTodayReturns(branchId: string, start: Date, end: Date) {
+    private getTodayReturns(branchId: string, start: Date, end: Date, cashierId?: string) {
         return this.prisma.return.count({
             where: {
                 branch_id: branchId,
@@ -133,11 +136,12 @@ export class DashboardRepository {
                     gte: start,
                     lte: end,
                 },
+                ...(cashierId ? { cashier_id: cashierId } : {}),
             },
         });
     }
 
-    private getTodayRefundAmount(branchId: string, start: Date, end: Date) {
+    private getTodayRefundAmount(branchId: string, start: Date, end: Date, cashierId?: string) {
         return this.prisma.return
             .aggregate({
                 where: {
@@ -147,6 +151,7 @@ export class DashboardRepository {
                         gte: start,
                         lte: end,
                     },
+                    ...(cashierId ? { cashier_id: cashierId } : {}),
                 },
                 _sum: {
                     refund_amount: true,
@@ -194,7 +199,7 @@ export class DashboardRepository {
         });
     }
 
-    private getPendingPurchaseOrders(branchId: string) {
+    private getPendingPurchaseOrders(branchId: string, cashierId?: string) {
         return this.prisma.purchaseOrder.count({
             where: {
                 branch_id: branchId,
@@ -202,11 +207,12 @@ export class DashboardRepository {
                     in: [PurchaseOrderStatus.DRAFT, PurchaseOrderStatus.PENDING_SUPPLIER],
                 },
                 deleted_at: null,
+                ...(cashierId ? { created_by: cashierId } : {}),
             },
         });
     }
 
-    private getAwaitingDeliveryPurchaseOrders(branchId: string) {
+    private getAwaitingDeliveryPurchaseOrders(branchId: string, cashierId?: string) {
         return this.prisma.purchaseOrder.count({
             where: {
                 branch_id: branchId,
@@ -214,27 +220,30 @@ export class DashboardRepository {
                     in: [PurchaseOrderStatus.ACCEPTED, PurchaseOrderStatus.PARTIALLY_FULFILLED],
                 },
                 deleted_at: null,
+                ...(cashierId ? { created_by: cashierId } : {}),
             },
         });
     }
 
-    private getPendingHoldOrders(branchId: string) {
+    private getPendingHoldOrders(branchId: string, cashierId?: string) {
         return this.prisma.holdOrder.count({
             where: {
                 branch_id: branchId,
                 expires_at: {
                     gt: new Date(),
                 },
+                ...(cashierId ? { cashier_id: cashierId } : {}),
             },
         });
     }
 
-    private getTotalCustomers(branchId: string) {
+    private getTotalCustomers(branchId: string, cashierId?: string) {
         return this.prisma.customer.count({
             where: {
                 invoices: {
                     some: {
                         branch_id: branchId,
+                        ...(cashierId ? { cashier_id: cashierId } : {}),
                     },
                 },
                 deleted_at: null,
@@ -242,7 +251,7 @@ export class DashboardRepository {
         });
     }
 
-    private async getSalesTrend(branchId: string, days: number = 7) {
+    private async getSalesTrend(branchId: string, days: number = 7, cashierId?: string) {
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - (days - 1));
         startDate.setHours(0, 0, 0, 0);
@@ -261,6 +270,7 @@ export class DashboardRepository {
                 status: {
                     not: InvoiceStatus.CANCELLED,
                 },
+                ...(cashierId ? { cashier_id: cashierId } : {}),
             },
             select: {
                 created_at: true,
@@ -288,7 +298,7 @@ export class DashboardRepository {
         return Array.from(trendMap.values());
     }
 
-    private async getTopSellingProducts(branchId: string, limit: number = 5) {
+    private async getTopSellingProducts(branchId: string, limit: number = 5, cashierId?: string) {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         thirtyDaysAgo.setHours(0, 0, 0, 0);
@@ -304,6 +314,7 @@ export class DashboardRepository {
                     created_at: {
                         gte: thirtyDaysAgo,
                     },
+                    ...(cashierId ? { cashier_id: cashierId } : {}),
                 },
             },
             select: {
@@ -348,7 +359,7 @@ export class DashboardRepository {
             .slice(0, limit);
     }
 
-    private async getPaymentMethodsBreakdown(branchId: string) {
+    private async getPaymentMethodsBreakdown(branchId: string, cashierId?: string) {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         thirtyDaysAgo.setHours(0, 0, 0, 0);
@@ -364,6 +375,7 @@ export class DashboardRepository {
                     created_at: {
                         gte: thirtyDaysAgo,
                     },
+                    ...(cashierId ? { cashier_id: cashierId } : {}),
                 },
                 status: PaymentStatus.SUCCESS,
             },

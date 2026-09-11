@@ -51,6 +51,14 @@ export class HoldOrdersService {
 
             let subtotal = 0;
 
+            const branchProductIds = dto.items.map((item) => item.branch_product_id);
+            const activeHeldQuantities = await this.holdOrdersRepository.getActiveHeldQuantities(
+                branchId,
+                branchProductIds,
+                tx,
+            );
+            const requestedQuantitiesInOrder: Record<string, number> = {};
+
             for (const item of dto.items) {
                 const branchProduct = await this.branchProductsRepository.findById(
                     item.branch_product_id,
@@ -71,8 +79,15 @@ export class HoldOrdersService {
                 }
 
                 const quantity = Number(item.quantity);
+                const currentlyHeld = activeHeldQuantities[branchProduct.id] ?? 0;
+                const alreadyRequested = requestedQuantitiesInOrder[branchProduct.id] ?? 0;
+                const availableStock =
+                    Number(branchProduct.quantity) - currentlyHeld - alreadyRequested;
 
-                if (Number(branchProduct.quantity) < quantity) {
+                if (quantity > availableStock) {
+                    if (currentlyHeld > 0) {
+                        throw new ConflictException(MESSAGES.ERROR.HELD_STOCK_INSUFFICIENT);
+                    }
                     throw new ConflictException(PRODUCT_MESSAGES.ERROR.INSUFFIENT_STOCK);
                 }
 
@@ -81,6 +96,19 @@ export class HoldOrdersService {
                     tx,
                 );
 
+                const totalBatchQuantity = batches.reduce(
+                    (sum, batch) => sum + Number(batch.quantity),
+                    0,
+                );
+                const availableBatchStock = totalBatchQuantity - currentlyHeld - alreadyRequested;
+
+                if (quantity > availableBatchStock) {
+                    if (currentlyHeld > 0) {
+                        throw new ConflictException(MESSAGES.ERROR.HELD_STOCK_INSUFFICIENT);
+                    }
+                    throw new ConflictException(PRODUCT_MESSAGES.ERROR.INSUFFIENT_STOCK);
+                }
+
                 allocateStock(
                     batches.map((batch) => ({
                         id: batch.id,
@@ -88,6 +116,8 @@ export class HoldOrdersService {
                     })),
                     quantity,
                 );
+
+                requestedQuantitiesInOrder[branchProduct.id] = alreadyRequested + quantity;
 
                 const unitPrice = branchProduct.selling_price.toNumber();
 
@@ -111,6 +141,8 @@ export class HoldOrdersService {
             const latest = await this.holdOrdersRepository.findLatest(branchId, tx);
 
             const holdNumber = generateHoldNumber(latest?.hold_number);
+
+            const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour hold period
 
             return this.holdOrdersRepository.create(
                 {
@@ -152,6 +184,8 @@ export class HoldOrdersService {
 
                     notes: dto.notes,
 
+                    expires_at: expiresAt,
+
                     items: {
                         create: preparedItems.map((item) => ({
                             branch_product: {
@@ -175,7 +209,15 @@ export class HoldOrdersService {
         });
     }
 
-    async findMany(branchId: string, query: HoldOrderQueryDto) {
+    async findMany(branchIdOrUser: string | AuthenticatedUser, query: HoldOrderQueryDto) {
+        let branchId: string;
+        if (typeof branchIdOrUser === 'string') {
+            branchId = branchIdOrUser;
+        } else {
+            const context = await this.branchContextService.get(branchIdOrUser);
+            branchId = context.branchId;
+        }
+
         const { limit, page } = query;
         const { records, total } = await this.holdOrdersRepository.findMany(branchId, query);
         if (!total || !page || !limit) return { records };
@@ -205,7 +247,7 @@ export class HoldOrdersService {
     async resume(id: string) {
         const hold = await this.findById(id);
 
-        if (hold.expires_at && hold.expires_at < new Date()) {
+        if (hold.expires_at && new Date(hold.expires_at) <= new Date()) {
             throw new ConflictException(MESSAGES.ERROR.EXPIRED);
         }
 

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { BranchContextService } from '@/common/services/branch-context.service';
 import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
+import { isPharmacyAdmin, isSuperAdmin } from '@/common/helpers';
 
 import { DashboardQueryDto } from '../dtos';
 import { DashboardRepository } from '../repositories/dashboard.repository';
@@ -24,6 +25,10 @@ export class DashboardService {
             await this.subscriptionConstraintService.validateReportAccess(pharmacyId, days);
         }
 
-        return this.dashboardRepository.overview(branchId, days);
+        const isAdmin = isPharmacyAdmin(user.roles) || isSuperAdmin(user.roles);
+        const cashierId = isAdmin ? undefined : user.id;
+
+        return this.dashboardRepository.overview(branchId, days, cashierId);
     }
 }
+
