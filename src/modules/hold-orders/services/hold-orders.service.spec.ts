@@ -155,7 +155,7 @@ describe('HoldOrdersService', () => {
             );
         });
 
-        it('should succeed when hold order is not expired', async () => {
+        it('should succeed and delete hold order from database when hold order is not expired', async () => {
             const activeOrder = {
                 id: 'hold-1',
                 customer_id: null,
@@ -181,6 +181,7 @@ describe('HoldOrdersService', () => {
             const result = await service.resume('hold-1');
             expect(result.hold_order_id).toBe('hold-1');
             expect(result.items).toHaveLength(1);
+            expect(mockHoldOrdersRepo.delete).toHaveBeenCalledWith('hold-1');
         });
     });
 

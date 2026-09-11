@@ -236,11 +236,15 @@ export class HoldOrdersService {
     }
 
     async delete(id: string, tx?: Prisma.TransactionClient) {
-        await this.findById(id);
+        const hold = await this.holdOrdersRepository.findById(id, tx);
+        if (!hold) {
+            return null;
+        }
         return this.holdOrdersRepository.delete(id, tx);
     }
 
-    cancel(id: string) {
+    async cancel(id: string) {
+        await this.findById(id);
         return this.holdOrdersRepository.delete(id);
     }
 
