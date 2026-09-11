@@ -52,7 +52,7 @@ export class BranchProductsService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return branchProduct;
+        return { branchProduct };
     }
 
     async create(dto: CreateBranchProductDto, user: AuthenticatedUser) {
@@ -76,7 +76,7 @@ export class BranchProductsService {
                     throw new ConflictException(MESSAGES.ERROR.PRODUCT_REQUIRED);
                 }
 
-                const product = await this.productsService.create(dto.product, tx);
+                const { product } = await this.productsService.create(dto.product, tx);
 
                 productId = product.id;
             }
@@ -132,12 +132,16 @@ export class BranchProductsService {
                 tx,
             );
 
-            return this.branchProductsRepository.findById(branchProduct.id, branchId, tx);
+            const created = await this.branchProductsRepository.findById(branchProduct.id, branchId, tx);
+            return {
+                branchProduct: created,
+                message: MESSAGES.SUCCESS.CREATED,
+            };
         });
     }
 
     async update(id: string, dto: UpdateBranchProductDto, user: AuthenticatedUser) {
-        const branchProduct = await this.findById(id, user);
+        const { branchProduct } = await this.findById(id, user);
 
         const branchId = branchProduct.branch_id;
 
@@ -157,7 +161,11 @@ export class BranchProductsService {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
         }
 
-        return this.branchProductsRepository.update(id, dto);
+        const updated = await this.branchProductsRepository.update(id, dto);
+        return {
+            branchProduct: updated,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async delete(id: string, user: AuthenticatedUser) {

@@ -143,7 +143,7 @@ export class HoldOrdersService {
 
             const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour hold period
 
-            return this.holdOrdersRepository.create(
+            const holdOrder = await this.holdOrdersRepository.create(
                 {
                     pharmacy: {
                         connect: {
@@ -205,6 +205,11 @@ export class HoldOrdersService {
                 },
                 tx,
             );
+
+            return {
+                holdOrder,
+                message: MESSAGES.SUCCESS.CREATED,
+            };
         });
     }
 
@@ -230,7 +235,7 @@ export class HoldOrdersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return hold;
+        return { holdOrder: hold };
     }
 
     async delete(id: string, tx?: Prisma.TransactionClient) {
@@ -243,42 +248,37 @@ export class HoldOrdersService {
 
     async cancel(id: string) {
         await this.findById(id);
-        return this.holdOrdersRepository.delete(id);
+        const holdOrder = await this.holdOrdersRepository.delete(id);
+        return {
+            holdOrder,
+            message: MESSAGES.SUCCESS.CANCELLED,
+        };
     }
 
     async resume(id: string) {
-        const hold = await this.findById(id);
+        const { holdOrder: hold } = await this.findById(id);
 
         if (hold.expires_at && new Date(hold.expires_at) <= new Date()) {
             throw new ConflictException(MESSAGES.ERROR.EXPIRED);
         }
 
         return {
-            hold_order_id: hold.id,
-
-            customer_id: hold.customer_id,
-
-            notes: hold.notes,
-
-            subtotal: hold.subtotal,
-
-            discount_amount: hold.discount_amount,
-
-            tax_amount: hold.tax_amount,
-
-            grand_total: hold.grand_total,
-
-            items: hold.items.map((item) => ({
-                branch_product_id: item.branch_product_id,
-
-                quantity: item.quantity,
-
-                unit_price: item.unit_price,
-
-                subtotal: item.subtotal,
-
-                notes: item.notes,
-            })),
+            holdOrder:{
+                hold_order_id: hold.id,
+                customer_id: hold.customer_id,
+                notes: hold.notes,
+                subtotal: hold.subtotal,
+                discount_amount: hold.discount_amount,
+                tax_amount: hold.tax_amount,
+                grand_total: hold.grand_total,
+                items: hold.items.map((item) => ({
+                    branch_product_id: item.branch_product_id,
+                    quantity: item.quantity,
+                    unit_price: item.unit_price,
+                    subtotal: item.subtotal,
+                    notes: item.notes,
+                })),
+            }
         };
     }
 }

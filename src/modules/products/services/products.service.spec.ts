@@ -126,5 +126,49 @@ describe('ProductsService', () => {
             expect(mockRetailCategoriesService.findById).toHaveBeenCalledWith('rc-1');
             expect(mockDosageFormsService.findById).toHaveBeenCalledWith('df-1');
         });
+
+        it('should return { product } on successful creation', async () => {
+            const dto: any = {
+                name: 'Panadol',
+                generic_name: 'Paracetamol',
+            };
+            const created = { id: 'prod-1', ...dto };
+            mockProductsRepo.findByNameAndGenericName.mockResolvedValue(null);
+            mockProductsRepo.create.mockResolvedValue(created);
+
+            const result = await service.create(dto);
+            expect(result).toEqual({ product: created, message: MESSAGES.SUCCESS.CREATED });
+        });
+    });
+
+    describe('findById', () => {
+        it('should return { product } when product is found', async () => {
+            const mockProd = { id: 'prod-1', name: 'Panadol' };
+            mockProductsRepo.findById.mockResolvedValue(mockProd);
+
+            const result = await service.findById('prod-1');
+            expect(result).toEqual({ product: mockProd });
+        });
+
+        it('should throw NotFoundException when product is not found', async () => {
+            mockProductsRepo.findById.mockResolvedValue(null);
+
+            await expect(service.findById('non-existent')).rejects.toThrow(
+                new NotFoundException(MESSAGES.ERROR.NOT_FOUND),
+            );
+        });
+    });
+
+    describe('update', () => {
+        it('should return { product, message } on successful update', async () => {
+            const current = { id: 'prod-1', name: 'Panadol', generic_name: 'Paracetamol' };
+            const updated = { id: 'prod-1', name: 'Panadol Extra', generic_name: 'Paracetamol' };
+            mockProductsRepo.findById.mockResolvedValue(current);
+            mockProductsRepo.findByNameAndGenericName.mockResolvedValue(null);
+            mockProductsRepo.update.mockResolvedValue(updated);
+
+            const result = await service.update('prod-1', { name: 'Panadol Extra' });
+            expect(result).toEqual({ product: updated, message: MESSAGES.SUCCESS.UPDATED });
+        });
     });
 });

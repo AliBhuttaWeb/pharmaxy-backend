@@ -235,7 +235,10 @@ export class ReturnsService {
 
             await this.returnsRepository.updateInvoiceStatus(invoice.id, newInvoiceStatus, tx);
 
-            return returnRecord;
+            return {
+                saleReturn: returnRecord,
+                message: MESSAGES.SUCCESS.CREATED,
+            };
         });
     }
 
@@ -288,7 +291,7 @@ export class ReturnsService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return record;
+        return { saleReturn: record };
     }
 
     async cancel(id: string) {
@@ -378,7 +381,10 @@ export class ReturnsService {
                 );
             }
 
-            return cancelledRecord;
+            return {
+                saleReturn: cancelledRecord,
+                message: MESSAGES.SUCCESS.CANCELLED,
+            };
         });
     }
 }

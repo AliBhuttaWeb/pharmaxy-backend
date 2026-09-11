@@ -29,7 +29,7 @@ export class DosageFormsService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return dosageForm;
+        return { dosageForm };
     }
 
     async create(dto: CreateDosageFormDto) {
@@ -39,7 +39,11 @@ export class DosageFormsService {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
         }
 
-        return this.dosageFormRepository.create(dto);
+        const dosageForm = await this.dosageFormRepository.create(dto);
+        return {
+            dosageForm,
+            message: MESSAGES.SUCCESS.CREATED,
+        };
     }
 
     async update(id: string, dto: UpdateDosageFormDto) {
@@ -53,7 +57,11 @@ export class DosageFormsService {
             }
         }
 
-        return this.dosageFormRepository.update(id, dto);
+        const dosageForm = await this.dosageFormRepository.update(id, dto);
+        return {
+            dosageForm,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async delete(id: string) {

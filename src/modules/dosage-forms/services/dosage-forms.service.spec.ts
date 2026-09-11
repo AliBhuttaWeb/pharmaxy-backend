@@ -55,4 +55,47 @@ describe('DosageFormsService', () => {
             expect(result).toEqual({ message: MESSAGES.SUCCESS.DELETED });
         });
     });
+
+    describe('findById', () => {
+        it('should return { dosageForm } when found', async () => {
+            const mockForm = { id: 'form-1', name: 'Tablet' };
+            mockDosageFormRepo.findById.mockResolvedValue(mockForm);
+
+            const result = await service.findById('form-1');
+            expect(result).toEqual({ dosageForm: mockForm });
+        });
+
+        it('should throw NotFoundException when not found', async () => {
+            mockDosageFormRepo.findById.mockResolvedValue(null);
+
+            await expect(service.findById('non-existent')).rejects.toThrow(
+                new NotFoundException(MESSAGES.ERROR.NOT_FOUND),
+            );
+        });
+    });
+
+    describe('create', () => {
+        it('should return { dosageForm, message } on successful creation', async () => {
+            const dto = { name: 'Tablet' };
+            const created = { id: 'form-1', name: 'Tablet' };
+            mockDosageFormRepo.findByName.mockResolvedValue(null);
+            mockDosageFormRepo.create.mockResolvedValue(created);
+
+            const result = await service.create(dto);
+            expect(result).toEqual({ dosageForm: created, message: MESSAGES.SUCCESS.CREATED });
+        });
+    });
+
+    describe('update', () => {
+        it('should return { dosageForm, message } on successful update', async () => {
+            const dto = { name: 'Capsule' };
+            const updated = { id: 'form-1', name: 'Capsule' };
+            mockDosageFormRepo.findById.mockResolvedValue({ id: 'form-1', name: 'Tablet' });
+            mockDosageFormRepo.findByName.mockResolvedValue(null);
+            mockDosageFormRepo.update.mockResolvedValue(updated);
+
+            const result = await service.update('form-1', dto);
+            expect(result).toEqual({ dosageForm: updated, message: MESSAGES.SUCCESS.UPDATED });
+        });
+    });
 });

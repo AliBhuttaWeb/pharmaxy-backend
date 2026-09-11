@@ -47,7 +47,7 @@ export class PharmacyPaymentMethodsService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return pharmacyPaymentMethod;
+        return { pharmacyPaymentMethod };
     }
 
     async create(dto: CreatePharmacyPaymentMethodDto, user: AuthenticatedUser) {
@@ -72,10 +72,15 @@ export class PharmacyPaymentMethodsService {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_CONFIGURED);
         }
 
-        return this.pharmacyPaymentMethodsRepository.create({
+        const pharmacyPaymentMethod = await this.pharmacyPaymentMethodsRepository.create({
             pharmacy_id: pharmacyId,
             payment_method_id: dto.payment_method_id,
         });
+
+        return {
+            pharmacyPaymentMethod,
+            message: MESSAGES.SUCCESS.CREATED,
+        };
     }
 
     async update(
@@ -86,21 +91,32 @@ export class PharmacyPaymentMethodsService {
         const pharmacyId = getActivePharmacyId(user);
         await this.findById(id, user);
 
-        return this.pharmacyPaymentMethodsRepository.update(id, pharmacyId, {
+        const pharmacyPaymentMethod = await this.pharmacyPaymentMethodsRepository.update(id, pharmacyId, {
             display_order: dto.display_order,
         });
+
+        return {
+            pharmacyPaymentMethod,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async updateStatus(id: string, isActive: boolean, user: AuthenticatedUser) {
         const pharmacyId = getActivePharmacyId(user);
         await this.findById(id, user);
 
-        return this.pharmacyPaymentMethodsRepository.updateStatus(id, pharmacyId, isActive);
+        const pharmacyPaymentMethod = await this.pharmacyPaymentMethodsRepository.updateStatus(id, pharmacyId, isActive);
+
+        return {
+            pharmacyPaymentMethod,
+            message: MESSAGES.SUCCESS.STATUS_UPDATED,
+        };
     }
 
     async remove(id: string, user: AuthenticatedUser) {
         await this.findById(id, user);
 
-        return this.pharmacyPaymentMethodsRepository.delete(id);
+        await this.pharmacyPaymentMethodsRepository.delete(id);
+        return { message: MESSAGES.SUCCESS.DELETED };
     }
 }

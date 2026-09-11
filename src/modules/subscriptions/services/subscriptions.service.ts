@@ -41,7 +41,7 @@ export class SubscriptionsService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return subscription;
+        return { subscription };
     }
 
     async assign(dto: AssignSubscriptionDto) {
@@ -51,7 +51,7 @@ export class SubscriptionsService {
             throw new ConflictException(MESSAGES.ERROR.ACTIVE_SUBSCRIPTION_ALREADY_EXISTS);
         }
 
-        const plan = await this.subscriptionPlansService.findById(dto.subscription_plan_id);
+        const { subscriptionPlan: plan } = await this.subscriptionPlansService.findById(dto.subscription_plan_id);
 
         const startedAt = dto.started_at ? new Date(dto.started_at) : new Date();
 
@@ -84,7 +84,11 @@ export class SubscriptionsService {
             auto_renew: dto.auto_renew ?? true,
         };
 
-        return this.subscriptionsRepository.create(data);
+        const subscription = await this.subscriptionsRepository.create(data);
+        return {
+            subscription,
+            message: MESSAGES.SUCCESS.ASSIGNED,
+        };
     }
 
     async update(id: string, dto: UpdateSubscriptionDto) {
@@ -96,36 +100,48 @@ export class SubscriptionsService {
             }),
         };
 
-        return this.subscriptionsRepository.update(id, data);
+        const subscription = await this.subscriptionsRepository.update(id, data);
+        return {
+            subscription,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async cancel(id: string, dto: CancelSubscriptionDto) {
         await this.findById(id);
 
-        return this.subscriptionsRepository.update(id, {
+        const subscription = await this.subscriptionsRepository.update(id, {
             status: SubscriptionStatus.CANCELLED,
 
             cancelled_at: new Date(),
 
             cancellation_reason: dto.cancellation_reason,
         });
+        return {
+            subscription,
+            message: MESSAGES.SUCCESS.CANCELLED,
+        };
     }
 
     async renew(id: string, dto: RenewSubscriptionDto) {
-        const subscription = await this.findById(id);
+        const { subscription } = await this.findById(id);
 
         const expiresAt =
             subscription.plan.billing_cycle === 'MONTHLY'
                 ? addMonths(subscription.expires_at, 1)
                 : addYears(subscription.expires_at, 1);
 
-        return this.subscriptionsRepository.update(id, {
+        const updated = await this.subscriptionsRepository.update(id, {
             status: SubscriptionStatus.ACTIVE,
 
             expires_at: expiresAt,
 
             auto_renew: dto.auto_renew ?? subscription.auto_renew,
         });
+        return {
+            subscription: updated,
+            message: MESSAGES.SUCCESS.RENEWED,
+        };
     }
 
     async findActiveByPharmacyId(pharmacyId: string) {
@@ -135,11 +151,11 @@ export class SubscriptionsService {
             throw new NotFoundException(MESSAGES.ERROR.NO_ACTIVE_SUBSCRIPTION);
         }
 
-        return subscription;
+        return { subscription };
     }
 
     async ensureActiveSubscription(pharmacyId: string) {
-        const subscription = await this.findActiveByPharmacyId(pharmacyId);
+        const { subscription } = await this.findActiveByPharmacyId(pharmacyId);
 
         if (subscription.status === SubscriptionStatus.EXPIRED) {
             throw new ConflictException(MESSAGES.ERROR.SUBSCRIPTION_EXPIRED);

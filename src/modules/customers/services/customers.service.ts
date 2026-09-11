@@ -39,7 +39,7 @@ export class CustomersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return customer;
+        return { customer };
     }
 
     async findByPhone(pharmacyId: string, phone: string) {
@@ -103,11 +103,15 @@ export class CustomersService {
             created_by: user.id,
         };
 
-        return this.customersRepository.create(data);
+        const customer = await this.customersRepository.create(data);
+        return {
+            customer,
+            message: MESSAGES.SUCCESS.CREATED,
+        };
     }
 
     async update(id: string, dto: UpdateCustomerDto, user: AuthenticatedUser) {
-        const customer = await this.findById(id);
+        const { customer } = await this.findById(id);
 
         if (dto.phone && dto.phone !== customer.phone) {
             const exists = await this.customersRepository.findByPhone(
@@ -189,7 +193,11 @@ export class CustomersService {
             updated_by: user.id,
         };
 
-        return this.customersRepository.update(id, data);
+        const updatedCustomer = await this.customersRepository.update(id, data);
+        return {
+            customer: updatedCustomer,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async delete(id: string) {

@@ -29,7 +29,7 @@ export class SuppliersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return supplier;
+        return { supplier };
     }
 
     async create(dto: CreateSupplierDto) {
@@ -42,9 +42,10 @@ export class SuppliersService {
             throw new ConflictException(MESSAGES.ERROR.NAME_ALREADY_EXISTS);
         }
 
-        await this.suppliersRepository.create(dto);
+        const supplier = await this.suppliersRepository.create(dto);
 
         return {
+            supplier,
             message: MESSAGES.SUCCESS.CREATED,
         };
     }
@@ -67,9 +68,10 @@ export class SuppliersService {
             }
         }
 
-        await this.suppliersRepository.update(id, dto);
+        const updatedSupplier = await this.suppliersRepository.update(id, dto);
 
         return {
+            supplier: updatedSupplier,
             message: MESSAGES.SUCCESS.UPDATED,
         };
     }
@@ -81,9 +83,10 @@ export class SuppliersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        await this.suppliersRepository.updateStatus(id, dto.status);
+        const updatedSupplier = await this.suppliersRepository.updateStatus(id, dto.status);
 
         return {
+            supplier: updatedSupplier,
             message: MESSAGES.SUCCESS.STATUS_UPDATED,
         };
     }

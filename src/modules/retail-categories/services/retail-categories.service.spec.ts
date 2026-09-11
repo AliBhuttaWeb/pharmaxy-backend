@@ -55,4 +55,47 @@ describe('RetailCategoriesService', () => {
             expect(result).toEqual({ message: MESSAGES.SUCCESS.DELETED });
         });
     });
+
+    describe('findById', () => {
+        it('should return { retailCategory } when found', async () => {
+            const mockCategory = { id: 'cat-1', name: 'OTC' };
+            mockRetailCategoriesRepo.findById.mockResolvedValue(mockCategory);
+
+            const result = await service.findById('cat-1');
+            expect(result).toEqual({ retailCategory: mockCategory });
+        });
+
+        it('should throw NotFoundException when not found', async () => {
+            mockRetailCategoriesRepo.findById.mockResolvedValue(null);
+
+            await expect(service.findById('non-existent')).rejects.toThrow(
+                new NotFoundException(MESSAGES.ERROR.NOT_FOUND),
+            );
+        });
+    });
+
+    describe('create', () => {
+        it('should return { retailCategory, message } on successful creation', async () => {
+            const dto = { name: 'OTC' };
+            const created = { id: 'cat-1', name: 'OTC' };
+            mockRetailCategoriesRepo.findByName.mockResolvedValue(null);
+            mockRetailCategoriesRepo.create.mockResolvedValue(created);
+
+            const result = await service.create(dto);
+            expect(result).toEqual({ retailCategory: created, message: MESSAGES.SUCCESS.CREATED });
+        });
+    });
+
+    describe('update', () => {
+        it('should return { retailCategory, message } on successful update', async () => {
+            const dto = { name: 'Prescription' };
+            const updated = { id: 'cat-1', name: 'Prescription' };
+            mockRetailCategoriesRepo.findById.mockResolvedValue({ id: 'cat-1', name: 'OTC' });
+            mockRetailCategoriesRepo.findByName.mockResolvedValue(null);
+            mockRetailCategoriesRepo.update.mockResolvedValue(updated);
+
+            const result = await service.update('cat-1', dto);
+            expect(result).toEqual({ retailCategory: updated, message: MESSAGES.SUCCESS.UPDATED });
+        });
+    });
 });

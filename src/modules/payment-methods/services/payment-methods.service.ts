@@ -23,7 +23,7 @@ export class PaymentMethodsService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return paymentMethod;
+        return { paymentMethod };
     }
 
     async create(dto: CreatePaymentMethodDto) {
@@ -37,7 +37,11 @@ export class PaymentMethodsService {
             throw new ConflictException(MESSAGES.ERROR.CODE_ALREADY_EXISTS);
         }
 
-        return this.paymentMethodsRepository.create(dto);
+        const paymentMethod = await this.paymentMethodsRepository.create(dto);
+        return {
+            paymentMethod,
+            message: MESSAGES.SUCCESS.CREATED,
+        };
     }
 
     async update(id: string, dto: UpdatePaymentMethodDto) {
@@ -57,12 +61,17 @@ export class PaymentMethodsService {
             }
         }
 
-        return this.paymentMethodsRepository.update(id, dto);
+        const paymentMethod = await this.paymentMethodsRepository.update(id, dto);
+        return {
+            paymentMethod,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async delete(id: string) {
         await this.findById(id);
 
-        return this.paymentMethodsRepository.delete(id);
+        await this.paymentMethodsRepository.delete(id);
+        return { message: MESSAGES.SUCCESS.DELETED };
     }
 }

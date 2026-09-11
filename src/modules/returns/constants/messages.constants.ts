@@ -3,6 +3,7 @@ export const MESSAGES = {
         CREATED: 'Sale return created successfully.',
         LISTED: 'Sale returns retrieved successfully.',
         RETRIEVED: 'Sale return retrieved successfully.',
+        CANCELLED: 'Sale return cancelled successfully.',
     },
 
     ERROR: {

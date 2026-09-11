@@ -3,6 +3,7 @@ export const MESSAGES = {
         CREATED: 'User created successfully.',
         UPDATED: 'User updated successfully.',
         DELETED: 'User deleted successfully.',
+        STATUS_UPDATED: 'User status updated successfully.',
         FETCHED: 'User retrieved successfully.',
         LIST_FETCHED: 'Users retrieved successfully.',
     },

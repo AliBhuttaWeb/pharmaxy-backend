@@ -55,4 +55,47 @@ describe('ProductTypesService', () => {
             expect(result).toEqual({ message: MESSAGES.SUCCESS.DELETED });
         });
     });
+
+    describe('findById', () => {
+        it('should return { productType } when found', async () => {
+            const mockType = { id: 'type-1', name: 'Pharma' };
+            mockProductTypesRepo.findById.mockResolvedValue(mockType);
+
+            const result = await service.findById('type-1');
+            expect(result).toEqual({ productType: mockType });
+        });
+
+        it('should throw NotFoundException when not found', async () => {
+            mockProductTypesRepo.findById.mockResolvedValue(null);
+
+            await expect(service.findById('non-existent')).rejects.toThrow(
+                new NotFoundException(MESSAGES.ERROR.NOT_FOUND),
+            );
+        });
+    });
+
+    describe('create', () => {
+        it('should return { productType, message } on successful creation', async () => {
+            const dto = { name: 'Pharma' };
+            const created = { id: 'type-1', name: 'Pharma' };
+            mockProductTypesRepo.findByName.mockResolvedValue(null);
+            mockProductTypesRepo.create.mockResolvedValue(created);
+
+            const result = await service.create(dto);
+            expect(result).toEqual({ productType: created, message: MESSAGES.SUCCESS.CREATED });
+        });
+    });
+
+    describe('update', () => {
+        it('should return { productType, message } on successful update', async () => {
+            const dto = { name: 'Cosmetics' };
+            const updated = { id: 'type-1', name: 'Cosmetics' };
+            mockProductTypesRepo.findById.mockResolvedValue({ id: 'type-1', name: 'Pharma' });
+            mockProductTypesRepo.findByName.mockResolvedValue(null);
+            mockProductTypesRepo.update.mockResolvedValue(updated);
+
+            const result = await service.update('type-1', dto);
+            expect(result).toEqual({ productType: updated, message: MESSAGES.SUCCESS.UPDATED });
+        });
+    });
 });

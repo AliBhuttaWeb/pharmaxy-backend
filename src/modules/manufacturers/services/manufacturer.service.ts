@@ -29,7 +29,7 @@ export class ManufacturersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return manufacturer;
+        return { manufacturer };
     }
 
     async create(dto: CreateManufacturerDto) {
@@ -39,9 +39,10 @@ export class ManufacturersService {
             throw new ConflictException(MESSAGES.ERROR.NAME_ALREADY_EXISTS);
         }
 
-        await this.manufacturersRepository.create(dto);
+        const manufacturer = await this.manufacturersRepository.create(dto);
 
         return {
+            manufacturer,
             message: MESSAGES.SUCCESS.CREATED,
         };
     }
@@ -61,9 +62,10 @@ export class ManufacturersService {
             }
         }
 
-        await this.manufacturersRepository.update(id, dto);
+        const updatedManufacturer = await this.manufacturersRepository.update(id, dto);
 
         return {
+            manufacturer: updatedManufacturer,
             message: MESSAGES.SUCCESS.UPDATED,
         };
     }

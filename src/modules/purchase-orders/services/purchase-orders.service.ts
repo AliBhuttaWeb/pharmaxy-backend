@@ -56,7 +56,7 @@ export class PurchaseOrdersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return purchaseOrder;
+        return { purchaseOrder };
     }
 
     async create(dto: CreatePurchaseOrderDto) {
@@ -134,7 +134,7 @@ export class PurchaseOrdersService {
     }
 
     async update(id: string, dto: UpdatePurchaseOrderDto) {
-        const purchaseOrder = await this.findById(id);
+        const { purchaseOrder } = await this.findById(id);
 
         if (dto.supplier_id) {
             await this.suppliersService.get(dto.supplier_id);
@@ -182,9 +182,10 @@ export class PurchaseOrdersService {
             }),
         };
 
-        await this.purchaseOrdersRepository.update(purchaseOrder.id, data);
+        const updatedPurchaseOrder = await this.purchaseOrdersRepository.update(purchaseOrder.id, data);
 
         return {
+            purchaseOrder: updatedPurchaseOrder,
             message: MESSAGES.SUCCESS.UPDATED,
         };
     }
@@ -212,7 +213,7 @@ export class PurchaseOrdersService {
     }
 
     async approve(id: string, user: AuthenticatedUser) {
-        const purchaseOrder = await this.findById(id);
+        const { purchaseOrder } = await this.findById(id);
 
         if (purchaseOrder.status === PurchaseOrderStatus.ACCEPTED) {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_APPROVED);
@@ -226,19 +227,20 @@ export class PurchaseOrdersService {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_RECEIVED);
         }
 
-        await this.purchaseOrdersRepository.update(id, {
+        const updatedPurchaseOrder = await this.purchaseOrdersRepository.update(id, {
             status: PurchaseOrderStatus.ACCEPTED,
             supplier_response_at: new Date(),
             approved_by: user.id,
         });
 
         return {
+            purchaseOrder: updatedPurchaseOrder,
             message: MESSAGES.SUCCESS.APPROVED,
         };
     }
 
     async cancel(id: string) {
-        const purchaseOrder = await this.findById(id);
+        const { purchaseOrder } = await this.findById(id);
 
         if (purchaseOrder.status === PurchaseOrderStatus.CANCELLED) {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_CANCELLED);
@@ -248,11 +250,12 @@ export class PurchaseOrdersService {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_RECEIVED);
         }
 
-        await this.purchaseOrdersRepository.update(id, {
+        const updatedPurchaseOrder = await this.purchaseOrdersRepository.update(id, {
             status: PurchaseOrderStatus.CANCELLED,
         });
 
         return {
+            purchaseOrder: updatedPurchaseOrder,
             message: MESSAGES.SUCCESS.CANCELLED,
         };
     }
@@ -392,6 +395,7 @@ export class PurchaseOrdersService {
             );
 
             return {
+                purchaseOrder: updatedPurchaseOrder,
                 message: MESSAGES.SUCCESS.RECEIVED,
             };
         });

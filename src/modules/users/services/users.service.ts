@@ -53,7 +53,7 @@ export class UsersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return user;
+        return { user };
     }
 
     async create(dto: CreateUserDto, currentUser: AuthenticatedUser) {
@@ -71,8 +71,8 @@ export class UsersService {
 
         const hashedPassword = await bcrypt.hash(dto.password, 10);
         const { branch_id, role_scope, ...userDto } = dto;
-        return this.prismaService.$transaction(async (tx) => {
-            const user = await this.usersRepository.create(
+        const user = await this.prismaService.$transaction(async (tx) => {
+            const createdUser = await this.usersRepository.create(
                 {
                     ...userDto,
                     pharmacy_id: pharmacyId,
@@ -84,15 +84,20 @@ export class UsersService {
             if (branchId) {
                 await this.userBranchesRepository.create(
                     {
-                        user_id: user.id,
+                        user_id: createdUser.id,
                         branch_id: branchId,
                     },
                     tx,
                 );
             }
 
-            return user;
+            return createdUser;
         });
+
+        return {
+            user,
+            message: MESSAGES.SUCCESS.CREATED,
+        };
     }
 
     async update(id: string, dto: UpdateUserDto) {
@@ -118,7 +123,11 @@ export class UsersService {
             }
         }
 
-        return this.usersRepository.update(id, dto);
+        const updatedUser = await this.usersRepository.update(id, dto);
+        return {
+            user: updatedUser,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async updateStatus(id: string, dto: UpdateUserStatusDto) {
@@ -128,9 +137,13 @@ export class UsersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return this.usersRepository.update(id, {
+        const updatedUser = await this.usersRepository.update(id, {
             status: dto.status,
         });
+        return {
+            user: updatedUser,
+            message: MESSAGES.SUCCESS.STATUS_UPDATED,
+        };
     }
 
     async delete(id: string) {
@@ -140,6 +153,7 @@ export class UsersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return this.usersRepository.delete(id);
+        await this.usersRepository.delete(id);
+        return { message: MESSAGES.SUCCESS.DELETED };
     }
 }

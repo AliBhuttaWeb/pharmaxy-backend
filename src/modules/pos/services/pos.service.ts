@@ -153,7 +153,7 @@ export class PosService {
                     const firstName = nameParts[0];
                     const lastName = nameParts.slice(1).join(' ') || null;
 
-                    customer = await (this.customersService as any).create(
+                    const createdCustomer = await (this.customersService as any).create(
                         pharmacyId,
                         {
                             first_name: firstName,
@@ -162,6 +162,7 @@ export class PosService {
                         },
                         user,
                     );
+                    customer = createdCustomer?.customer ?? createdCustomer;
                 }
                 customerId = customer!.id;
             }

@@ -29,7 +29,7 @@ export class RetailCategoriesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return retailCategory;
+        return { retailCategory };
     }
 
     async create(dto: CreateRetailCategoryDto) {
@@ -39,7 +39,11 @@ export class RetailCategoriesService {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
         }
 
-        return this.retailCategoryRepository.create(dto);
+        const retailCategory = await this.retailCategoryRepository.create(dto);
+        return {
+            retailCategory,
+            message: MESSAGES.SUCCESS.CREATED,
+        };
     }
 
     async update(id: string, dto: UpdateRetailCategoryDto) {
@@ -56,7 +60,11 @@ export class RetailCategoriesService {
             }
         }
 
-        return this.retailCategoryRepository.update(id, dto);
+        const retailCategory = await this.retailCategoryRepository.update(id, dto);
+        return {
+            retailCategory,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async delete(id: string) {

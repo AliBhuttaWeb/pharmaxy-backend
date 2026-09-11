@@ -9,6 +9,7 @@ export const MESSAGES = {
         UPGRADED: 'Subscription upgraded successfully.',
         DOWNGRADED: 'Subscription downgraded successfully.',
         MANUALLY_ASSIGNED: 'Subscription assigned successfully.',
+        ASSIGNED: 'Subscription assigned successfully.',
     },
 
     ERROR: {

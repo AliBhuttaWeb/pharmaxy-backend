@@ -29,7 +29,7 @@ export class ProductTypesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return productType;
+        return { productType };
     }
 
     async create(dto: CreateProductTypeDto) {
@@ -39,7 +39,11 @@ export class ProductTypesService {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
         }
 
-        return this.productTypeRepository.create(dto);
+        const productType = await this.productTypeRepository.create(dto);
+        return {
+            productType,
+            message: MESSAGES.SUCCESS.CREATED,
+        };
     }
 
     async update(id: string, dto: UpdateProductTypeDto) {
@@ -53,7 +57,11 @@ export class ProductTypesService {
             }
         }
 
-        return this.productTypeRepository.update(id, dto);
+        const productType = await this.productTypeRepository.update(id, dto);
+        return {
+            productType,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async delete(id: string) {

@@ -39,7 +39,7 @@ export class ProductsService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return product;
+        return { product };
     }
 
     async create(dto: CreateProductDto, tx?: Prisma.TransactionClient) {
@@ -66,7 +66,11 @@ export class ProductsService {
             }
         }
 
-        return this.productsRepository.create(dto, tx);
+        const product = await this.productsRepository.create(dto, tx);
+        return {
+            product,
+            message: MESSAGES.SUCCESS.CREATED,
+        };
     }
 
     async update(id: string, dto: UpdateProductDto) {
@@ -100,7 +104,11 @@ export class ProductsService {
             }
         }
 
-        return this.productsRepository.update(id, dto);
+        const product = await this.productsRepository.update(id, dto);
+        return {
+            product,
+            message: MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async delete(id: string) {

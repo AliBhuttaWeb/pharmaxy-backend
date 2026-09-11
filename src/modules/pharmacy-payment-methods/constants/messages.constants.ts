@@ -1,5 +1,10 @@
 export const MESSAGES = {
-    SUCCESS: {},
+    SUCCESS: {
+        CREATED: 'Pharmacy payment method configured successfully.',
+        UPDATED: 'Pharmacy payment method updated successfully.',
+        STATUS_UPDATED: 'Pharmacy payment method status updated successfully.',
+        DELETED: 'Pharmacy payment method deleted successfully.',
+    },
     ERROR: {
         NOT_FOUND: 'Pharmacy payment method not found.',
         PAYMENT_METHOD_NOT_FOUND: 'Payment method not found.',

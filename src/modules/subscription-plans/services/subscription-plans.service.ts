@@ -33,7 +33,7 @@ export class SubscriptionPlansService {
             throw new NotFoundException(SUBSCRIPTION_PLAN_MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return plan;
+        return { subscriptionPlan: plan };
     }
 
     async create(dto: CreateSubscriptionPlanDto) {
@@ -65,11 +65,15 @@ export class SubscriptionPlansService {
             is_active: dto.is_active ?? true,
         };
 
-        return this.subscriptionPlansRepository.create(data);
+        const subscriptionPlan = await this.subscriptionPlansRepository.create(data);
+        return {
+            subscriptionPlan,
+            message: SUBSCRIPTION_PLAN_MESSAGES.SUCCESS.CREATED,
+        };
     }
 
     async update(id: string, dto: UpdateSubscriptionPlanDto) {
-        const plan = await this.findById(id);
+        const { subscriptionPlan: plan } = await this.findById(id);
 
         if (dto.name && dto.name !== plan.name) {
             const exists = await this.subscriptionPlansRepository.findByName(dto.name, id);
@@ -121,11 +125,21 @@ export class SubscriptionPlansService {
             }),
         };
 
-        return this.subscriptionPlansRepository.update(id, data);
+        const subscriptionPlan = await this.subscriptionPlansRepository.update(id, data);
+        return {
+            subscriptionPlan,
+            message: SUBSCRIPTION_PLAN_MESSAGES.SUCCESS.UPDATED,
+        };
     }
 
     async updateStatus(id: string, dto: UpdateSubscriptionPlanStatusDto) {
         await this.findById(id);
-        return this.subscriptionPlansRepository.updateStatus(id, dto.is_active);
+        const subscriptionPlan = await this.subscriptionPlansRepository.updateStatus(id, dto.is_active);
+        return {
+            subscriptionPlan,
+            message: dto.is_active
+                ? SUBSCRIPTION_PLAN_MESSAGES.SUCCESS.ACTIVATED
+                : SUBSCRIPTION_PLAN_MESSAGES.SUCCESS.DEACTIVATED,
+        };
     }
 }
