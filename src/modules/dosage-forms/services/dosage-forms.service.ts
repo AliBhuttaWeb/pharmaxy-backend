@@ -1,13 +1,18 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { MESSAGES } from '../constants';
 import { CreateDosageFormDto, DosageFormQueryDto, UpdateDosageFormDto } from '../dtos';
 import { DosageFormsRepository } from '../repositories/dosage-forms.repository';
+import { ProductsRepository } from '@/modules/products/repositories/products.repository';
 import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class DosageFormsService {
-    constructor(private readonly dosageFormRepository: DosageFormsRepository) {}
+    constructor(
+        private readonly dosageFormRepository: DosageFormsRepository,
+        @Inject(forwardRef(() => ProductsRepository))
+        private readonly productsRepository: ProductsRepository,
+    ) {}
 
     async findMany(query: DosageFormQueryDto) {
         const { limit, page } = query;
@@ -54,15 +59,13 @@ export class DosageFormsService {
     async delete(id: string) {
         await this.findById(id);
 
-        // Prevent deletion if products reference this dosage form.
-        // Example:
-        //
-        // const isInUse = await this.productRepository.existsByDosageForm(id);
-        //
-        // if (isInUse) {
-        //     throw new ConflictException(MESSAGES.ERROR.IN_USE);
-        // }
+        const isInUse = await this.productsRepository.existsByDosageForm(id);
+        if (isInUse) {
+            throw new ConflictException(MESSAGES.ERROR.IN_USE);
+        }
 
         await this.dosageFormRepository.delete(id);
+
+        return { message: MESSAGES.SUCCESS.DELETED };
     }
 }

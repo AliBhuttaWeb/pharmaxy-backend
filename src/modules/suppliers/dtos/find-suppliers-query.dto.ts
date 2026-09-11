@@ -1,14 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsUUID } from 'class-validator';
 
-import { BaseQueryDto } from '@/common/dtos';
+import { PaginationQueryDto } from '@/common/pagination';
 import { SupplierStatus } from '@gen/prisma/client';
 
-export class FindSuppliersQueryDto extends BaseQueryDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsUUID()
-    declare pharmacy_id?: string;
+export class FindSuppliersQueryDto extends PaginationQueryDto {
 
     @ApiPropertyOptional({
         enum: SupplierStatus,

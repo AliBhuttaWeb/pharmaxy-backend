@@ -7,11 +7,6 @@ export class BranchProductQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsUUID()
-    branch_id?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsUUID()
     product_id?: string;
 
     @ApiPropertyOptional()

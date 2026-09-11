@@ -47,21 +47,21 @@ export class SubscriptionPlansRepository {
     }
 
     private buildOrderBy(
-        sortBy?: string,
-        sortOrder: Prisma.SortOrder = 'desc',
+        sort_by?: string,
+        sort_order: Prisma.SortOrder = 'desc',
     ): Prisma.SubscriptionPlanOrderByWithRelationInput {
         return {
-            [(sortBy ?? 'created_at') as keyof Prisma.SubscriptionPlanOrderByWithRelationInput]:
-                sortOrder,
+            [(sort_by ?? 'created_at') as keyof Prisma.SubscriptionPlanOrderByWithRelationInput]:
+                sort_order,
         };
     }
 
     async findMany(query: SubscriptionPlanQueryDto) {
-        const { page, limit, sortBy, sortOrder } = query;
+        const { page, limit, sort_by, sort_order } = query;
 
         const where = this.buildWhere(query);
 
-        const orderBy = this.buildOrderBy(sortBy, sortOrder);
+        const orderBy = this.buildOrderBy(sort_by, sort_order);
 
         const isPaginated = page !== undefined && limit !== undefined;
 

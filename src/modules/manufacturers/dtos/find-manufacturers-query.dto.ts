@@ -1,3 +1,3 @@
-import { BaseQueryDto } from '@/common/dtos';
+import { PaginationQueryDto } from '@/common/pagination';
 
-export class FindManufacturersQueryDto extends BaseQueryDto {}
+export class FindManufacturersQueryDto extends PaginationQueryDto {}

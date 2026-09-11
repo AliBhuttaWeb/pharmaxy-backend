@@ -77,16 +77,13 @@ export class SuppliersRepository {
 
         type SortableField = (typeof sortableFields)[number];
 
-        const requestedSortBy = (query as any).sortBy || sort_by;
-        const requestedSortOrder = (query as any).sortOrder || sort_order || 'desc';
-
         const field: SortableField =
-            requestedSortBy && sortableFields.includes(requestedSortBy as SortableField)
-                ? (requestedSortBy as SortableField)
+            sort_by && sortableFields.includes(sort_by as SortableField)
+                ? (sort_by as SortableField)
                 : 'created_at';
 
         const orderBy: Prisma.SupplierOrderByWithRelationInput = {
-            [field]: requestedSortOrder,
+            [field]: sort_order || 'desc',
         };
 
         const isPaginated = page !== undefined && limit !== undefined;

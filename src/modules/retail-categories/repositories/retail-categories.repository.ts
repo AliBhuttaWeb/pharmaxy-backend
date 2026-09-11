@@ -10,7 +10,7 @@ export class RetailCategoriesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMany(query: RetailCategoryQueryDto) {
-        const { search, is_active, page, limit, sortBy, sortOrder } = query;
+        const { search, is_active, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.RetailCategoryWhereInput = {
             deleted_at: null,
@@ -40,16 +40,13 @@ export class RetailCategoriesRepository {
         const sortableFields = ['name', 'is_active', 'created_at', 'updated_at'] as const;
         type SortableField = (typeof sortableFields)[number];
 
-        const requestedSortBy = (query as any).sort_by || sortBy;
-        const requestedSortOrder = (query as any).sort_order || sortOrder || 'asc';
-
         const field: SortableField =
-            requestedSortBy && sortableFields.includes(requestedSortBy as SortableField)
-                ? (requestedSortBy as SortableField)
+            sort_by && sortableFields.includes(sort_by as SortableField)
+                ? (sort_by as SortableField)
                 : 'name';
 
         const orderBy: Prisma.RetailCategoryOrderByWithRelationInput = {
-            [field]: requestedSortOrder,
+            [field]: sort_order || 'asc',
         };
 
         const isPaginated = page !== undefined && limit !== undefined;

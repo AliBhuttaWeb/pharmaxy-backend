@@ -1,16 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsBooleanString, IsOptional, IsUUID } from 'class-validator';
 
-import { BaseQueryDto } from '@/common/dtos';
+import { PaginationQueryDto } from '@/common/pagination';
 
-export class FindBranchesQueryDto extends BaseQueryDto {
-    @ApiPropertyOptional({
-        description: 'Filter by pharmacy.',
-    })
-    @IsOptional()
-    @IsUUID()
-    declare pharmacy_id?: string;
-
+export class FindBranchesQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional({
         description: 'Filter by active status.',
         example: true,

@@ -10,10 +10,12 @@ export class DosageFormsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMany(query: DosageFormQueryDto) {
-        const { search, is_active, page, limit, sortBy, sortOrder } = query;
+        const { search, is_deleted, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.DosageFormWhereInput = {
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
 
             ...(search && {
                 OR: [
@@ -31,25 +33,18 @@ export class DosageFormsRepository {
                     },
                 ],
             }),
-
-            ...(is_active !== undefined && {
-                is_active,
-            }),
         };
 
-        const sortableFields = ['name', 'is_active', 'created_at', 'updated_at'] as const;
+        const sortableFields = ['name', 'created_at', 'updated_at'] as const;
         type SortableField = (typeof sortableFields)[number];
 
-        const requestedSortBy = (query as any).sort_by || sortBy;
-        const requestedSortOrder = (query as any).sort_order || sortOrder || 'asc';
-
         const field: SortableField =
-            requestedSortBy && sortableFields.includes(requestedSortBy as SortableField)
-                ? (requestedSortBy as SortableField)
+            sort_by && sortableFields.includes(sort_by as SortableField)
+                ? (sort_by as SortableField)
                 : 'name';
 
         const orderBy: Prisma.DosageFormOrderByWithRelationInput = {
-            [field]: requestedSortOrder,
+            [field]: sort_order || 'asc',
         };
 
         const isPaginated = page !== undefined && limit !== undefined;
@@ -94,7 +89,6 @@ export class DosageFormsRepository {
         return this.prisma.dosageForm.findFirst({
             where: {
                 name,
-                deleted_at: null,
 
                 ...(excludeId && {
                     NOT: {

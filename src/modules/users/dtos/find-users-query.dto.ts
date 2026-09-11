@@ -2,10 +2,10 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { IsEnum, IsOptional } from 'class-validator';
 
-import { BaseQueryDto } from '@/common/dtos';
+import { PaginationQueryDto } from '@/common/pagination';
 import { UserStatus } from '@gen/prisma/enums';
 
-export class FindUsersQueryDto extends BaseQueryDto {
+export class FindUsersQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional({
         enum: UserStatus,
     })

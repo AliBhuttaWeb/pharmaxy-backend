@@ -27,8 +27,8 @@ export class ProductsRepository {
             is_active,
             page,
             limit,
-            sortBy,
-            sortOrder,
+            sort_by,
+            sort_order,
         } = query;
 
         const where: Prisma.ProductWhereInput = {
@@ -83,8 +83,8 @@ export class ProductsRepository {
         };
 
         const orderBy: Prisma.ProductOrderByWithRelationInput = {
-            [(sortBy ?? 'name') as keyof Prisma.ProductOrderByWithRelationInput]:
-                sortOrder ?? 'asc',
+            [(sort_by ?? 'name') as keyof Prisma.ProductOrderByWithRelationInput]:
+                sort_order ?? 'asc',
         };
 
         const isPaginated = page !== undefined && limit !== undefined;
@@ -188,6 +188,16 @@ export class ProductsRepository {
 
             include: this.productRelations,
         });
+    }
+
+    async existsByDosageForm(dosageFormId: string): Promise<boolean> {
+        const count = await this.prisma.product.count({
+            where: {
+                dosage_form_id: dosageFormId,
+                deleted_at: null,
+            },
+        });
+        return count > 0;
     }
 
     delete(id: string, tx?: Prisma.TransactionClient) {

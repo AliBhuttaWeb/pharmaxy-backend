@@ -17,11 +17,6 @@ export class SubscriptionQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsUUID()
-    pharmacy_id?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsUUID()
     plan_id?: string;
 
     @ApiPropertyOptional()

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ManufacturersModule } from '../manufacturers/manufacturers.module';
 import { RetailCategoriesModule } from '../retail-categories/retail-categories.module';
 import { DosageFormsModule } from '../dosage-forms/dosage-forms.module';
@@ -8,12 +8,17 @@ import { ProductsRepository } from './repositories/products.repository';
 import { ProductsService } from './services/products.service';
 
 @Module({
-    imports: [ManufacturersModule, ProductTypesModule, RetailCategoriesModule, DosageFormsModule],
+    imports: [
+        ManufacturersModule,
+        ProductTypesModule,
+        RetailCategoriesModule,
+        forwardRef(() => DosageFormsModule),
+    ],
 
     controllers: [ProductsConsoleController],
 
     providers: [ProductsRepository, ProductsService],
 
-    exports: [ProductsService],
+    exports: [ProductsService, ProductsRepository],
 })
 export class ProductsModule {}

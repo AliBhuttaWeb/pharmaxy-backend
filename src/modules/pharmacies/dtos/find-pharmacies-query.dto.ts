@@ -3,9 +3,9 @@ import { IsEnum, IsOptional } from 'class-validator';
 
 import { PharmacyStatus } from '@gen/prisma/client';
 
-import { BaseQueryDto } from '@/common/dtos';
+import { PaginationQueryDto } from '@/common/pagination';
 
-export class FindPharmaciesQueryDto extends BaseQueryDto {
+export class FindPharmaciesQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional({
         enum: PharmacyStatus,
     })

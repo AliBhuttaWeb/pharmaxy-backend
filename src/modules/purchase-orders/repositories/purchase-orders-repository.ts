@@ -72,21 +72,21 @@ export class PurchaseOrdersRepository {
     }
 
     private buildOrderBy(
-        sortBy?: string,
-        sortOrder: Prisma.SortOrder = 'desc',
+        sort_by?: string,
+        sort_order: Prisma.SortOrder = 'desc',
     ): Prisma.PurchaseOrderOrderByWithRelationInput {
         return {
-            [(sortBy ?? 'created_at') as keyof Prisma.PurchaseOrderOrderByWithRelationInput]:
-                sortOrder,
+            [(sort_by ?? 'created_at') as keyof Prisma.PurchaseOrderOrderByWithRelationInput]:
+                sort_order,
         };
     }
 
     async findMany(query: PurchaseOrderQueryDto) {
-        const { page, limit, sortBy, sortOrder } = query;
+        const { page, limit, sort_by, sort_order } = query;
 
         const where = this.buildWhere(query);
 
-        const orderBy = this.buildOrderBy(sortBy, sortOrder);
+        const orderBy = this.buildOrderBy(sort_by, sort_order);
 
         const isPaginated = page !== undefined && limit !== undefined;
 

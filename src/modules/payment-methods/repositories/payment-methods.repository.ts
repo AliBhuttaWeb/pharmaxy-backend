@@ -47,19 +47,19 @@ export class PaymentMethodsRepository {
     }
 
     private buildOrderBy(
-        sortBy?: string,
-        sortOrder: Prisma.SortOrder = 'asc',
+        sort_by?: string,
+        sort_order: Prisma.SortOrder = 'asc',
     ): Prisma.PaymentMethodOrderByWithRelationInput {
         return {
-            [(sortBy ?? 'display_order') as keyof Prisma.PaymentMethodOrderByWithRelationInput]:
-                sortOrder,
+            [(sort_by ?? 'display_order') as keyof Prisma.PaymentMethodOrderByWithRelationInput]:
+                sort_order,
         };
     }
 
     async findMany(query: PaymentMethodQueryDto, tx?: Prisma.TransactionClient) {
-        const { page, limit, sortBy, sortOrder } = query;
+        const { page, limit, sort_by, sort_order } = query;
         const where = this.buildWhere(query);
-        const orderBy = this.buildOrderBy(sortBy, sortOrder);
+        const orderBy = this.buildOrderBy(sort_by, sort_order);
 
         const isPaginated = page !== undefined && limit !== undefined;
 

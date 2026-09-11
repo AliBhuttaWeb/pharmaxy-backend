@@ -9,11 +9,6 @@ export class PurchaseOrderQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsUUID()
-    branch_id?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsUUID()
     supplier_id?: string;
 
     @ApiPropertyOptional({
