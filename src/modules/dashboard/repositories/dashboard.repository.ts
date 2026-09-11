@@ -14,6 +14,17 @@ export class DashboardRepository {
         const todayEnd = new Date();
         todayEnd.setHours(23, 59, 59, 999);
 
+        const branchSettings = await this.prisma.branchSettings.findUnique({
+            where: { branch_id: branchId },
+            select: {
+                minimum_stock_quantity: true,
+                expiry_alert_before_days: true,
+            },
+        });
+
+        const minStock = branchSettings?.minimum_stock_quantity ?? 10;
+        const expiryDays = branchSettings?.expiry_alert_before_days ?? 30;
+
         const [
             todaySales,
             todayTransactions,
@@ -37,8 +48,8 @@ export class DashboardRepository {
             this.getTodayReturns(branchId, todayStart, todayEnd, userId),
             this.getTodayRefundAmount(branchId, todayStart, todayEnd, userId),
             this.getTotalProducts(branchId),
-            this.getLowStockProducts(branchId),
-            this.getExpiringProducts(branchId),
+            this.getLowStockProducts(branchId, minStock),
+            this.getExpiringProducts(branchId, expiryDays),
             this.getPendingPurchaseOrders(branchId, userId),
             this.getAwaitingDeliveryPurchaseOrders(branchId, userId),
             this.getPendingHoldOrders(branchId, userId),
@@ -169,21 +180,21 @@ export class DashboardRepository {
         });
     }
 
-    private getLowStockProducts(branchId: string) {
+    private getLowStockProducts(branchId: string, minStock: number = 10) {
         return this.prisma.branchProduct.count({
             where: {
                 branch_id: branchId,
                 deleted_at: null,
                 quantity: {
-                    lte: 10,
+                    lte: minStock,
                 },
             },
         });
     }
 
-    private getExpiringProducts(branchId: string) {
+    private getExpiringProducts(branchId: string, expiryDays: number = 30) {
         const date = new Date();
-        date.setDate(date.getDate() + 30);
+        date.setDate(date.getDate() + expiryDays);
 
         return this.prisma.productBatch.count({
             where: {
