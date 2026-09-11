@@ -304,6 +304,10 @@ export class ReturnsService {
                 throw new ConflictException(MESSAGES.ERROR.ALREADY_CANCELLED);
             }
 
+            if (returnRecord.status === ReturnStatus.COMPLETED) {
+                throw new ConflictException(MESSAGES.ERROR.COMPLETED_CANNOT_BE_CANCELLED);
+            }
+
             for (const item of returnRecord.items) {
                 const batches = await this.returnsRepository.findInvoiceItemBatches(
                     item.invoice_item_id,

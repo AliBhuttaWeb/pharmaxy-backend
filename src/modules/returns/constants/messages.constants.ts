@@ -20,5 +20,6 @@ export const MESSAGES = {
         BRANCH_PRODUCT_NOT_FOUND: 'Branch product not found.',
         ALREADY_CANCELLED: 'Sale return is already cancelled.',
         DUPLICATE_RETURN_ITEM: 'Duplicate return items found in request.',
+        COMPLETED_CANNOT_BE_CANCELLED: 'Completed sale return cannot be cancelled.',
     },
 } as const;
