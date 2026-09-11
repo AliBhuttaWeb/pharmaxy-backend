@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 
-import { BranchContextService } from '@/common/services/branch-context.service';
 import { SubscriptionsModule } from '@/modules/subscriptions/subscriptions.module';
 
 import { DashboardConsoleController } from './controllers/dashboard.console.controller';
@@ -12,7 +11,7 @@ import { DashboardService } from './services/dashboard.service';
 
     controllers: [DashboardConsoleController],
 
-    providers: [DashboardService, DashboardRepository, BranchContextService],
+    providers: [DashboardService, DashboardRepository],
 
     exports: [DashboardService],
 })

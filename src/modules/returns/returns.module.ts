@@ -5,12 +5,11 @@ import { ReturnsConsoleController } from './controllers/returns.console.controll
 import { ReturnsService } from './services/returns.service';
 
 import { ReturnsRepository } from './repositories/returns.repository';
-import { BranchContextService } from '@/common/services/branch-context.service';
 
 @Module({
     controllers: [ReturnsConsoleController],
 
-    providers: [ReturnsService, ReturnsRepository, BranchContextService],
+    providers: [ReturnsService, ReturnsRepository],
 
     exports: [ReturnsService],
 })

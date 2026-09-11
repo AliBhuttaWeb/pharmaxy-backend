@@ -94,9 +94,9 @@ model User {
   requested_transfers     StockTransfer[]        @relation("TransferRequester")
   dispatched_transfers    StockTransfer[]        @relation("TransferDispatcher")
   received_transfers      StockTransfer[]        @relation("TransferReceiver")
-  invoices                Invoice[]              @relation("InvoiceCashier")
-  hold_orders             HoldOrder[]            @relation("HoldOrderCashier")
-  returns                 Return[]               @relation("ReturnCashier")
+  invoices                Invoice[]              @relation("InvoiceUser")
+  hold_orders             HoldOrder[]            @relation("HoldOrderUser")
+  returns                 Return[]               @relation("ReturnUser")
   stock_adjustments       StockAdjustment[]      @relation("StockAdjustmentUser")
   support_tickets         SupportTicket[]        @relation("SupportTicketCreator")
   audit_logs              AuditLog[]             @relation("AuditLogUser")
@@ -1043,7 +1043,7 @@ model Invoice {
 
   customer_id String @db.Uuid
 
-  cashier_id String @db.Uuid
+  user_id String @db.Uuid
 
   invoice_number String @db.VarChar(50)
 
@@ -1072,7 +1072,7 @@ model Invoice {
   branch Branch @relation(fields: [branch_id], references: [id], onDelete: Restrict)
 
   customer Customer @relation(fields: [customer_id], references: [id], onDelete: Restrict)
-  cashier  User     @relation("InvoiceCashier", fields: [cashier_id], references: [id], onDelete: Restrict)
+  user     User     @relation("InvoiceUser", fields: [user_id], references: [id], onDelete: Restrict)
 
   items    InvoiceItem[]
   payments InvoicePayment[]
@@ -1082,7 +1082,7 @@ model Invoice {
   @@index([pharmacy_id])
   @@index([branch_id])
   @@index([customer_id])
-  @@index([cashier_id])
+  @@index([user_id])
   @@index([status])
   @@index([completed_at])
   @@map("invoices")
@@ -1197,7 +1197,7 @@ model HoldOrder {
 
   customer_id String? @db.Uuid
 
-  cashier_id String @db.Uuid
+  user_id String @db.Uuid
 
   hold_number String @db.VarChar(50)
 
@@ -1219,12 +1219,13 @@ model HoldOrder {
 
   customer Customer? @relation(fields: [customer_id], references: [id])
 
-  cashier User @relation("HoldOrderCashier", fields: [cashier_id], references: [id])
+  user User @relation("HoldOrderUser", fields: [user_id], references: [id])
 
   items HoldOrderItem[]
 
   @@unique([branch_id, hold_number])
   @@index([branch_id])
+  @@index([user_id])
   @@map("hold_orders")
 }
 
@@ -1276,7 +1277,7 @@ model Return {
 
   customer_id String @db.Uuid
 
-  cashier_id String @db.Uuid
+  user_id String @db.Uuid
 
   return_number String @db.VarChar(50)
 
@@ -1300,13 +1301,14 @@ model Return {
 
   customer Customer @relation(fields: [customer_id], references: [id], onDelete: Restrict)
 
-  cashier User @relation("ReturnCashier", fields: [cashier_id], references: [id], onDelete: Restrict)
+  user User @relation("ReturnUser", fields: [user_id], references: [id], onDelete: Restrict)
 
   items ReturnItem[]
 
   @@unique([branch_id, return_number])
   @@index([invoice_id])
   @@index([customer_id])
+  @@index([user_id])
   @@map("returns")
 }
 

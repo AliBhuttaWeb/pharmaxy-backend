@@ -12,7 +12,7 @@ export class HoldOrdersRepository {
     private readonly relations: Prisma.HoldOrderInclude = {
         customer: true,
 
-        cashier: true,
+        user: true,
 
         items: {
             include: {

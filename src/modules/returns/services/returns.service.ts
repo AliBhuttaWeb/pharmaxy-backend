@@ -4,7 +4,7 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
 
-import { BranchContextService } from '@/common/services/branch-context.service';
+import { getActiveBranchId, getActivePharmacyId } from '@/common/helpers';
 
 import { CreateReturnDto, ReturnQueryDto } from '../dtos';
 
@@ -22,8 +22,6 @@ export class ReturnsService {
         private readonly prisma: PrismaService,
 
         private readonly returnsRepository: ReturnsRepository,
-
-        private readonly branchContextService: BranchContextService,
     ) {}
 
     async create(
@@ -31,7 +29,8 @@ export class ReturnsService {
 
         user: AuthenticatedUser,
     ) {
-        const { branchId, pharmacyId } = await this.branchContextService.get(user);
+        const branchId = getActiveBranchId(user);
+        const pharmacyId = getActivePharmacyId(user);
 
         return this.prisma.$transaction(async (tx) => {
             const invoice = await this.returnsRepository.findInvoiceForReturn(dto.invoice_id, tx);
@@ -161,7 +160,7 @@ export class ReturnsService {
                         },
                     },
 
-                    cashier: {
+                    user: {
                         connect: {
                             id: user.id,
                         },

@@ -17,7 +17,7 @@ export class ReturnsRepository {
 
         customer: true,
 
-        cashier: true,
+        user: true,
 
         invoice: true,
 
@@ -39,7 +39,7 @@ export class ReturnsRepository {
 
         query: ReturnQueryDto,
     ): Prisma.ReturnWhereInput {
-        const { invoice_id, customer_id, cashier_id } = query;
+        const { invoice_id, customer_id, user_id } = query;
 
         return {
             branch_id: branchId,
@@ -52,8 +52,8 @@ export class ReturnsRepository {
                 customer_id,
             }),
 
-            ...(cashier_id && {
-                cashier_id,
+            ...(user_id && {
+                user_id,
             }),
         };
     }

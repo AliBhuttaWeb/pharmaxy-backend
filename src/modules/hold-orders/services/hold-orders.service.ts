@@ -4,7 +4,7 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
 
-import { BranchContextService } from '@/common/services/branch-context.service';
+import { getActiveBranchId, getActivePharmacyId } from '@/common/helpers';
 
 import { BranchProductsRepository } from '@/modules/branch-products/repositories/branch-products.repository';
 import { ProductBatchesRepository } from '@/modules/branch-products/repositories/product-batches.repository';
@@ -39,12 +39,11 @@ export class HoldOrdersService {
         private readonly branchProductsRepository: BranchProductsRepository,
 
         private readonly productBatchesRepository: ProductBatchesRepository,
-
-        private readonly branchContextService: BranchContextService,
     ) {}
 
     async create(dto: CreateHoldOrderDto, user: AuthenticatedUser) {
-        const { branchId, pharmacyId } = await this.branchContextService.get(user);
+        const branchId = getActiveBranchId(user);
+        const pharmacyId = getActivePharmacyId(user);
 
         return this.prisma.$transaction(async (tx) => {
             const preparedItems: PreparedHoldItem[] = [];
@@ -158,7 +157,7 @@ export class HoldOrdersService {
                         },
                     },
 
-                    cashier: {
+                    user: {
                         connect: {
                             id: user.id,
                         },
@@ -214,8 +213,7 @@ export class HoldOrdersService {
         if (typeof branchIdOrUser === 'string') {
             branchId = branchIdOrUser;
         } else {
-            const context = await this.branchContextService.get(branchIdOrUser);
-            branchId = context.branchId;
+            branchId = getActiveBranchId(branchIdOrUser);
         }
 
         const { limit, page } = query;

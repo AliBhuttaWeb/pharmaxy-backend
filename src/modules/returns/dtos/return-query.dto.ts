@@ -18,5 +18,5 @@ export class ReturnQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsUUID()
-    cashier_id?: string;
+    user_id?: string;
 }

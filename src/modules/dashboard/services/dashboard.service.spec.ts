@@ -5,18 +5,11 @@ import { ROLES } from '@/common/constants';
 describe('DashboardService', () => {
     let service: DashboardService;
     let mockDashboardRepo: any;
-    let mockBranchContextService: any;
     let mockSubscriptionConstraintService: any;
 
     beforeEach(() => {
         mockDashboardRepo = {
             overview: jest.fn().mockResolvedValue({ today_sales: 100 }),
-        };
-        mockBranchContextService = {
-            get: jest.fn().mockResolvedValue({
-                branchId: 'branch-1',
-                pharmacyId: 'pharmacy-1',
-            }),
         };
         mockSubscriptionConstraintService = {
             validateReportAccess: jest.fn().mockResolvedValue(undefined),
@@ -24,12 +17,11 @@ describe('DashboardService', () => {
 
         service = new DashboardService(
             mockDashboardRepo,
-            mockBranchContextService,
             mockSubscriptionConstraintService,
         );
     });
 
-    it('should pass cashierId = undefined to overview when user is Pharmacy Admin', async () => {
+    it('should pass userId = undefined to overview when user is Pharmacy Admin', async () => {
         const adminUser: AuthenticatedUser = {
             id: 'admin-user-id',
             email: 'admin@example.com',
@@ -49,7 +41,7 @@ describe('DashboardService', () => {
         expect(mockDashboardRepo.overview).toHaveBeenCalledWith('branch-1', 7, undefined);
     });
 
-    it('should pass cashierId = user.id to overview when user is Cashier', async () => {
+    it('should pass userId = user.id to overview when user is Cashier', async () => {
         const cashierUser: AuthenticatedUser = {
             id: 'cashier-user-id',
             email: 'cashier@example.com',
@@ -69,7 +61,7 @@ describe('DashboardService', () => {
         expect(mockDashboardRepo.overview).toHaveBeenCalledWith('branch-1', 7, 'cashier-user-id');
     });
 
-    it('should pass cashierId = undefined to overview when user is Super Admin', async () => {
+    it('should pass userId = undefined to overview when user is Super Admin', async () => {
         const superAdminUser: AuthenticatedUser = {
             id: 'super-admin-user-id',
             email: 'super@example.com',

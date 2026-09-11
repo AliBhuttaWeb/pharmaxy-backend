@@ -7,7 +7,6 @@ describe('ReturnsService', () => {
     let service: ReturnsService;
     let mockPrisma: any;
     let mockReturnsRepo: any;
-    let mockBranchContextService: any;
 
     beforeEach(() => {
         mockPrisma = {
@@ -17,14 +16,10 @@ describe('ReturnsService', () => {
             findByIdForCancel: jest.fn(),
             cancel: jest.fn(),
         };
-        mockBranchContextService = {
-            get: jest.fn(),
-        };
 
         service = new ReturnsService(
             mockPrisma,
             mockReturnsRepo,
-            mockBranchContextService,
         );
     });
 

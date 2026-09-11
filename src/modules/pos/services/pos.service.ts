@@ -194,7 +194,7 @@ export class PosService {
                         },
                     },
 
-                    cashier: {
+                    user: {
                         connect: {
                             id: user.id,
                         },

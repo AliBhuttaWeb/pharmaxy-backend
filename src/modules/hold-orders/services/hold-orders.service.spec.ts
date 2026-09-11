@@ -11,7 +11,6 @@ describe('HoldOrdersService', () => {
     let mockHoldOrdersRepo: any;
     let mockBranchProductsRepo: any;
     let mockProductBatchesRepo: any;
-    let mockBranchContextService: any;
 
     const mockUser: AuthenticatedUser = {
         id: 'user-1',
@@ -45,19 +44,12 @@ describe('HoldOrdersService', () => {
         mockProductBatchesRepo = {
             findAvailableForSale: jest.fn().mockResolvedValue([]),
         };
-        mockBranchContextService = {
-            get: jest.fn().mockResolvedValue({
-                branchId: 'branch-1',
-                pharmacyId: 'pharmacy-1',
-            }),
-        };
 
         service = new HoldOrdersService(
             mockPrisma,
             mockHoldOrdersRepo,
             mockBranchProductsRepo,
             mockProductBatchesRepo,
-            mockBranchContextService,
         );
     });
 
@@ -186,7 +178,7 @@ describe('HoldOrdersService', () => {
     });
 
     describe('findMany', () => {
-        it('should query orders using user.branch_id resolved from BranchContextService', async () => {
+        it('should query orders using user.branch_id resolved from getActiveBranchId', async () => {
             mockHoldOrdersRepo.findMany.mockResolvedValue({
                 records: [{ id: 'hold-1', branch_id: 'branch-1' }],
                 total: 1,
@@ -194,7 +186,6 @@ describe('HoldOrdersService', () => {
 
             const result = await service.findMany(mockUser, { page: 1, limit: 10 });
 
-            expect(mockBranchContextService.get).toHaveBeenCalledWith(mockUser);
             expect(mockHoldOrdersRepo.findMany).toHaveBeenCalledWith('branch-1', { page: 1, limit: 10 });
             expect(result.records).toHaveLength(1);
         });
