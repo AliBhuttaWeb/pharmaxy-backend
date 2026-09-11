@@ -31,6 +31,7 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
 import { CommonModule } from './common/common.module';
 import { PharmacyPaymentMethodsModule } from './modules/pharmacy-payment-methods/pharmacy-payment-methods.module';
 import { PaymentMethodsModule } from './modules/payment-methods/payment-methods.module';
+import { SettingsModule } from './modules/settings/settings.module';
 
 @Module({
     imports: [
@@ -66,6 +67,7 @@ import { PaymentMethodsModule } from './modules/payment-methods/payment-methods.
         CommonModule,
         PharmacyPaymentMethodsModule,
         PaymentMethodsModule,
+        SettingsModule,
     ],
     providers: [
         {

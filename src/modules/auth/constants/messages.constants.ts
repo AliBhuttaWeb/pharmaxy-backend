@@ -8,6 +8,7 @@ export const MESSAGES = {
         PASSWORD_RESET_LINK_SENT: 'Password reset link sent successfully.',
         EMAIL_VERIFIED: 'Email verified successfully.',
         TOKEN_REFRESHED: 'Token refreshed successfully.',
+        PROFILE_UPDATED: 'Profile updated successfully.',
     },
 
     ERROR: {

@@ -263,8 +263,6 @@ model Pharmacy {
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
-  settings PharmacySettings?
-
   branches Branch[]
 
   subscriptions Subscription[]
@@ -359,6 +357,8 @@ model Branch {
   system_logs SystemLog[]
 
   user_branches UserBranch[]
+
+  settings BranchSettings?
 
   @@unique([pharmacy_id, name])
   @@index([pharmacy_id])
@@ -1671,10 +1671,10 @@ enum RadiusUnit {
   @@map("radius_unit")
 }
 
-model PharmacySettings {
+model BranchSettings {
   id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id String @unique @db.Uuid
+  branch_id String @unique @db.Uuid
 
   // -----------------------------
   // General
@@ -1756,9 +1756,9 @@ model PharmacySettings {
 
   updated_at DateTime @updatedAt
 
-  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Cascade)
 
-  @@map("pharmacy_settings")
+  @@map("branch_settings")
 }
 
 enum SystemLogLevel {

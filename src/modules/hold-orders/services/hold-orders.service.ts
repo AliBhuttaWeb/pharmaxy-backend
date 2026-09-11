@@ -248,9 +248,8 @@ export class HoldOrdersService {
 
     async cancel(id: string) {
         await this.findById(id);
-        const holdOrder = await this.holdOrdersRepository.delete(id);
+        await this.holdOrdersRepository.delete(id);
         return {
-            holdOrder,
             message: MESSAGES.SUCCESS.CANCELLED,
         };
     }
@@ -263,22 +262,31 @@ export class HoldOrdersService {
         }
 
         return {
-            holdOrder:{
-                hold_order_id: hold.id,
-                customer_id: hold.customer_id,
-                notes: hold.notes,
-                subtotal: hold.subtotal,
-                discount_amount: hold.discount_amount,
-                tax_amount: hold.tax_amount,
-                grand_total: hold.grand_total,
-                items: hold.items.map((item) => ({
-                    branch_product_id: item.branch_product_id,
-                    quantity: item.quantity,
-                    unit_price: item.unit_price,
-                    subtotal: item.subtotal,
-                    notes: item.notes,
-                })),
-            }
+            hold_order_id: hold.id,
+
+            customer_id: hold.customer_id,
+
+            notes: hold.notes,
+
+            subtotal: hold.subtotal,
+
+            discount_amount: hold.discount_amount,
+
+            tax_amount: hold.tax_amount,
+
+            grand_total: hold.grand_total,
+
+            items: hold.items.map((item) => ({
+                branch_product_id: item.branch_product_id,
+
+                quantity: item.quantity,
+
+                unit_price: item.unit_price,
+
+                subtotal: item.subtotal,
+
+                notes: item.notes,
+            })),
         };
     }
 }

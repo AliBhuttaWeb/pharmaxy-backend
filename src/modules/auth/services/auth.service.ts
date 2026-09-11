@@ -19,6 +19,7 @@ import {
     SignupDto,
     SignupResultDto,
     ProfileDto,
+    UpdateProfileDto,
 } from '../dtos';
 import { MESSAGES } from '../constants';
 import { RefreshTokenService } from './refresh-token.service';
@@ -252,6 +253,30 @@ export class AuthService {
         }
 
         return { profile: buildAuthenticatedUser(dbUser, user.branch_id) };
+    }
+
+    async updateProfile(user: AuthenticatedUser, dto: UpdateProfileDto) {
+        const dbUser = await this.authRepository.findUserById(user.id);
+
+        if (!dbUser) {
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
+        }
+
+        if (dto.phone && dto.phone !== dbUser.phone) {
+            await this.ensurePhoneAvailable(dto.phone);
+        }
+
+        const updatedUser = await this.authRepository.updateUserProfile(user.id, {
+            ...(dto.first_name !== undefined && { first_name: dto.first_name }),
+            ...(dto.last_name !== undefined && { last_name: dto.last_name }),
+            ...(dto.phone !== undefined && { phone: dto.phone }),
+            ...(dto.avatar_url !== undefined && { avatar_url: dto.avatar_url }),
+        });
+
+        return {
+            profile: buildAuthenticatedUser(updatedUser, user.branch_id),
+            message: MESSAGES.SUCCESS.PROFILE_UPDATED,
+        };
     }
 
     private async ensureEmailAvailable(email: string): Promise<void> {

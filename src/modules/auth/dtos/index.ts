@@ -5,3 +5,4 @@ export * from './refresh-token-result.dto';
 export * from './signup.dto';
 export * from './signup-result.dto';
 export * from './profile.dto';
+export * from './update-profile.dto';

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { Prisma } from '@gen/prisma/client';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { userWithRolesAndBranchesQuery } from '../queries';
 
@@ -79,6 +80,14 @@ export class AuthRepository {
             where: {
                 phone,
             },
+            ...userWithRolesAndBranchesQuery,
+        });
+    }
+
+    async updateUserProfile(userId: string, data: Prisma.UserUpdateInput) {
+        return this.prisma.user.update({
+            where: { id: userId },
+            data,
             ...userWithRolesAndBranchesQuery,
         });
     }

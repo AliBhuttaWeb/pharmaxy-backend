@@ -1,4 +1,4 @@
-import { Body, Get, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
+import { Body, Get, HttpCode, HttpStatus, Patch, Post, Req } from '@nestjs/common';
 
 import type { Request } from 'express';
 
@@ -11,6 +11,7 @@ import {
     RefreshTokenResultDto,
     SignupDto,
     SignupResultDto,
+    UpdateProfileDto,
 } from '../dtos';
 import type { AuthenticatedUser, SessionMetadata } from '../types';
 
@@ -60,6 +61,14 @@ export class AuthConsoleController {
     @Get('me')
     me(@CurrentUser() user: AuthenticatedUser): Promise<ProfileDto> {
         return this.authService.getProfile(user);
+    }
+
+    @Patch('me')
+    updateProfile(
+        @CurrentUser() user: AuthenticatedUser,
+        @Body() dto: UpdateProfileDto,
+    ) {
+        return this.authService.updateProfile(user, dto);
     }
 
     @Public()
