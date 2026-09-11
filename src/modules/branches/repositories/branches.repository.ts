@@ -7,6 +7,7 @@ import { Role } from '@/common/types';
 import { CreateBranchDto, FindBranchesQueryDto } from '../dtos';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { isPharmacyAdmin } from '@/common/helpers';
+import { DEFAULT_BRANCH_SETTINGS } from '@/modules/settings/constants';
 
 @Injectable()
 export class BranchesRepository {
@@ -174,6 +175,9 @@ export class BranchesRepository {
                     connect: {
                         id: pharmacy_id,
                     },
+                },
+                settings: {
+                    create: DEFAULT_BRANCH_SETTINGS,
                 },
             },
         });

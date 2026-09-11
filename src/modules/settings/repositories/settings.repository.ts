@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@gen/prisma/client';
 import { PrismaService } from '@/database/prisma/prisma.service';
+import { DEFAULT_BRANCH_SETTINGS } from '../constants';
 
 @Injectable()
 export class SettingsRepository {
@@ -15,6 +16,7 @@ export class SettingsRepository {
     async createDefault(branchId: string) {
         return this.prisma.branchSettings.create({
             data: {
+                ...DEFAULT_BRANCH_SETTINGS,
                 branch: {
                     connect: { id: branchId },
                 },

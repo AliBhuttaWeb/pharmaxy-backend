@@ -2,12 +2,10 @@ import { ConflictException } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { MESSAGES } from '../constants';
 import { AuthenticatedUser } from '@/modules/auth/types';
-import { PREMIUM_FEATUIRES } from '@/modules/subscriptions/constants';
 
 describe('SettingsService', () => {
     let service: SettingsService;
     let mockSettingsRepo: any;
-    let mockSubscriptionConstraintService: any;
 
     const mockUser: AuthenticatedUser = {
         id: 'user-1',
@@ -43,14 +41,7 @@ describe('SettingsService', () => {
             upsert: jest.fn(),
         };
 
-        mockSubscriptionConstraintService = {
-            validateFeatureAccess: jest.fn(),
-        };
-
-        service = new SettingsService(
-            mockSettingsRepo,
-            mockSubscriptionConstraintService,
-        );
+        service = new SettingsService(mockSettingsRepo);
     });
 
     describe('getSettings', () => {
@@ -83,9 +74,10 @@ describe('SettingsService', () => {
     });
 
     describe('updateSettings', () => {
-        it('should update and return { settings, message }', async () => {
+        it('should update and return { settings, message } when thresholds are valid', async () => {
             const dto = { timezone: 'UTC', currency: 'USD' };
             const updated = { ...mockBranchSettings, ...dto };
+            mockSettingsRepo.findByBranchId.mockResolvedValue(mockBranchSettings);
             mockSettingsRepo.upsert.mockResolvedValue(updated);
 
             const result = await service.updateSettings(mockUser, dto);
@@ -95,34 +87,96 @@ describe('SettingsService', () => {
                 settings: updated,
                 message: MESSAGES.SUCCESS.UPDATED,
             });
-            expect(mockSubscriptionConstraintService.validateFeatureAccess).not.toHaveBeenCalled();
         });
 
-        it('should validate subscription feature access when enabling nearby search stock sharing', async () => {
-            const dto = { enable_stock_sharing: true };
-            const updated = { ...mockBranchSettings, enable_stock_sharing: true };
-            mockSettingsRepo.upsert.mockResolvedValue(updated);
+        it('should throw ConflictException if critical_stock_quantity exceeds minimum_stock_quantity in dto', async () => {
+            const dto = {
+                minimum_stock_quantity: 5,
+                critical_stock_quantity: 15,
+            };
+            mockSettingsRepo.findByBranchId.mockResolvedValue(mockBranchSettings);
 
-            const result = await service.updateSettings(mockUser, dto);
-
-            expect(mockSubscriptionConstraintService.validateFeatureAccess).toHaveBeenCalledWith(
-                mockUser,
-                PREMIUM_FEATUIRES.NEARBY_INVENTORY,
+            await expect(service.updateSettings(mockUser, dto)).rejects.toThrow(
+                new ConflictException(MESSAGES.ERROR.CRITICAL_EXCEEDS_MINIMUM),
             );
-            expect(result).toEqual({
-                settings: updated,
-                message: MESSAGES.SUCCESS.UPDATED,
-            });
-        });
-
-        it('should reject update if subscription constraint fails for nearby inventory', async () => {
-            const dto = { allow_reservations: true };
-            mockSubscriptionConstraintService.validateFeatureAccess.mockRejectedValue(
-                new ConflictException('Feature not allowed in subscription plan'),
-            );
-
-            await expect(service.updateSettings(mockUser, dto)).rejects.toThrow(ConflictException);
             expect(mockSettingsRepo.upsert).not.toHaveBeenCalled();
+        });
+
+        it('should throw ConflictException if updated critical_stock_quantity exceeds existing minimum', async () => {
+            const dto = { critical_stock_quantity: 20 };
+            mockSettingsRepo.findByBranchId.mockResolvedValue(mockBranchSettings); // min is 10
+
+            await expect(service.updateSettings(mockUser, dto)).rejects.toThrow(
+                new ConflictException(MESSAGES.ERROR.CRITICAL_EXCEEDS_MINIMUM),
+            );
+            expect(mockSettingsRepo.upsert).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('validateNearbySharingAccess', () => {
+        it('should throw ConflictException when branch has not enabled stock sharing', async () => {
+            mockSettingsRepo.findByBranchId.mockResolvedValue({
+                ...mockBranchSettings,
+                enable_stock_sharing: false,
+            });
+
+            await expect(service.validateNearbySharingAccess('branch-1')).rejects.toThrow(
+                new ConflictException(MESSAGES.ERROR.STOCK_SHARING_NOT_ALLOWED),
+            );
+        });
+
+        it('should succeed when branch has enabled stock sharing', async () => {
+            mockSettingsRepo.findByBranchId.mockResolvedValue({
+                ...mockBranchSettings,
+                enable_stock_sharing: true,
+            });
+
+            await expect(service.validateNearbySharingAccess('branch-1')).resolves.toBeUndefined();
+        });
+    });
+
+    describe('validateReservationAccess', () => {
+        it('should throw ConflictException when branch has not enabled reservations', async () => {
+            mockSettingsRepo.findByBranchId.mockResolvedValue({
+                ...mockBranchSettings,
+                allow_reservations: false,
+            });
+
+            await expect(service.validateReservationAccess('branch-1')).rejects.toThrow(
+                new ConflictException(MESSAGES.ERROR.RESERVATIONS_NOT_ALLOWED),
+            );
+        });
+
+        it('should succeed when branch has enabled reservations', async () => {
+            mockSettingsRepo.findByBranchId.mockResolvedValue({
+                ...mockBranchSettings,
+                allow_reservations: true,
+            });
+
+            await expect(service.validateReservationAccess('branch-1')).resolves.toBeUndefined();
+        });
+    });
+
+    describe('getStockAlertLevel', () => {
+        it('should return CRITICAL when quantity is at or below critical threshold', async () => {
+            mockSettingsRepo.findByBranchId.mockResolvedValue(mockBranchSettings);
+
+            expect(await service.getStockAlertLevel('branch-1', 5)).toBe('CRITICAL');
+            expect(await service.getStockAlertLevel('branch-1', 2)).toBe('CRITICAL');
+        });
+
+        it('should return LOW when quantity is between critical and minimum threshold', async () => {
+            mockSettingsRepo.findByBranchId.mockResolvedValue(mockBranchSettings);
+
+            expect(await service.getStockAlertLevel('branch-1', 8)).toBe('LOW');
+            expect(await service.getStockAlertLevel('branch-1', 10)).toBe('LOW');
+        });
+
+        it('should return NORMAL when quantity is above minimum threshold', async () => {
+            mockSettingsRepo.findByBranchId.mockResolvedValue(mockBranchSettings);
+
+            expect(await service.getStockAlertLevel('branch-1', 11)).toBe('NORMAL');
+            expect(await service.getStockAlertLevel('branch-1', 50)).toBe('NORMAL');
         });
     });
 });
