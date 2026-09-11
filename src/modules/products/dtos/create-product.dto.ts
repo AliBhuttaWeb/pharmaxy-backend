@@ -32,14 +32,12 @@ export class CreateProductDto {
     manufacturer_id!: string;
 
     @ApiPropertyOptional()
-    @IsOptional()
     @IsUUID()
-    product_type_id?: string;
+    product_type_id!: string;
 
     @ApiPropertyOptional()
-    @IsOptional()
     @IsUUID()
-    retail_category_id?: string;
+    retail_category_id!: string;
 
     @ApiProperty()
     @IsUUID()
