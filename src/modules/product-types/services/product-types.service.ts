@@ -1,13 +1,18 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { MESSAGES } from '../constants';
 import { CreateProductTypeDto, ProductTypeQueryDto, UpdateProductTypeDto } from '../dtos';
 import { ProductTypesRepository } from '../repositories/product-types.repository';
+import { ProductsService } from '@/modules/products/services/products.service';
 import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class ProductTypesService {
-    constructor(private readonly productTypeRepository: ProductTypesRepository) {}
+    constructor(
+        private readonly productTypeRepository: ProductTypesRepository,
+        @Inject(forwardRef(() => ProductsService))
+        private readonly productsService: ProductsService,
+    ) {}
 
     async findMany(query: ProductTypeQueryDto) {
         const { limit, page } = query;
@@ -54,7 +59,7 @@ export class ProductTypesService {
     async delete(id: string) {
         await this.findById(id);
 
-        const isInUse = await this.productTypeRepository.hasProducts(id);
+        const isInUse = await this.productsService.existsByProductType(id);
         if (isInUse) {
             throw new ConflictException(MESSAGES.ERROR.IN_USE);
         }

@@ -1,14 +1,17 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { CreateRetailCategoryDto, RetailCategoryQueryDto, UpdateRetailCategoryDto } from '../dtos';
 import { MESSAGES } from '../constants';
 import { RetailCategoriesRepository } from '../repositories/retail-categories.repository';
+import { ProductsService } from '@/modules/products/services/products.service';
 import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class RetailCategoriesService {
     constructor(
         private readonly retailCategoryRepository: RetailCategoriesRepository,
+        @Inject(forwardRef(() => ProductsService))
+        private readonly productsService: ProductsService,
     ) {}
 
     async findMany(query: RetailCategoryQueryDto) {
@@ -59,7 +62,7 @@ export class RetailCategoriesService {
     async delete(id: string) {
         await this.findById(id);
 
-        const isInUse = await this.retailCategoryRepository.hasProducts(id);
+        const isInUse = await this.productsService.existsByRetailCategory(id);
         if (isInUse) {
             throw new ConflictException(MESSAGES.ERROR.IN_USE);
         }

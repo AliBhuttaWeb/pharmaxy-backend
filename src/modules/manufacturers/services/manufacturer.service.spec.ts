@@ -14,10 +14,13 @@ describe('ManufacturersService', () => {
             create: jest.fn(),
             update: jest.fn(),
             findMany: jest.fn(),
-            hasProducts: jest.fn(),
         };
 
-        service = new ManufacturersService(mockManufacturersRepo);
+        mockProductsService = {
+            existsByManufacturer: jest.fn(),
+        };
+
+        service = new ManufacturersService(mockManufacturersRepo, mockProductsService);
     });
 
     describe('delete', () => {
@@ -27,13 +30,13 @@ describe('ManufacturersService', () => {
             await expect(service.delete('non-existent-id')).rejects.toThrow(
                 new NotFoundException(MESSAGES.ERROR.NOT_FOUND),
             );
-            expect(mockManufacturersRepo.hasProducts).not.toHaveBeenCalled();
+            expect(mockProductsService.existsByManufacturer).not.toHaveBeenCalled();
             expect(mockManufacturersRepo.delete).not.toHaveBeenCalled();
         });
 
         it('should throw ConflictException if products reference this manufacturer', async () => {
             mockManufacturersRepo.findById.mockResolvedValue({ id: 'm-1', name: 'GSK' });
-            mockManufacturersRepo.hasProducts.mockResolvedValue(true);
+            mockProductsService.existsByManufacturer.mockResolvedValue(true);
 
             await expect(service.delete('m-1')).rejects.toThrow(
                 new ConflictException(MESSAGES.ERROR.IN_USE),
@@ -41,9 +44,9 @@ describe('ManufacturersService', () => {
             expect(mockManufacturersRepo.delete).not.toHaveBeenCalled();
         });
 
-        it('should delete and return success message when not in use', async () => {
+        it('should delete and return success message when manufacturer exists and not in use', async () => {
             mockManufacturersRepo.findById.mockResolvedValue({ id: 'm-1', name: 'GSK' });
-            mockManufacturersRepo.hasProducts.mockResolvedValue(false);
+            mockProductsService.existsByManufacturer.mockResolvedValue(false);
             mockManufacturersRepo.delete.mockResolvedValue({ id: 'm-1', deleted_at: new Date() });
 
             const result = await service.delete('m-1');

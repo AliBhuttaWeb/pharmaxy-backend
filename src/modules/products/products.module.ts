@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ProductsConsoleController } from './controllers/products.consoe.controller';
 import { ProductsRepository } from './repositories/products.repository';
 import { ProductsService } from './services/products.service';
@@ -9,10 +9,10 @@ import { DosageFormsModule } from '../dosage-forms/dosage-forms.module';
 
 @Module({
     imports: [
-        ManufacturersModule,
-        ProductTypesModule,
-        RetailCategoriesModule,
-        DosageFormsModule,
+        forwardRef(() => ManufacturersModule),
+        forwardRef(() => ProductTypesModule),
+        forwardRef(() => RetailCategoriesModule),
+        forwardRef(() => DosageFormsModule),
     ],
 
     controllers: [ProductsConsoleController],

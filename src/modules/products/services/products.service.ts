@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@gen/prisma/client';
 
 import { MESSAGES } from '../constants';
@@ -14,9 +14,13 @@ import { buildPaginationMeta } from '@/common/pagination';
 export class ProductsService {
     constructor(
         private readonly productsRepository: ProductsRepository,
+        @Inject(forwardRef(() => ManufacturersService))
         private readonly manufacturersService: ManufacturersService,
+        @Inject(forwardRef(() => ProductTypesService))
         private readonly productTypesService: ProductTypesService,
+        @Inject(forwardRef(() => RetailCategoriesService))
         private readonly retailCategoriesService: RetailCategoriesService,
+        @Inject(forwardRef(() => DosageFormsService))
         private readonly dosageFormsService: DosageFormsService,
     ) {}
 

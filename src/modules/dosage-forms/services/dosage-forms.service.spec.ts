@@ -14,10 +14,13 @@ describe('DosageFormsService', () => {
             create: jest.fn(),
             update: jest.fn(),
             findMany: jest.fn(),
-            hasProducts: jest.fn(),
         };
 
-        service = new DosageFormsService(mockDosageFormRepo);
+        mockProductsService = {
+            existsByDosageForm: jest.fn(),
+        };
+
+        service = new DosageFormsService(mockDosageFormRepo, mockProductsService);
     });
 
     describe('delete', () => {
@@ -27,13 +30,13 @@ describe('DosageFormsService', () => {
             await expect(service.delete('non-existent-id')).rejects.toThrow(
                 new NotFoundException(MESSAGES.ERROR.NOT_FOUND),
             );
-            expect(mockDosageFormRepo.hasProducts).not.toHaveBeenCalled();
+            expect(mockProductsService.existsByDosageForm).not.toHaveBeenCalled();
             expect(mockDosageFormRepo.delete).not.toHaveBeenCalled();
         });
 
         it('should throw ConflictException if products reference this dosage form', async () => {
             mockDosageFormRepo.findById.mockResolvedValue({ id: 'form-1', name: 'Tablet' });
-            mockDosageFormRepo.hasProducts.mockResolvedValue(true);
+            mockProductsService.existsByDosageForm.mockResolvedValue(true);
 
             await expect(service.delete('form-1')).rejects.toThrow(
                 new ConflictException(MESSAGES.ERROR.IN_USE),
@@ -41,9 +44,9 @@ describe('DosageFormsService', () => {
             expect(mockDosageFormRepo.delete).not.toHaveBeenCalled();
         });
 
-        it('should delete and return success message when not in use', async () => {
+        it('should delete and return success message when dosage form exists and not in use', async () => {
             mockDosageFormRepo.findById.mockResolvedValue({ id: 'form-1', name: 'Tablet' });
-            mockDosageFormRepo.hasProducts.mockResolvedValue(false);
+            mockProductsService.existsByDosageForm.mockResolvedValue(false);
             mockDosageFormRepo.delete.mockResolvedValue({ id: 'form-1', deleted_at: new Date() });
 
             const result = await service.delete('form-1');

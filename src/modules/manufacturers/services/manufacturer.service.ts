@@ -1,14 +1,17 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { MESSAGES } from '../constants';
 import { CreateManufacturerDto, FindManufacturersQueryDto, UpdateManufacturerDto } from '../dtos';
 import { ManufacturersRepository } from '../repositories/manufacturers.repository';
+import { ProductsService } from '@/modules/products/services/products.service';
 import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class ManufacturersService {
     constructor(
         private readonly manufacturersRepository: ManufacturersRepository,
+        @Inject(forwardRef(() => ProductsService))
+        private readonly productsService: ProductsService,
     ) {}
 
     async list(query: FindManufacturersQueryDto) {
@@ -72,7 +75,7 @@ export class ManufacturersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        const isInUse = await this.manufacturersRepository.hasProducts(id);
+        const isInUse = await this.productsService.existsByManufacturer(id);
         if (isInUse) {
             throw new ConflictException(MESSAGES.ERROR.IN_USE);
         }

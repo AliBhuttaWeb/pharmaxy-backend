@@ -129,21 +129,4 @@ export class ProductTypesRepository {
             },
         });
     }
-
-    async hasProducts(id: string): Promise<boolean> {
-        const result = await this.prisma.productType.findUnique({
-            where: { id },
-            select: {
-                _count: {
-                    select: {
-                        products: {
-                            where: { deleted_at: null },
-                        },
-                    },
-                },
-            },
-        });
-
-        return (result?._count?.products ?? 0) > 0;
-    }
 }

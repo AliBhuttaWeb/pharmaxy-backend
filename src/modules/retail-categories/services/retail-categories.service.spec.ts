@@ -14,10 +14,13 @@ describe('RetailCategoriesService', () => {
             create: jest.fn(),
             update: jest.fn(),
             findMany: jest.fn(),
-            hasProducts: jest.fn(),
         };
 
-        service = new RetailCategoriesService(mockRetailCategoriesRepo);
+        mockProductsService = {
+            existsByRetailCategory: jest.fn(),
+        };
+
+        service = new RetailCategoriesService(mockRetailCategoriesRepo, mockProductsService);
     });
 
     describe('delete', () => {
@@ -27,13 +30,13 @@ describe('RetailCategoriesService', () => {
             await expect(service.delete('non-existent-id')).rejects.toThrow(
                 new NotFoundException(MESSAGES.ERROR.NOT_FOUND),
             );
-            expect(mockRetailCategoriesRepo.hasProducts).not.toHaveBeenCalled();
+            expect(mockProductsService.existsByRetailCategory).not.toHaveBeenCalled();
             expect(mockRetailCategoriesRepo.delete).not.toHaveBeenCalled();
         });
 
         it('should throw ConflictException if products reference this retail category', async () => {
             mockRetailCategoriesRepo.findById.mockResolvedValue({ id: 'cat-1', name: 'OTC' });
-            mockRetailCategoriesRepo.hasProducts.mockResolvedValue(true);
+            mockProductsService.existsByRetailCategory.mockResolvedValue(true);
 
             await expect(service.delete('cat-1')).rejects.toThrow(
                 new ConflictException(MESSAGES.ERROR.IN_USE),
@@ -41,9 +44,9 @@ describe('RetailCategoriesService', () => {
             expect(mockRetailCategoriesRepo.delete).not.toHaveBeenCalled();
         });
 
-        it('should delete and return success message when not in use', async () => {
+        it('should delete and return success message when retail category exists and not in use', async () => {
             mockRetailCategoriesRepo.findById.mockResolvedValue({ id: 'cat-1', name: 'OTC' });
-            mockRetailCategoriesRepo.hasProducts.mockResolvedValue(false);
+            mockProductsService.existsByRetailCategory.mockResolvedValue(false);
             mockRetailCategoriesRepo.delete.mockResolvedValue({ id: 'cat-1', deleted_at: new Date() });
 
             const result = await service.delete('cat-1');
