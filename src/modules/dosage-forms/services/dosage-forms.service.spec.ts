@@ -5,7 +5,6 @@ import { MESSAGES } from '../constants';
 describe('DosageFormsService', () => {
     let service: DosageFormsService;
     let mockDosageFormRepo: any;
-    let mockProductsRepo: any;
 
     beforeEach(() => {
         mockDosageFormRepo = {
@@ -15,13 +14,10 @@ describe('DosageFormsService', () => {
             create: jest.fn(),
             update: jest.fn(),
             findMany: jest.fn(),
+            hasProducts: jest.fn(),
         };
 
-        mockProductsRepo = {
-            existsByDosageForm: jest.fn(),
-        };
-
-        service = new DosageFormsService(mockDosageFormRepo, mockProductsRepo);
+        service = new DosageFormsService(mockDosageFormRepo);
     });
 
     describe('delete', () => {
@@ -31,13 +27,13 @@ describe('DosageFormsService', () => {
             await expect(service.delete('non-existent-id')).rejects.toThrow(
                 new NotFoundException(MESSAGES.ERROR.NOT_FOUND),
             );
-            expect(mockProductsRepo.existsByDosageForm).not.toHaveBeenCalled();
+            expect(mockDosageFormRepo.hasProducts).not.toHaveBeenCalled();
             expect(mockDosageFormRepo.delete).not.toHaveBeenCalled();
         });
 
         it('should throw ConflictException if products reference this dosage form', async () => {
             mockDosageFormRepo.findById.mockResolvedValue({ id: 'form-1', name: 'Tablet' });
-            mockProductsRepo.existsByDosageForm.mockResolvedValue(true);
+            mockDosageFormRepo.hasProducts.mockResolvedValue(true);
 
             await expect(service.delete('form-1')).rejects.toThrow(
                 new ConflictException(MESSAGES.ERROR.IN_USE),
@@ -47,7 +43,7 @@ describe('DosageFormsService', () => {
 
         it('should delete and return success message when not in use', async () => {
             mockDosageFormRepo.findById.mockResolvedValue({ id: 'form-1', name: 'Tablet' });
-            mockProductsRepo.existsByDosageForm.mockResolvedValue(false);
+            mockDosageFormRepo.hasProducts.mockResolvedValue(false);
             mockDosageFormRepo.delete.mockResolvedValue({ id: 'form-1', deleted_at: new Date() });
 
             const result = await service.delete('form-1');

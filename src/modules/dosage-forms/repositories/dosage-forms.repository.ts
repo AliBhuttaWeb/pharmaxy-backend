@@ -124,4 +124,21 @@ export class DosageFormsRepository {
             },
         });
     }
+
+    async hasProducts(id: string): Promise<boolean> {
+        const result = await this.prisma.dosageForm.findUnique({
+            where: { id },
+            select: {
+                _count: {
+                    select: {
+                        products: {
+                            where: { deleted_at: null },
+                        },
+                    },
+                },
+            },
+        });
+
+        return (result?._count?.products ?? 0) > 0;
+    }
 }

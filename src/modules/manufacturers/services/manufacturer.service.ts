@@ -7,7 +7,9 @@ import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class ManufacturersService {
-    constructor(private readonly manufacturersRepository: ManufacturersRepository) {}
+    constructor(
+        private readonly manufacturersRepository: ManufacturersRepository,
+    ) {}
 
     async list(query: FindManufacturersQueryDto) {
         const { limit, page } = query;
@@ -68,6 +70,11 @@ export class ManufacturersService {
 
         if (!manufacturer) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+        }
+
+        const isInUse = await this.manufacturersRepository.hasProducts(id);
+        if (isInUse) {
+            throw new ConflictException(MESSAGES.ERROR.IN_USE);
         }
 
         await this.manufacturersRepository.delete(id);

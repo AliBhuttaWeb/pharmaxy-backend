@@ -195,7 +195,11 @@ export class CustomersService {
     async delete(id: string) {
         await this.findById(id);
 
-        return this.customersRepository.delete(id);
+        await this.customersRepository.delete(id);
+
+        return {
+            message: MESSAGES.SUCCESS.DELETED,
+        };
     }
 
     private async generateCustomerCode(pharmacyId: string) {

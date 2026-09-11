@@ -76,10 +76,13 @@ export class ProductBatchesRepository {
         page?: number,
         limit?: number,
         tx?: Prisma.TransactionClient,
+        is_deleted?: boolean,
     ) {
         const where: Prisma.ProductBatchWhereInput = {
             branch_product_id: branchProductId,
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
         };
 
         const isPaginated = page !== undefined && limit !== undefined;

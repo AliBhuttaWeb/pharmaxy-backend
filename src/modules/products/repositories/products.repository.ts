@@ -25,6 +25,7 @@ export class ProductsRepository {
             dosage_form_id,
             requires_prescription,
             is_active,
+            is_deleted,
             page,
             limit,
             sort_by,
@@ -32,7 +33,9 @@ export class ProductsRepository {
         } = query;
 
         const where: Prisma.ProductWhereInput = {
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
 
             ...(search && {
                 OR: [
@@ -194,6 +197,36 @@ export class ProductsRepository {
         const count = await this.prisma.product.count({
             where: {
                 dosage_form_id: dosageFormId,
+                deleted_at: null,
+            },
+        });
+        return count > 0;
+    }
+
+    async existsByProductType(productTypeId: string): Promise<boolean> {
+        const count = await this.prisma.product.count({
+            where: {
+                product_type_id: productTypeId,
+                deleted_at: null,
+            },
+        });
+        return count > 0;
+    }
+
+    async existsByRetailCategory(retailCategoryId: string): Promise<boolean> {
+        const count = await this.prisma.product.count({
+            where: {
+                retail_category_id: retailCategoryId,
+                deleted_at: null,
+            },
+        });
+        return count > 0;
+    }
+
+    async existsByManufacturer(manufacturerId: string): Promise<boolean> {
+        const count = await this.prisma.product.count({
+            where: {
+                manufacturer_id: manufacturerId,
                 deleted_at: null,
             },
         });

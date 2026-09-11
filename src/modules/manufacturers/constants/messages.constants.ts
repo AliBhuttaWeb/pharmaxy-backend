@@ -10,5 +10,6 @@ export const MESSAGES = {
     ERROR: {
         NOT_FOUND: 'Manufacturer not found.',
         NAME_ALREADY_EXISTS: 'A manufacturer with this name already exists.',
+        IN_USE: 'Manufacturer cannot be deleted because it is being used by products.',
     },
 } as const;

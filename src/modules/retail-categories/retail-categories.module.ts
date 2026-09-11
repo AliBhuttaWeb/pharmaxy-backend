@@ -4,9 +4,8 @@ import { RetailCategoriesService } from './services/retail-categories.service';
 import { RetailCategoriesRepository } from './repositories/retail-categories.repository';
 
 @Module({
-    imports: [],
     controllers: [RetailCategoriesConsoleController],
     providers: [RetailCategoriesService, RetailCategoriesRepository],
-    exports: [RetailCategoriesRepository],
+    exports: [RetailCategoriesService],
 })
 export class RetailCategoriesModule {}

@@ -163,7 +163,11 @@ export class BranchProductsService {
     async delete(id: string, user: AuthenticatedUser) {
         await this.findById(id, user);
 
-        return this.branchProductsRepository.delete(id);
+        await this.branchProductsRepository.delete(id);
+
+        return {
+            message: MESSAGES.SUCCESS.DELETED,
+        };
     }
 
     async receiveStock(id: string, dto: ReceiveStockDto, user: AuthenticatedUser) {

@@ -142,6 +142,10 @@ export class BranchesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
+        if (branch.is_main) {
+            throw new ConflictException(MESSAGES.ERROR.CANNOT_DELETE_MAIN_BRANCH);
+        }
+
         await this.branchesRepository.delete(id);
 
         return {

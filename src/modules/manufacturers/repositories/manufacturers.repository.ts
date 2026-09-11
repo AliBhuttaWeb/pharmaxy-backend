@@ -10,10 +10,12 @@ export class ManufacturersRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMany(query: FindManufacturersQueryDto) {
-        const { search, page, limit, sort_by, sort_order } = query;
+        const { search, is_deleted, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.ManufacturerWhereInput = {
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
 
             ...(search && {
                 OR: [
@@ -115,5 +117,22 @@ export class ManufacturersRepository {
                 deleted_at: new Date(),
             },
         });
+    }
+
+    async hasProducts(id: string): Promise<boolean> {
+        const result = await this.prisma.manufacturer.findUnique({
+            where: { id },
+            select: {
+                _count: {
+                    select: {
+                        products: {
+                            where: { deleted_at: null },
+                        },
+                    },
+                },
+            },
+        });
+
+        return (result?._count?.products ?? 0) > 0;
     }
 }

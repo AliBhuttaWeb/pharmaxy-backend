@@ -1,18 +1,13 @@
-import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { MESSAGES } from '../constants';
 import { CreateDosageFormDto, DosageFormQueryDto, UpdateDosageFormDto } from '../dtos';
 import { DosageFormsRepository } from '../repositories/dosage-forms.repository';
-import { ProductsRepository } from '@/modules/products/repositories/products.repository';
 import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class DosageFormsService {
-    constructor(
-        private readonly dosageFormRepository: DosageFormsRepository,
-        @Inject(forwardRef(() => ProductsRepository))
-        private readonly productsRepository: ProductsRepository,
-    ) {}
+    constructor(private readonly dosageFormRepository: DosageFormsRepository) {}
 
     async findMany(query: DosageFormQueryDto) {
         const { limit, page } = query;
@@ -59,7 +54,7 @@ export class DosageFormsService {
     async delete(id: string) {
         await this.findById(id);
 
-        const isInUse = await this.productsRepository.existsByDosageForm(id);
+        const isInUse = await this.dosageFormRepository.hasProducts(id);
         if (isInUse) {
             throw new ConflictException(MESSAGES.ERROR.IN_USE);
         }

@@ -46,10 +46,12 @@ export class BranchProductsRepository {
     };
 
     private buildWhere(query: BranchProductQueryDto): Prisma.BranchProductWhereInput {
-        const { search, branch_id, product_id, is_controlled_drug, is_active } = query;
+        const { search, branch_id, product_id, is_controlled_drug, is_active, is_deleted } = query;
 
         return {
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
 
             ...(search && {
                 product: {

@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
+import { IsBoolean, IsIn, IsInt, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
 
 export class PaginationQueryDto {
     @ApiPropertyOptional({ description: 'Page number (starts from 1)' })
@@ -42,4 +42,17 @@ export class PaginationQueryDto {
     @IsOptional()
     @IsUUID()
     branch_id?: string;
+
+    @ApiPropertyOptional({
+        description: 'Filter by soft-deleted status (true for deleted only, false for active only). Omit to get all.',
+        example: false,
+    })
+    @IsOptional()
+    @Transform(({ value }) => {
+        if (value === 'true' || value === true) return true;
+        if (value === 'false' || value === false) return false;
+        return undefined;
+    })
+    @IsBoolean()
+    is_deleted?: boolean;
 }

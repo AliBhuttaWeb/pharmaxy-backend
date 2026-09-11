@@ -22,10 +22,12 @@ export class PurchaseOrdersRepository {
     };
 
     private buildWhere(query: PurchaseOrderQueryDto): Prisma.PurchaseOrderWhereInput {
-        const { search, branch_id, supplier_id, status, from_date, to_date } = query;
+        const { search, branch_id, supplier_id, status, from_date, to_date, is_deleted } = query;
 
         return {
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
 
             ...(search && {
                 OR: [

@@ -13,7 +13,7 @@ export class PharmaciesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMany(query: FindPharmaciesQueryDto) {
-        const { search, status, page, limit, sort_by, sort_order } = query;
+        const { search, status, is_deleted, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.PharmacyWhereInput = {
             ...(search && {
@@ -73,7 +73,9 @@ export class PharmaciesRepository {
                 status,
             }),
 
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
         };
 
         const sortableFields = [

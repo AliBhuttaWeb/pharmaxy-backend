@@ -4,28 +4,20 @@ import { Prisma } from '@gen/prisma/client';
 import { MESSAGES } from '../constants';
 import { CreateProductDto, ProductQueryDto, UpdateProductDto } from '../dtos';
 import { ProductsRepository } from '../repositories/products.repository';
-import { ManufacturersRepository } from '@/modules/manufacturers/repositories/manufacturers.repository';
-import { ProductTypesRepository } from '@/modules/product-types/repositories/product-types.repository';
-import { RetailCategoriesRepository } from '@/modules/retail-categories/repositories/retail-categories.repository';
-import { DosageFormsRepository } from '@/modules/dosage-forms/repositories/dosage-forms.repository';
-import { MESSAGES as RETAIL_CATEGORY_MESSAGES } from '@modules/retail-categories/constants';
-import { MESSAGES as MANUFACTURER_MESSAGES } from '@/modules/manufacturers/constants';
-import { MESSAGES as PRODUCT_TYPE_MESSAGES } from '@/modules/product-types/constants';
-import { MESSAGES as DOSAGE_FORM_MESSAGES } from '@/modules/dosage-forms/constants';
+import { ManufacturersService } from '@/modules/manufacturers/services/manufacturer.service';
+import { ProductTypesService } from '@/modules/product-types/services/product-types.service';
+import { RetailCategoriesService } from '@/modules/retail-categories/services/retail-categories.service';
+import { DosageFormsService } from '@/modules/dosage-forms/services/dosage-forms.service';
 import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class ProductsService {
     constructor(
         private readonly productsRepository: ProductsRepository,
-
-        private readonly manufacturersRepository: ManufacturersRepository,
-
-        private readonly productTypesRepository: ProductTypesRepository,
-
-        private readonly retailCategoriesRepository: RetailCategoriesRepository,
-
-        private readonly dosageFormsRepository: DosageFormsRepository,
+        private readonly manufacturersService: ManufacturersService,
+        private readonly productTypesService: ProductTypesService,
+        private readonly retailCategoriesService: RetailCategoriesService,
+        private readonly dosageFormsService: DosageFormsService,
     ) {}
 
     async findMany(query: ProductQueryDto) {
@@ -47,41 +39,9 @@ export class ProductsService {
     }
 
     async create(dto: CreateProductDto, tx?: Prisma.TransactionClient) {
-        const { manufacturer_id, product_type_id, retail_category_id, dosage_form_id, barcode } =
-            dto;
+        await this.validateRelations(dto);
 
-        if (manufacturer_id) {
-            const manufacturer = await this.manufacturersRepository.findById(manufacturer_id);
-
-            if (!manufacturer) {
-                throw new NotFoundException(MANUFACTURER_MESSAGES.ERROR.NOT_FOUND);
-            }
-        }
-
-        if (product_type_id) {
-            const productType = await this.productTypesRepository.findById(product_type_id);
-
-            if (!productType) {
-                throw new NotFoundException(PRODUCT_TYPE_MESSAGES.ERROR.NOT_FOUND);
-            }
-        }
-
-        if (retail_category_id) {
-            const retailCategory =
-                await this.retailCategoriesRepository.findById(retail_category_id);
-
-            if (!retailCategory) {
-                throw new NotFoundException(RETAIL_CATEGORY_MESSAGES.ERROR.NOT_FOUND);
-            }
-        }
-
-        if (dosage_form_id) {
-            const dosageForm = await this.dosageFormsRepository.findById(dosage_form_id);
-
-            if (!dosageForm) {
-                throw new NotFoundException(DOSAGE_FORM_MESSAGES.ERROR.NOT_FOUND);
-            }
-        }
+        const { barcode } = dto;
 
         const duplicate = await this.productsRepository.findByNameAndGenericName(
             dto.name,
@@ -143,41 +103,43 @@ export class ProductsService {
         await this.findById(id);
 
         await this.productsRepository.delete(id);
+
+        return {
+            message: MESSAGES.SUCCESS.DELETED,
+        };
+    }
+
+    async existsByDosageForm(dosageFormId: string): Promise<boolean> {
+        return this.productsRepository.existsByDosageForm(dosageFormId);
+    }
+
+    async existsByProductType(productTypeId: string): Promise<boolean> {
+        return this.productsRepository.existsByProductType(productTypeId);
+    }
+
+    async existsByRetailCategory(retailCategoryId: string): Promise<boolean> {
+        return this.productsRepository.existsByRetailCategory(retailCategoryId);
+    }
+
+    async existsByManufacturer(manufacturerId: string): Promise<boolean> {
+        return this.productsRepository.existsByManufacturer(manufacturerId);
     }
 
     private async validateRelations(dto: CreateProductDto | UpdateProductDto) {
         if (dto.manufacturer_id) {
-            const manufacturer = await this.manufacturersRepository.findById(dto.manufacturer_id);
-
-            if (!manufacturer) {
-                throw new NotFoundException(MESSAGES.ERROR.MANUFACTURER_NOT_FOUND);
-            }
+            await this.manufacturersService.get(dto.manufacturer_id);
         }
 
         if (dto.product_type_id) {
-            const productType = await this.productTypesRepository.findById(dto.product_type_id);
-
-            if (!productType) {
-                throw new NotFoundException(MESSAGES.ERROR.PRODUCT_TYPE_NOT_FOUND);
-            }
+            await this.productTypesService.findById(dto.product_type_id);
         }
 
         if (dto.retail_category_id) {
-            const retailCategory = await this.retailCategoriesRepository.findById(
-                dto.retail_category_id,
-            );
-
-            if (!retailCategory) {
-                throw new NotFoundException(MESSAGES.ERROR.RETAIL_CATEGORY_NOT_FOUND);
-            }
+            await this.retailCategoriesService.findById(dto.retail_category_id);
         }
 
         if (dto.dosage_form_id) {
-            const dosageForm = await this.dosageFormsRepository.findById(dto.dosage_form_id);
-
-            if (!dosageForm) {
-                throw new NotFoundException(MESSAGES.ERROR.DOSAGE_FORM_NOT_FOUND);
-            }
+            await this.dosageFormsService.findById(dto.dosage_form_id);
         }
     }
 }

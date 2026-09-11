@@ -10,10 +10,12 @@ export class SuppliersRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMany(query: FindSuppliersQueryDto) {
-        const { search, pharmacy_id, status, page, limit, sort_by, sort_order } = query;
+        const { search, pharmacy_id, status, is_deleted, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.SupplierWhereInput = {
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
 
             ...(search && {
                 OR: [

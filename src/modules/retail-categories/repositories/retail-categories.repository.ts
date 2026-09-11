@@ -10,10 +10,12 @@ export class RetailCategoriesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMany(query: RetailCategoryQueryDto) {
-        const { search, is_active, page, limit, sort_by, sort_order } = query;
+        const { search, is_active, is_deleted, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.RetailCategoryWhereInput = {
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
 
             ...(search && {
                 OR: [
@@ -125,5 +127,22 @@ export class RetailCategoriesRepository {
                 deleted_at: new Date(),
             },
         });
+    }
+
+    async hasProducts(id: string): Promise<boolean> {
+        const result = await this.prisma.retailCategory.findUnique({
+            where: { id },
+            select: {
+                _count: {
+                    select: {
+                        products: {
+                            where: { deleted_at: null },
+                        },
+                    },
+                },
+            },
+        });
+
+        return (result?._count?.products ?? 0) > 0;
     }
 }

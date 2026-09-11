@@ -7,7 +7,9 @@ import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
 export class RetailCategoriesService {
-    constructor(private readonly retailCategoryRepository: RetailCategoriesRepository) {}
+    constructor(
+        private readonly retailCategoryRepository: RetailCategoriesRepository,
+    ) {}
 
     async findMany(query: RetailCategoryQueryDto) {
         const { limit, page } = query;
@@ -57,6 +59,13 @@ export class RetailCategoriesService {
     async delete(id: string) {
         await this.findById(id);
 
+        const isInUse = await this.retailCategoryRepository.hasProducts(id);
+        if (isInUse) {
+            throw new ConflictException(MESSAGES.ERROR.IN_USE);
+        }
+
         await this.retailCategoryRepository.delete(id);
+
+        return { message: MESSAGES.SUCCESS.DELETED };
     }
 }

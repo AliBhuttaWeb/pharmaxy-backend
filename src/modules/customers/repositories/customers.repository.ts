@@ -14,12 +14,14 @@ export class CustomersRepository {
     };
 
     private buildWhere(pharmacyId: string, query: CustomerQueryDto): Prisma.CustomerWhereInput {
-        const { search, is_active, is_walk_in } = query;
+        const { search, is_active, is_walk_in, is_deleted } = query;
 
         return {
             pharmacy_id: pharmacyId,
 
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
 
             ...(search && {
                 OR: [

@@ -54,10 +54,13 @@ export class ProductTypesService {
     async delete(id: string) {
         await this.findById(id);
 
-        // Later:
-        // Check if any products are using this product type.
-        // If yes, throw ConflictException(MESSAGES.ERROR.IN_USE);
+        const isInUse = await this.productTypeRepository.hasProducts(id);
+        if (isInUse) {
+            throw new ConflictException(MESSAGES.ERROR.IN_USE);
+        }
 
         await this.productTypeRepository.delete(id);
+
+        return { message: MESSAGES.SUCCESS.DELETED };
     }
 }

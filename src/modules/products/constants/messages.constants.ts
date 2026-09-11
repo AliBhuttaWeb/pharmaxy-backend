@@ -16,5 +16,6 @@ export const MESSAGES = {
         RETAIL_CATEGORY_NOT_FOUND: 'Retail category not found.',
         DOSAGE_FORM_NOT_FOUND: 'Dosage form not found.',
         INSUFFIENT_STOCK: 'Insufficient stock.',
+        IN_USE: 'Product cannot be deleted because it is assigned to branch products.',
     },
 } as const;

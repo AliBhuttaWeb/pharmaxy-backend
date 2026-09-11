@@ -13,7 +13,7 @@ export class BranchesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async findMany(query: FindBranchesQueryDto) {
-        const { search, pharmacy_id, is_active, is_main, page, limit, sort_by, sort_order } = query;
+        const { search, pharmacy_id, is_active, is_main, is_deleted, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.BranchWhereInput = {
             ...(search && {
@@ -81,7 +81,9 @@ export class BranchesRepository {
                 is_main: is_main === 'true',
             }),
 
-            deleted_at: null,
+            ...(is_deleted !== undefined && {
+                deleted_at: is_deleted ? { not: null } : null,
+            }),
         };
 
         const sortableFields = [
