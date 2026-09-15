@@ -77,93 +77,93 @@ export const DEFAULT_ROLE_PERMISSIONS = {
     // =====================================================
 
     [ROLES.PHARMACY_ADMIN.name]: getSpecificPermissions(
-        // ...Object.values(permissions.DASHBOARD_PERMISSIONS),
+        ...Object.values(permissions.DASHBOARD_PERMISSIONS),
 
         // Pharmacy management
-        // permissions.PHARMACIES_PERMISSIONS.PHARMACY_CREATE,
-        // permissions.PHARMACIES_PERMISSIONS.PHARMACY_VIEW_DETAIL,
-        // permissions.PHARMACIES_PERMISSIONS.PHARMACY_UPDATE,
-        // permissions.PHARMACIES_PERMISSIONS.PHARMACY_UPDATE_STATUS,
+        permissions.PHARMACIES_PERMISSIONS.PHARMACY_CREATE,
+        permissions.PHARMACIES_PERMISSIONS.PHARMACY_VIEW_DETAIL,
+        permissions.PHARMACIES_PERMISSIONS.PHARMACY_UPDATE,
+        permissions.PHARMACIES_PERMISSIONS.PHARMACY_UPDATE_STATUS,
 
-        // // Branch
-        // ...Object.values(permissions.BRANCHES_PERMISSIONS),
+        // Branch
+        ...Object.values(permissions.BRANCHES_PERMISSIONS),
 
-        // // Inventory
-        // ...Object.values(permissions.BRANCH_PRODUCTS_PERMISSIONS),
+        // Inventory
+        ...Object.values(permissions.BRANCH_PRODUCTS_PERMISSIONS),
 
-        // ...Object.values(permissions.PRODUCT_BATCHES_PERMISSIONS),
+        ...Object.values(permissions.PRODUCT_BATCHES_PERMISSIONS),
 
-        // ...Object.values(permissions.STOCK_ADJUSTMENTS_PERMISSIONS),
+        ...Object.values(permissions.STOCK_ADJUSTMENTS_PERMISSIONS),
 
         //Staff
         ...Object.values(permissions.USERS_PERMISSIONS),
 
-        // // Customers
-        // ...Object.values(permissions.CUSTOMERS_PERMISSIONS),
+        // Customers
+        ...Object.values(permissions.CUSTOMERS_PERMISSIONS),
 
-        // // Suppliers
-        // ...Object.values(permissions.SUPPLIERS_PERMISSIONS),
+        // Suppliers
+        ...Object.values(permissions.SUPPLIERS_PERMISSIONS),
 
-        // // Purchase orders
-        // ...Object.values(permissions.PURCHASE_ORDERS_PERMISSIONS),
+        // Purchase orders
+        ...Object.values(permissions.PURCHASE_ORDERS_PERMISSIONS),
 
-        // // POS
-        // ...Object.values(permissions.POS_PERMISSIONS),
+        // POS
+        ...Object.values(permissions.POS_PERMISSIONS),
 
-        // // Sales
-        // ...Object.values(permissions.SALES_PERMISSIONS),
+        // Sales
+        ...Object.values(permissions.SALES_PERMISSIONS),
 
-        // // Returns
-        // ...Object.values(permissions.RETURNS_PERMISSIONS),
+        // Returns
+        ...Object.values(permissions.RETURNS_PERMISSIONS),
 
-        // // Nearby inventory
-        // ...Object.values(permissions.NEARBY_INVENTORIES_PERMISSIONS),
+        // Nearby inventory
+        ...Object.values(permissions.NEARBY_INVENTORIES_PERMISSIONS),
 
-        // // Reports
-        // ...Object.values(permissions.REPORTS_PERMISSIONS),
+        // Reports
+        ...Object.values(permissions.REPORTS_PERMISSIONS),
 
-        // // Settings
-        // ...Object.values(permissions.SETTINGS_PERMISSIONS),
+        // Settings
+        ...Object.values(permissions.SETTINGS_PERMISSIONS),
 
-        // // Subscription
-        // permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_CREATE,
-        // permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_DETAIL,
-        // permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_CANCEL,
-        // permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_RENEW,
-        // permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_UPGRADE,
-        // permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_DOWNGRADE,
+        // Subscription
+        permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_CREATE,
+        permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_DETAIL,
+        permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_CANCEL,
+        permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_RENEW,
+        permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_UPGRADE,
+        permissions.SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_DOWNGRADE,
 
-        // // Support
-        // permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_VIEW_LIST,
-        // permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_VIEW_DETAIL,
-        // permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_CREATE,
-        // permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_UPDATE,
+        // Support
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_VIEW_LIST,
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_VIEW_DETAIL,
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_CREATE,
+        permissions.SUPPORT_TICKETS_PERMISSIONS.SUPPORT_TICKET_UPDATE,
 
-        // ...Object.values(permissions.SUPPORT_TICKET_MESSAGES_PERMISSIONS),
+        ...Object.values(permissions.SUPPORT_TICKET_MESSAGES_PERMISSIONS),
 
-        // ...Object.values(permissions.SUPPORT_TICKET_ATTACHMENTS_PERMISSIONS),
+        ...Object.values(permissions.SUPPORT_TICKET_ATTACHMENTS_PERMISSIONS),
 
-        // ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
+        ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
 
-        // // Payment Providers
-        // permissions.PAYMENT_PROVIDERS_PERMISSIONS.PAYMENT_PROVIDER_VIEW_LIST,
+        // Payment Providers
+        permissions.PAYMENT_PROVIDERS_PERMISSIONS.PAYMENT_PROVIDER_VIEW_LIST,
 
-        // //Payment Methods
-        // permissions.PAYMENT_METHODS_PERMISSIONS.PAYMENT_METHOD_VIEW_LIST,
+        //Payment Methods
+        permissions.PAYMENT_METHODS_PERMISSIONS.PAYMENT_METHOD_VIEW_LIST,
 
-        // // Pharmacy Payment Methods
-        // ...Object.values(permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS),
+        // Pharmacy Payment Methods
+        ...Object.values(permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS),
 
-        // permissions.RETAIL_CATEGORIES_PERMISSIONS.RETAIL_CATEGORY_VIEW_LIST,
-        // permissions.PRODUCT_TYPES_PERMISSIONS.PRODUCT_TYPE_VIEW_LIST,
-        // permissions.DOSAGE_FORMS_PERMISSIONS.DOSAGE_FORM_VIEW_LIST,
-        // permissions.MANUFACTURERS_PERMISSIONS.MANUFACTURER_VIEW_LIST,
+        permissions.RETAIL_CATEGORIES_PERMISSIONS.RETAIL_CATEGORY_VIEW_LIST,
+        permissions.PRODUCT_TYPES_PERMISSIONS.PRODUCT_TYPE_VIEW_LIST,
+        permissions.DOSAGE_FORMS_PERMISSIONS.DOSAGE_FORM_VIEW_LIST,
+        permissions.MANUFACTURERS_PERMISSIONS.MANUFACTURER_VIEW_LIST,
 
-        // permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_LIST,
-        // permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_DETAIL,
+        permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_LIST,
+        permissions.PRODUCTS_PERMISSIONS.PRODUCT_VIEW_DETAIL,
 
-        // // Hold Orders
-        // ...Object.values(permissions.HOLD_ORDERS_PERMISSIONS),  
+        // Hold Orders
+        ...Object.values(permissions.HOLD_ORDERS_PERMISSIONS),  
 
         permissions.ROLES_PERMISSIONS.ROLE_ASSIGN_PERMISSION,
         permissions.ROLES_PERMISSIONS.VIEW_ROLE_PERMISSIONS_LIST,
@@ -176,40 +176,40 @@ export const DEFAULT_ROLE_PERMISSIONS = {
     [ROLES.CASHIER.name]: getSpecificPermissions(
         ...Object.values(permissions.DASHBOARD_PERMISSIONS),
 
-        // // POS
-        // ...Object.values(permissions.POS_PERMISSIONS),
+        // POS
+        ...Object.values(permissions.POS_PERMISSIONS),
 
-        // // Sales
-        // permissions.SALES_PERMISSIONS.SALE_VIEW_LIST,
-        // permissions.SALES_PERMISSIONS.SALE_VIEW_DETAIL,
+        // Sales
+        permissions.SALES_PERMISSIONS.SALE_VIEW_LIST,
+        permissions.SALES_PERMISSIONS.SALE_VIEW_DETAIL,
 
-        // // Customers
-        // ...Object.values(permissions.CUSTOMERS_PERMISSIONS),
+        // Customers
+        ...Object.values(permissions.CUSTOMERS_PERMISSIONS),
 
-        // // Returns
-        // ...Object.values(permissions.RETURNS_PERMISSIONS),
+        // Returns
+        ...Object.values(permissions.RETURNS_PERMISSIONS),
 
-        // // Inventory view
-        // permissions.BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_LIST,
+        // Inventory view
+        permissions.BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_LIST,
 
-        // permissions.BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_DETAIL,
+        permissions.BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_DETAIL,
 
-        // // Stock adjustment
-        // permissions.STOCK_ADJUSTMENTS_PERMISSIONS.STOCK_ADJUSTMENT_CREATE,
+        // Stock adjustment
+        permissions.STOCK_ADJUSTMENTS_PERMISSIONS.STOCK_ADJUSTMENT_CREATE,
 
-        // permissions.STOCK_ADJUSTMENTS_PERMISSIONS.STOCK_ADJUSTMENT_VIEW_LIST,
+        permissions.STOCK_ADJUSTMENTS_PERMISSIONS.STOCK_ADJUSTMENT_VIEW_LIST,
 
-        // permissions.STOCK_ADJUSTMENTS_PERMISSIONS.STOCK_ADJUSTMENT_VIEW_DETAIL,
+        permissions.STOCK_ADJUSTMENTS_PERMISSIONS.STOCK_ADJUSTMENT_VIEW_DETAIL,
 
-        // ...Object.values(permissions.NEARBY_INVENTORIES_PERMISSIONS),
+        ...Object.values(permissions.NEARBY_INVENTORIES_PERMISSIONS),
 
-        // ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
+        ...Object.values(permissions.NOTIFICATIONS_PERMISSIONS),
 
-        // // Pharmacy Payment Methods
-        // permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_VIEW_LIST,
+        // Pharmacy Payment Methods
+        permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_VIEW_LIST,
 
-        // // Hold Orders
-        // ...Object.values(permissions.HOLD_ORDERS_PERMISSIONS), 
+        // Hold Orders
+        ...Object.values(permissions.HOLD_ORDERS_PERMISSIONS), 
         
         
     ),
