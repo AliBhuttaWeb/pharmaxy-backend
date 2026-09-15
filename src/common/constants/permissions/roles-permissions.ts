@@ -19,8 +19,13 @@ export const ROLES_PERMISSIONS = {
         description: 'Delete roles',
     },
 
+    VIEW_ROLE_PERMISSIONS_LIST: {
+        name: 'roles.permissions.view.list',
+        description: 'View role permissions list',
+    },
+
     ROLE_ASSIGN_PERMISSION: {
-        name: 'roles.assign_permission',
+        name: 'roles.assign_permissions',
         description: 'Assign permissions to roles',
     },
 };
