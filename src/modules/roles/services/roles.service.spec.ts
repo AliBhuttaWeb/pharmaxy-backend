@@ -84,20 +84,10 @@ describe('RolesService', () => {
 
             const result = await service.getPermissions('parent-role-id');
 
-            expect(result.role_permissions).toEqual([perm1, perm2]);
-            expect(result.permissions).toEqual([perm1, perm2]);
-            expect(result.child_permissions).toEqual([perm2, perm3]);
-            expect(result.child_roles).toEqual([
-                {
-                    id: 'child-role-1',
-                    name: 'Cashier',
-                    description: 'Cashier role',
-                    role_scope: RoleScope.BRANCH,
-                    signup_scope: null,
-                    parent_id: 'parent-role-id',
-                    permissions: [perm2, perm3],
-                },
-            ]);
+            expect(result).toEqual({
+                role_permissions: [perm1, perm2],
+                child_permissions: [perm2, perm3],
+            });
         });
 
         it('should handle role with no children gracefully', async () => {
@@ -115,9 +105,10 @@ describe('RolesService', () => {
 
             const result = await service.getPermissions('role-leaf');
 
-            expect(result.role_permissions).toEqual([perm1]);
-            expect(result.child_permissions).toEqual([]);
-            expect(result.child_roles).toEqual([]);
+            expect(result).toEqual({
+                role_permissions: [perm1],
+                child_permissions: [],
+            });
         });
     });
 

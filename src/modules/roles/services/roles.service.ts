@@ -52,21 +52,9 @@ export class RolesService {
         }
         const childPermissions = Array.from(childPermissionsMap.values());
 
-        const childRoles = children.map((child) => ({
-            id: child.id,
-            name: child.name,
-            description: child.description,
-            role_scope: child.role_scope,
-            signup_scope: child.signup_scope,
-            parent_id: child.parent_id,
-            permissions: child.role_permissions.map(({ permission }) => permission),
-        }));
-
         return {
             role_permissions: rolePermissions,
             child_permissions: childPermissions,
-            child_roles: childRoles,
-            permissions: rolePermissions,
         };
     }
 

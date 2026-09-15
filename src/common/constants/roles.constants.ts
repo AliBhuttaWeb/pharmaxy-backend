@@ -5,6 +5,7 @@ export const ROLES = {
         name: 'Super Admin',
         description: 'Platform administrator',
         role_scope: RoleScope.GLOBAL,
+        parent: null,
     },
 
     PHARMACY_ADMIN: {
@@ -12,12 +13,14 @@ export const ROLES = {
         description: 'Administrator managing pharmacy operations',
         role_scope: RoleScope.PHARMACY,
         signup_scope: SignupScope.CONSOLE,
+        parent: 'Super Admin',
     },
 
     CASHIER: {
         name: 'Cashier',
         description: 'Handles sales and customer transactions',
         role_scope: RoleScope.PHARMACY,
+        parent: 'Pharmacy Admin',
     },
 
     SUPPLIER: {
@@ -25,6 +28,7 @@ export const ROLES = {
         description: 'Supplier portal user',
         role_scope: RoleScope.GLOBAL,
         signup_scope: SignupScope.CONSOLE,
+        parent: 'Super Admin',
     },
 
     USER: {
@@ -32,5 +36,6 @@ export const ROLES = {
         description: 'Default authenticated user',
         role_scope: RoleScope.GLOBAL,
         signup_scope: SignupScope.STORE,
+        parent: 'Super Admin',
     },
 } as const;
