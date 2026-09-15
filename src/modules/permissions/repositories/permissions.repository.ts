@@ -88,9 +88,10 @@ export class PermissionsRepository {
     }
 
     async findMany(query: FindPermissionsQueryDto) {
-        const { search, page, limit, sort_by, sort_order } = query;
+        const { search, module, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.PermissionWhereInput = {
+            ...(module && { module }),
             ...(search && {
                 OR: [
                     {
@@ -142,6 +143,33 @@ export class PermissionsRepository {
         };
     }
 
+    async findManyForGrouping(query?: FindPermissionsQueryDto) {
+        const where: Prisma.PermissionWhereInput = {};
+
+        if (query?.search) {
+            where.OR = [
+                { name: { contains: query.search, mode: 'insensitive' } },
+                { description: { contains: query.search, mode: 'insensitive' } },
+                { module: { contains: query.search, mode: 'insensitive' } },
+            ];
+        }
+
+        if (query?.module) {
+            where.module = { equals: query.module, mode: 'insensitive' };
+        }
+
+        return this.prisma.permission.findMany({
+            where,
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                module: true,
+            },
+            orderBy: [{ module: 'asc' }, { name: 'asc' }],
+        });
+    }
+
     findById(id: string) {
         return this.prisma.permission.findUnique({
             where: {
@@ -150,3 +178,4 @@ export class PermissionsRepository {
         });
     }
 }
+

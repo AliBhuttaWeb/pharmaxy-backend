@@ -152,6 +152,28 @@ describe('UsersService', () => {
             );
         });
 
+        it('should throw BadRequestException if branch_id is missing when creating branch-scoped user', async () => {
+            const dtoWithoutBranch = { ...createDto, branch_id: undefined };
+            const userWithoutBranch = { ...mockBranchAdminUser, branch_id: null };
+
+            await expect(service.create(dtoWithoutBranch as any, userWithoutBranch)).rejects.toThrow(
+                BadRequestException,
+            );
+        });
+
+        it('should throw BadRequestException if dto.branch_id is not provided even if currentUser has branch_id', async () => {
+            const dtoWithoutBranch = { ...createDto, branch_id: undefined };
+            mockRolesService.findById.mockResolvedValue({
+                id: 'role-cashier-id',
+                name: ROLES.CASHIER.name,
+                role_scope: RoleScope.BRANCH,
+            });
+
+            await expect(service.create(dtoWithoutBranch as any, mockBranchAdminUser)).rejects.toThrow(
+                BadRequestException,
+            );
+        });
+
         it('should create user, assign role, and sync permission overrides when valid', async () => {
             mockRolesService.findById.mockResolvedValue({
                 id: 'role-cashier-id',

@@ -8,6 +8,7 @@ import { MESSAGES } from '../constants/messages.constants';
 import { FindPermissionsQueryDto } from '../dtos';
 import { UserPermissionsService } from './user-permissions.service';
 import { RolePermissionsService } from './role-permissions.service';
+import { groupPermissionsByModule } from '../helpers/permissions.helper';
 
 @Injectable()
 export class PermissionsService {
@@ -134,8 +135,9 @@ export class PermissionsService {
         });
     }
 
-    list(query: FindPermissionsQueryDto) {
-        return this.permissionsRepository.findMany(query);
+    async list(query?: FindPermissionsQueryDto) {
+        const permissions = await this.permissionsRepository.findManyForGrouping(query);
+        return { permissions: groupPermissionsByModule(permissions) };
     }
 
     async get(id: string) {

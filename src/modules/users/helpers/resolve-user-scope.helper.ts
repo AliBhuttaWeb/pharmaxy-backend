@@ -14,16 +14,17 @@ export const resolveUserScope = (dto: CreateUserDto, currentUser: AuthenticatedU
             throw new ForbiddenException(MESSAGES.ERROR.BRANCH_SCOPED_USERS_ALLOWED_TO_BE_CREATED);
         }
 
-        if (!dto.pharmacy_id) {
+        const pharmacyId = dto.pharmacy_id ?? currentUser.pharmacy_id;
+        if (!pharmacyId) {
             throw new BadRequestException(BRANCH_MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
         }
 
-        if (!dto.branch_id && !currentUser.branch_id) {
+        if (!dto.branch_id) {
             throw new BadRequestException(BRANCH_MESSAGES.ERROR.BRANCH_ID_REQUIRED);
         }
 
         return {
-            pharmacyId: dto.pharmacy_id,
+            pharmacyId,
             branchId: dto.branch_id,
         };
     }
@@ -36,6 +37,9 @@ export const resolveUserScope = (dto: CreateUserDto, currentUser: AuthenticatedU
     }
 
     if (dto.role_scope === ROLE_SCOPES.PHARMACY) {
+        if (!dto.pharmacy_id) {
+            throw new BadRequestException(BRANCH_MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
+        }
         return {
             pharmacyId: dto.pharmacy_id,
             branchId: undefined,
@@ -43,6 +47,14 @@ export const resolveUserScope = (dto: CreateUserDto, currentUser: AuthenticatedU
     }
 
     if (dto.role_scope === ROLE_SCOPES.BRANCH) {
+        if (!dto.pharmacy_id) {
+            throw new BadRequestException(BRANCH_MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
+        }
+
+        if (!dto.branch_id) {
+            throw new BadRequestException(BRANCH_MESSAGES.ERROR.BRANCH_ID_REQUIRED);
+        }
+
         return {
             pharmacyId: dto.pharmacy_id,
             branchId: dto.branch_id,

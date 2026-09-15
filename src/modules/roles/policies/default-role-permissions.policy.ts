@@ -70,6 +70,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
 
         // Payment Methods
         ...Object.values(permissions.PAYMENT_METHODS_PERMISSIONS),
+
+        // Permissions
+        ...Object.values(permissions.PERMISSIONS_PERMISSIONS)
     ),
 
     // =====================================================

@@ -88,17 +88,16 @@ describe('RolesService', () => {
 
     describe('getPermissions', () => {
         it('should throw NotFoundException if role not found', async () => {
-            mockRolesRepository.findRoleAndDescendantsWithPermissions.mockResolvedValue(null);
+            mockRolesRepository.findByIdWithPermissions.mockResolvedValue(null);
 
             await expect(service.getPermissions('role-1')).rejects.toThrow(
                 new NotFoundException(MESSAGES.ERROR.NOT_FOUND),
             );
         });
 
-        it('should return role_permissions and child_permissions as separate objects', async () => {
-            const perm1 = { id: 'p1', name: 'sales.view', description: 'View sales' };
-            const perm2 = { id: 'p2', name: 'pos.create', description: 'Create pos' };
-            const perm3 = { id: 'p3', name: 'reports.view', description: 'View reports' };
+        it('should return role permissions grouped by module name', async () => {
+            const perm1 = { id: 'p1', name: 'sales.view', description: 'View sales', module: 'Sales' };
+            const perm2 = { id: 'p2', name: 'pos.create', description: 'Create pos', module: 'Point of Sale' };
 
             const role = {
                 id: 'parent-role-id',
@@ -112,51 +111,34 @@ describe('RolesService', () => {
                 ],
             };
 
-            const childRole1 = {
-                id: 'child-role-1',
-                name: 'Cashier',
-                description: 'Cashier role',
-                role_scope: RoleScope.BRANCH,
-                signup_scope: null,
-                parent_id: 'parent-role-id',
-                role_permissions: [
-                    { permission: perm2 },
-                    { permission: perm3 },
-                ],
-            };
-
-            mockRolesRepository.findRoleAndDescendantsWithPermissions.mockResolvedValue({
-                role,
-                children: [childRole1],
-            });
+            mockRolesRepository.findByIdWithPermissions.mockResolvedValue(role);
 
             const result = await service.getPermissions('parent-role-id');
 
             expect(result).toEqual({
-                role_permissions: [perm1, perm2],
-                child_permissions: [perm2, perm3],
+                permissions: {
+                    'Point of Sale': [
+                        { id: 'p2', name: 'pos.create', description: 'Create pos' },
+                    ],
+                    Sales: [
+                        { id: 'p1', name: 'sales.view', description: 'View sales' },
+                    ],
+                },
             });
         });
 
-        it('should handle role with no children gracefully', async () => {
-            const perm1 = { id: 'p1', name: 'user.view' };
+        it('should handle role with no permissions gracefully', async () => {
             const role = {
                 id: 'role-leaf',
                 name: 'Leaf Role',
-                role_permissions: [{ permission: perm1 }],
+                role_permissions: [],
             };
 
-            mockRolesRepository.findRoleAndDescendantsWithPermissions.mockResolvedValue({
-                role,
-                children: [],
-            });
+            mockRolesRepository.findByIdWithPermissions.mockResolvedValue(role);
 
             const result = await service.getPermissions('role-leaf');
 
-            expect(result).toEqual({
-                role_permissions: [perm1],
-                child_permissions: [],
-            });
+            expect(result).toEqual({ permissions: {} });
         });
     });
 

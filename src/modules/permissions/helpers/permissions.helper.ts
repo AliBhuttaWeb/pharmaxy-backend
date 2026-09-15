@@ -29,3 +29,43 @@ export function getPermissionNames(...permissionGroups: Record<string, { name: s
 export function getSpecificPermissions(...permissionList: { name: string }[]) {
     return permissionList;
 }
+
+export interface PermissionItem {
+    id: string;
+    name: string;
+    description: string | null;
+    module: string;
+}
+
+export interface GroupedPermissionItem {
+    id: string;
+    name: string;
+    description: string | null;
+}
+
+export type GroupedPermissions = Record<string, GroupedPermissionItem[]>;
+
+export function groupPermissionsByModule(permissions: PermissionItem[]): GroupedPermissions {
+    const sorted = [...permissions].sort((a, b) => {
+        const moduleCompare = a.module.localeCompare(b.module);
+        if (moduleCompare !== 0) return moduleCompare;
+        return a.name.localeCompare(b.name);
+    });
+
+    const grouped: GroupedPermissions = {};
+
+    for (const permission of sorted) {
+        const moduleName = permission.module;
+        if (!grouped[moduleName]) {
+            grouped[moduleName] = [];
+        }
+        grouped[moduleName].push({
+            id: permission.id,
+            name: permission.name,
+            description: permission.description,
+        });
+    }
+
+    return grouped;
+}
+

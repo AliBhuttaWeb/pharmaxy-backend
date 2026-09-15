@@ -12,8 +12,11 @@ export class PermissionDto {
     })
     description!: string | null;
 
-    @ApiProperty()
-    group!: string;
+    @ApiProperty({
+        example: 'Users',
+    })
+    module!: string;
+
 
     @ApiProperty()
     created_at!: Date;

@@ -7,6 +7,7 @@ import { FindRolesQueryDto, UpdateRolePermissionsDto } from '../dtos';
 import { RolesRepository } from '../repositories/roles.repository';
 import { buildPaginationMeta } from '@/common/pagination';
 import type { AuthenticatedUser } from '@/modules/auth/types';
+import { groupPermissionsByModule } from '@/modules/permissions/helpers/permissions.helper';
 
 @Injectable()
 export class RolesService {
@@ -61,30 +62,15 @@ export class RolesService {
     }
 
     async getPermissions(roleId: string) {
-        const result = await this.rolesRepository.findRoleAndDescendantsWithPermissions(roleId);
+        const role = await this.rolesRepository.findByIdWithPermissions(roleId);
 
-        if (!result) {
+        if (!role) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        const { role, children } = result;
+        const permissions = role.role_permissions.map(({ permission }) => permission);
 
-        const rolePermissions = role.role_permissions.map(({ permission }) => permission);
-
-        const childPermissionsMap = new Map<string, (typeof rolePermissions)[number]>();
-        for (const child of children) {
-            for (const { permission } of child.role_permissions) {
-                if (!childPermissionsMap.has(permission.id)) {
-                    childPermissionsMap.set(permission.id, permission);
-                }
-            }
-        }
-        const childPermissions = Array.from(childPermissionsMap.values());
-
-        return {
-            role_permissions: rolePermissions,
-            child_permissions: childPermissions,
-        };
+        return { permissions: groupPermissionsByModule(permissions) };
     }
 
     async replacePermissions(roleId: string, dto: UpdateRolePermissionsDto) {

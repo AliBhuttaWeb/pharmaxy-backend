@@ -202,13 +202,24 @@ export class RolesRepository {
             return false;
         }
 
+        let effectiveRoleIds = parentRoleIds;
+        const userRoles = await this.prisma.userRole.findMany({
+            where: { id: { in: parentRoleIds } },
+            select: { role_id: true },
+        });
+        if (userRoles.length > 0) {
+            effectiveRoleIds = [
+                ...new Set([...parentRoleIds, ...userRoles.map((ur) => ur.role_id)]),
+            ];
+        }
+
         // A role cannot be a child of itself
-        if (parentRoleIds.includes(targetRole.id)) {
+        if (effectiveRoleIds.includes(targetRole.id)) {
             return false;
         }
 
-        // Fast-path: if direct parent matches, return true immediately (0 DB queries)
-        if (targetRole.parent_id && parentRoleIds.includes(targetRole.parent_id)) {
+        // Fast-path: if direct parent matches, return true immediately
+        if (targetRole.parent_id && effectiveRoleIds.includes(targetRole.parent_id)) {
             return true;
         }
 
@@ -232,7 +243,7 @@ export class RolesRepository {
         let currentParentId: string | null = targetRole.parent_id;
 
         while (currentParentId && !visited.has(currentParentId)) {
-            if (parentRoleIds.includes(currentParentId)) {
+            if (effectiveRoleIds.includes(currentParentId)) {
                 return true;
             }
             visited.add(currentParentId);
@@ -245,6 +256,17 @@ export class RolesRepository {
     async findChildRoleIds(parentRoleIds: string[]): Promise<string[]> {
         if (!parentRoleIds.length) {
             return [];
+        }
+
+        let effectiveRoleIds = parentRoleIds;
+        const userRoles = await this.prisma.userRole.findMany({
+            where: { id: { in: parentRoleIds } },
+            select: { role_id: true },
+        });
+        if (userRoles.length > 0) {
+            effectiveRoleIds = [
+                ...new Set([...parentRoleIds, ...userRoles.map((ur) => ur.role_id)]),
+            ];
         }
 
         // Single lightweight query to load role parent mappings
@@ -262,7 +284,7 @@ export class RolesRepository {
         }
 
         const childRoleIds = new Set<string>();
-        const queue = [...parentRoleIds];
+        const queue = [...effectiveRoleIds];
 
         while (queue.length > 0) {
             const currentId = queue.shift()!;
