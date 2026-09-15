@@ -28,10 +28,7 @@ export class PaymentMethodsConsoleController {
 
     @Patch(':id')
     @Permissions(PAYMENT_METHODS_PERMISSIONS.PAYMENT_METHOD_UPDATE.name)
-    update(
-        @Param('id', new ParseUUIDPipe()) id: string,
-        @Body() dto: UpdatePaymentMethodDto,
-    ) {
+    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdatePaymentMethodDto) {
         return this.paymentMethodsService.update(id, dto);
     }
 

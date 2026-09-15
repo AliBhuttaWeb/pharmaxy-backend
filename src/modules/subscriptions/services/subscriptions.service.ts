@@ -51,7 +51,9 @@ export class SubscriptionsService {
             throw new ConflictException(MESSAGES.ERROR.ACTIVE_SUBSCRIPTION_ALREADY_EXISTS);
         }
 
-        const { subscriptionPlan: plan } = await this.subscriptionPlansService.findById(dto.subscription_plan_id);
+        const { subscriptionPlan: plan } = await this.subscriptionPlansService.findById(
+            dto.subscription_plan_id,
+        );
 
         const startedAt = dto.started_at ? new Date(dto.started_at) : new Date();
 

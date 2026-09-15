@@ -77,7 +77,8 @@ export class CustomersRepository {
         sort_order: Prisma.SortOrder = 'desc',
     ): Prisma.CustomerOrderByWithRelationInput {
         return {
-            [(sort_by ?? 'created_at') as keyof Prisma.CustomerOrderByWithRelationInput]: sort_order,
+            [(sort_by ?? 'created_at') as keyof Prisma.CustomerOrderByWithRelationInput]:
+                sort_order,
         };
     }
 

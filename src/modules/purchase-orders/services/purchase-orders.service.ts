@@ -182,7 +182,10 @@ export class PurchaseOrdersService {
             }),
         };
 
-        const updatedPurchaseOrder = await this.purchaseOrdersRepository.update(purchaseOrder.id, data);
+        const updatedPurchaseOrder = await this.purchaseOrdersRepository.update(
+            purchaseOrder.id,
+            data,
+        );
 
         return {
             purchaseOrder: updatedPurchaseOrder,

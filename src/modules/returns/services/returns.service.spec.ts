@@ -17,10 +17,7 @@ describe('ReturnsService', () => {
             cancel: jest.fn(),
         };
 
-        service = new ReturnsService(
-            mockPrisma,
-            mockReturnsRepo,
-        );
+        service = new ReturnsService(mockPrisma, mockReturnsRepo);
     });
 
     describe('cancel', () => {

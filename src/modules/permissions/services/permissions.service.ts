@@ -182,6 +182,6 @@ export class PermissionsService {
             }
         }
 
-        return {permissions: [...permissions]};
+        return { permissions: [...permissions] };
     }
 }

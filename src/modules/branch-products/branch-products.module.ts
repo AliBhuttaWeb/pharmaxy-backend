@@ -11,11 +11,7 @@ import { BranchProductsService } from './services/branch-products.service';
 
     controllers: [BranchProductsConsoleController],
 
-    providers: [
-        BranchProductsRepository,
-        ProductBatchesRepository,
-        BranchProductsService,
-    ],
+    providers: [BranchProductsRepository, ProductBatchesRepository, BranchProductsService],
 
     exports: [BranchProductsRepository, ProductBatchesRepository],
 })

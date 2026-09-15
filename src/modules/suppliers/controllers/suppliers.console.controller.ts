@@ -42,7 +42,10 @@ export class SuppliersConsoleController {
 
     @Patch(':id/status')
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_UPDATE.name)
-    updateStatus(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateSupplierStatusDto) {
+    updateStatus(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateSupplierStatusDto,
+    ) {
         return this.suppliersService.updateStatus(id, dto);
     }
 

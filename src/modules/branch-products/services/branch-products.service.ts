@@ -132,7 +132,11 @@ export class BranchProductsService {
                 tx,
             );
 
-            const created = await this.branchProductsRepository.findById(branchProduct.id, branchId, tx);
+            const created = await this.branchProductsRepository.findById(
+                branchProduct.id,
+                branchId,
+                tx,
+            );
             return {
                 branchProduct: created,
                 message: MESSAGES.SUCCESS.CREATED,

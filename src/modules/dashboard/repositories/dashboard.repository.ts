@@ -361,7 +361,9 @@ export class DashboardRepository {
                 total_revenue: 0,
             };
             current.quantity_sold += item.quantity;
-            current.total_revenue = Number((current.total_revenue + Number(item.line_total)).toFixed(2));
+            current.total_revenue = Number(
+                (current.total_revenue + Number(item.line_total)).toFixed(2),
+            );
             productMap.set(item.product_id, current);
         }
 

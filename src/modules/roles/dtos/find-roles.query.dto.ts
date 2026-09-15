@@ -21,5 +21,3 @@ export class FindRolesQueryDto extends PaginationQueryDto {
     @IsUUID()
     parent_role_id?: string;
 }
-
-

@@ -64,5 +64,3 @@ export class UpdateUserDto {
     @IsBoolean()
     permissions_modified?: boolean;
 }
-
-

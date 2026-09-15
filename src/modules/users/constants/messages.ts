@@ -22,4 +22,3 @@ export const MESSAGES = {
             'Assigned permissions must belong to your role or its child roles.',
     },
 } as const;
-

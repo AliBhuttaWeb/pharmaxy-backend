@@ -11,4 +11,3 @@ export class FindPermissionsQueryDto extends PaginationQueryDto {
     @IsString()
     module?: string;
 }
-

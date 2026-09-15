@@ -3,11 +3,7 @@ import { Prisma } from '@gen/prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 
-import {
-    BranchProductQueryDto,
-    BranchProductFieldsDto,
-    UpdateBranchProductDto,
-} from '../dtos';
+import { BranchProductQueryDto, BranchProductFieldsDto, UpdateBranchProductDto } from '../dtos';
 
 @Injectable()
 export class BranchProductsRepository {

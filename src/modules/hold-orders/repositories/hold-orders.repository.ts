@@ -129,10 +129,7 @@ export class HoldOrdersRepository {
                 },
                 hold_order: {
                     branch_id: branchId,
-                    OR: [
-                        { expires_at: null },
-                        { expires_at: { gt: now } },
-                    ],
+                    OR: [{ expires_at: null }, { expires_at: { gt: now } }],
                 },
             },
             select: {

@@ -1,8 +1,4 @@
-import {
-    BadRequestException,
-    ForbiddenException,
-    NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { MESSAGES } from '../constants';
 import { RoleScope, UserStatus } from '@gen/prisma/enums';
@@ -93,7 +89,9 @@ describe('UsersService', () => {
         mockRolesService = {
             findById: jest.fn(),
             isChildRole: jest.fn().mockResolvedValue(true),
-            getSelfAndChildRoleIds: jest.fn().mockResolvedValue(['role-branch-admin-id', 'role-cashier-id']),
+            getSelfAndChildRoleIds: jest
+                .fn()
+                .mockResolvedValue(['role-branch-admin-id', 'role-cashier-id']),
         };
 
         service = new UsersService(
@@ -158,9 +156,9 @@ describe('UsersService', () => {
             const dtoWithoutBranch = { ...createDto, branch_id: undefined };
             const userWithoutBranch = { ...mockBranchAdminUser, branch_id: null };
 
-            await expect(service.create(dtoWithoutBranch as any, userWithoutBranch)).rejects.toThrow(
-                BadRequestException,
-            );
+            await expect(
+                service.create(dtoWithoutBranch as any, userWithoutBranch),
+            ).rejects.toThrow(BadRequestException);
         });
 
         it('should throw BadRequestException if dto.branch_id is not provided even if currentUser has branch_id', async () => {
@@ -171,9 +169,9 @@ describe('UsersService', () => {
                 role_scope: RoleScope.BRANCH,
             });
 
-            await expect(service.create(dtoWithoutBranch as any, mockBranchAdminUser)).rejects.toThrow(
-                BadRequestException,
-            );
+            await expect(
+                service.create(dtoWithoutBranch as any, mockBranchAdminUser),
+            ).rejects.toThrow(BadRequestException);
         });
 
         it('should throw ForbiddenException if permission_ids contains unauthorized permissions', async () => {
@@ -306,7 +304,10 @@ describe('UsersService', () => {
                 permissions_modified: true,
             });
 
-            expect(mockUsersRepository.deleteUserRoles).toHaveBeenCalledWith('user-1', expect.anything());
+            expect(mockUsersRepository.deleteUserRoles).toHaveBeenCalledWith(
+                'user-1',
+                expect.anything(),
+            );
             expect(mockUsersRepository.createUserRole).toHaveBeenCalledWith(
                 'user-1',
                 'new-role-id',
@@ -326,11 +327,7 @@ describe('UsersService', () => {
             mockRolesService.isChildRole.mockResolvedValue(false);
 
             await expect(
-                service.update(
-                    'user-1',
-                    { role_id: 'new-role-id' },
-                    mockBranchAdminUser,
-                ),
+                service.update('user-1', { role_id: 'new-role-id' }, mockBranchAdminUser),
             ).rejects.toThrow(new ForbiddenException(MESSAGES.ERROR.ROLE_MUST_BE_CHILD));
         });
 
@@ -348,4 +345,3 @@ describe('UsersService', () => {
         });
     });
 });
-

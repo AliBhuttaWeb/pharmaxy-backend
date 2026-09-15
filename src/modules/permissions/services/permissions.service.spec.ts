@@ -61,7 +61,6 @@ describe('PermissionsService', () => {
         });
     });
 
-
     describe('get', () => {
         it('should throw NotFoundException if permission not found', async () => {
             mockPermissionsRepository.findById.mockResolvedValue(null);

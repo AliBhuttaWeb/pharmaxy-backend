@@ -17,10 +17,7 @@ export class SettingsConsoleController {
 
     @Patch()
     @Permissions(SETTINGS_PERMISSIONS.SETTINGS_UPDATE.name)
-    update(
-        @CurrentUser() user: AuthenticatedUser,
-        @Body() dto: UpdateSettingsDto,
-    ) {
+    update(@CurrentUser() user: AuthenticatedUser, @Body() dto: UpdateSettingsDto) {
         return this.settingsService.updateSettings(user, dto);
     }
 }

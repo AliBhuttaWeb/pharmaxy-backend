@@ -36,7 +36,11 @@ export class BranchProductsConsoleController {
 
     @Patch(':id')
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_UPDATE.name)
-    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateBranchProductDto, @CurrentUser() user: AuthenticatedUser) {
+    update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateBranchProductDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
         return this.branchProductsService.update(id, dto, user);
     }
 
@@ -48,7 +52,11 @@ export class BranchProductsConsoleController {
 
     @Post(':id/receive-stock')
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_UPDATE.name)
-    receiveStock(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: ReceiveStockDto, @CurrentUser() user: AuthenticatedUser) {
+    receiveStock(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: ReceiveStockDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
         return this.branchProductsService.receiveStock(id, dto, user);
     }
 

@@ -19,10 +19,7 @@ export class RolesConsoleController {
     }
 
     @Get('me/children')
-    getMyChildren(
-        @CurrentUser() user: AuthenticatedUser,
-        @Query() query: FindRolesQueryDto,
-    ) {
+    getMyChildren(@CurrentUser() user: AuthenticatedUser, @Query() query: FindRolesQueryDto) {
         return this.rolesService.getChildRoles(user, query);
     }
 

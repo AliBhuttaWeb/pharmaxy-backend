@@ -134,7 +134,10 @@ export class SubscriptionPlansService {
 
     async updateStatus(id: string, dto: UpdateSubscriptionPlanStatusDto) {
         await this.findById(id);
-        const subscriptionPlan = await this.subscriptionPlansRepository.updateStatus(id, dto.is_active);
+        const subscriptionPlan = await this.subscriptionPlansRepository.updateStatus(
+            id,
+            dto.is_active,
+        );
         return {
             subscriptionPlan,
             message: dto.is_active

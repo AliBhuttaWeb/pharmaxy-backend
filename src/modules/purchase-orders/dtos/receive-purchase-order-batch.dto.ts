@@ -1,5 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsInt, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import {
+    IsDateString,
+    IsInt,
+    IsNumber,
+    IsOptional,
+    IsString,
+    MaxLength,
+    Min,
+} from 'class-validator';
 
 export class ReceivePurchaseOrderBatchDto {
     @ApiProperty()

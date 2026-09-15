@@ -348,5 +348,3 @@ export class RolesRepository {
         return Array.from(new Set([...effectiveRoleIds, ...childRoleIds]));
     }
 }
-
-

@@ -47,7 +47,10 @@ describe('RetailCategoriesService', () => {
         it('should delete and return success message when retail category exists and not in use', async () => {
             mockRetailCategoriesRepo.findById.mockResolvedValue({ id: 'cat-1', name: 'OTC' });
             mockProductsService.existsByRetailCategory.mockResolvedValue(false);
-            mockRetailCategoriesRepo.delete.mockResolvedValue({ id: 'cat-1', deleted_at: new Date() });
+            mockRetailCategoriesRepo.delete.mockResolvedValue({
+                id: 'cat-1',
+                deleted_at: new Date(),
+            });
 
             const result = await service.delete('cat-1');
 

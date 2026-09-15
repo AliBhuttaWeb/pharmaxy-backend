@@ -21,28 +21,19 @@ export class PharmacyPaymentMethodsController {
 
     @Get()
     @Permissions(PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_VIEW_LIST.name)
-    list(
-        @CurrentUser() user: AuthenticatedUser,
-        @Query() query: PharmacyPaymentMethodQueryDto,
-    ) {
+    list(@CurrentUser() user: AuthenticatedUser, @Query() query: PharmacyPaymentMethodQueryDto) {
         return this.pharmacyPaymentMethodsService.list(user, query);
     }
 
     @Get(':id')
     @Permissions(PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_VIEW_DETAIL.name)
-    findById(
-        @Param('id', new ParseUUIDPipe()) id: string,
-        @CurrentUser() user: AuthenticatedUser,
-    ) {
+    findById(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
         return this.pharmacyPaymentMethodsService.findById(id, user);
     }
 
     @Post()
     @Permissions(PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_CREATE.name)
-    create(
-        @Body() dto: CreatePharmacyPaymentMethodDto,
-        @CurrentUser() user: AuthenticatedUser,
-    ) {
+    create(@Body() dto: CreatePharmacyPaymentMethodDto, @CurrentUser() user: AuthenticatedUser) {
         return this.pharmacyPaymentMethodsService.create(dto, user);
     }
 
@@ -68,10 +59,7 @@ export class PharmacyPaymentMethodsController {
 
     @Delete(':id')
     @Permissions(PHARMACY_PAYMENT_METHODS_PERMISSIONS.PHARMACY_PAYMENT_METHOD_DELETE.name)
-    remove(
-        @Param('id', new ParseUUIDPipe()) id: string,
-        @CurrentUser() user: AuthenticatedUser,
-    ) {
+    remove(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
         return this.pharmacyPaymentMethodsService.remove(id, user);
     }
 }

@@ -30,4 +30,3 @@ export class DashboardService {
         return this.dashboardRepository.overview(branchId, days, userId);
     }
 }
-

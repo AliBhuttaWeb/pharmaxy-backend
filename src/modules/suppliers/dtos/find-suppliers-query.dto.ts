@@ -5,7 +5,6 @@ import { PaginationQueryDto } from '@/common/pagination';
 import { SupplierStatus } from '@gen/prisma/client';
 
 export class FindSuppliersQueryDto extends PaginationQueryDto {
-
     @ApiPropertyOptional({
         enum: SupplierStatus,
     })

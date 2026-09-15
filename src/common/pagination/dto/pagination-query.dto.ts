@@ -5,14 +5,18 @@ import { IsBoolean, IsIn, IsInt, IsOptional, IsString, IsUUID, Max, Min } from '
 export class PaginationQueryDto {
     @ApiPropertyOptional({ description: 'Page number (starts from 1)' })
     @IsOptional()
-    @Transform(({ value }) => (value !== undefined && value !== null && value !== '' ? Number(value) : undefined))
+    @Transform(({ value }) =>
+        value !== undefined && value !== null && value !== '' ? Number(value) : undefined,
+    )
     @IsInt()
     @Min(1)
     page?: number;
 
     @ApiPropertyOptional({ description: 'Number of records per page' })
     @IsOptional()
-    @Transform(({ value }) => (value !== undefined && value !== null && value !== '' ? Number(value) : undefined))
+    @Transform(({ value }) =>
+        value !== undefined && value !== null && value !== '' ? Number(value) : undefined,
+    )
     @IsInt()
     @Min(1)
     @Max(100)
@@ -44,7 +48,8 @@ export class PaginationQueryDto {
     branch_id?: string;
 
     @ApiPropertyOptional({
-        description: 'Filter by soft-deleted status (true for deleted only, false for active only). Omit to get all.',
+        description:
+            'Filter by soft-deleted status (true for deleted only, false for active only). Omit to get all.',
         example: false,
     })
     @IsOptional()

@@ -3,7 +3,11 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { AuthenticatedUser } from '@/modules/auth/types/authenticated-user.type';
 import { getActivePharmacyId } from '@/common/helpers/auth.helper';
 
-import { CreatePharmacyPaymentMethodDto, PharmacyPaymentMethodQueryDto, UpdatePharmacyPaymentMethodDto } from '../dtos';
+import {
+    CreatePharmacyPaymentMethodDto,
+    PharmacyPaymentMethodQueryDto,
+    UpdatePharmacyPaymentMethodDto,
+} from '../dtos';
 import { PharmacyPaymentMethodsRepository } from '../repositories/pharmacy-payment-methods.repository';
 import { PaymentMethodsRepository } from '@/modules/payment-methods/repositories/payment-methods.repository';
 import { MESSAGES } from '../constants/messages.constants';
@@ -83,17 +87,17 @@ export class PharmacyPaymentMethodsService {
         };
     }
 
-    async update(
-        id: string,
-        dto: UpdatePharmacyPaymentMethodDto,
-        user: AuthenticatedUser,
-    ) {
+    async update(id: string, dto: UpdatePharmacyPaymentMethodDto, user: AuthenticatedUser) {
         const pharmacyId = getActivePharmacyId(user);
         await this.findById(id, user);
 
-        const pharmacyPaymentMethod = await this.pharmacyPaymentMethodsRepository.update(id, pharmacyId, {
-            display_order: dto.display_order,
-        });
+        const pharmacyPaymentMethod = await this.pharmacyPaymentMethodsRepository.update(
+            id,
+            pharmacyId,
+            {
+                display_order: dto.display_order,
+            },
+        );
 
         return {
             pharmacyPaymentMethod,
@@ -105,7 +109,11 @@ export class PharmacyPaymentMethodsService {
         const pharmacyId = getActivePharmacyId(user);
         await this.findById(id, user);
 
-        const pharmacyPaymentMethod = await this.pharmacyPaymentMethodsRepository.updateStatus(id, pharmacyId, isActive);
+        const pharmacyPaymentMethod = await this.pharmacyPaymentMethodsRepository.updateStatus(
+            id,
+            pharmacyId,
+            isActive,
+        );
 
         return {
             pharmacyPaymentMethod,

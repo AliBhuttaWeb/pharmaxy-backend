@@ -45,5 +45,3 @@ export async function seedPermissions({ prisma }: SeedContext) {
 
     console.log(MESSAGES.SUCCESS.PERMISSIONS_SEEDED);
 }
-
-

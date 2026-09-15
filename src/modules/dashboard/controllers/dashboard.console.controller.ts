@@ -15,10 +15,7 @@ export class DashboardConsoleController {
 
     @Get()
     @Permissions(DASHBOARD_PERMISSIONS.DASHBOARD_VIEW.name)
-    overview(
-        @CurrentUser() user: AuthenticatedUser,
-        @Query() query: DashboardQueryDto,
-    ) {
+    overview(@CurrentUser() user: AuthenticatedUser, @Query() query: DashboardQueryDto) {
         return this.dashboardService.overview(user, query);
     }
 }

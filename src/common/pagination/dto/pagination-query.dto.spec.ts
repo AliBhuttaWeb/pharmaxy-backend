@@ -3,7 +3,10 @@ import { validate } from 'class-validator';
 import { PaginationQueryDto } from './pagination-query.dto';
 
 describe('PaginationQueryDto', () => {
-    async function transformAndValidate<T extends object>(cls: new () => T, plain: any): Promise<T> {
+    async function transformAndValidate<T extends object>(
+        cls: new () => T,
+        plain: any,
+    ): Promise<T> {
         const instance = plainToInstance(cls, plain);
         const errors = await validate(instance);
         expect(errors).toHaveLength(0);

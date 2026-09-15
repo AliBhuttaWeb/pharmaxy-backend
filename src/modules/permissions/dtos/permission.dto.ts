@@ -17,7 +17,6 @@ export class PermissionDto {
     })
     module!: string;
 
-
     @ApiProperty()
     created_at!: Date;
 

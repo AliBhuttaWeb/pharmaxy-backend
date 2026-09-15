@@ -196,11 +196,7 @@ export class ReturnsRepository {
         });
     }
 
-    updateInvoiceStatus(
-        invoiceId: string,
-        status: InvoiceStatus,
-        tx?: Prisma.TransactionClient,
-    ) {
+    updateInvoiceStatus(invoiceId: string, status: InvoiceStatus, tx?: Prisma.TransactionClient) {
         return this.prisma.getClient(tx).invoice.update({
             where: {
                 id: invoiceId,

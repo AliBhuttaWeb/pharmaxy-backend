@@ -52,10 +52,9 @@ describe('RolesService', () => {
             const result = await service.getChildRoles(user, { page: 1, limit: 10 });
 
             expect(mockRolesRepository.findChildRoleIds).toHaveBeenCalledWith(['parent-role-id']);
-            expect(mockRolesRepository.findMany).toHaveBeenCalledWith(
-                { page: 1, limit: 10 },
-                ['child-role-id'],
-            );
+            expect(mockRolesRepository.findMany).toHaveBeenCalledWith({ page: 1, limit: 10 }, [
+                'child-role-id',
+            ]);
             expect(result.records).toEqual(childRoles);
         });
     });
@@ -98,8 +97,18 @@ describe('RolesService', () => {
         });
 
         it('should return role permissions grouped by module name', async () => {
-            const perm1 = { id: 'p1', name: 'sales.view', description: 'View sales', module: 'Sales' };
-            const perm2 = { id: 'p2', name: 'pos.create', description: 'Create pos', module: 'Point of Sale' };
+            const perm1 = {
+                id: 'p1',
+                name: 'sales.view',
+                description: 'View sales',
+                module: 'Sales',
+            };
+            const perm2 = {
+                id: 'p2',
+                name: 'pos.create',
+                description: 'Create pos',
+                module: 'Point of Sale',
+            };
 
             const role = {
                 id: 'parent-role-id',
@@ -107,10 +116,7 @@ describe('RolesService', () => {
                 role_scope: RoleScope.PHARMACY,
                 signup_scope: null,
                 parent_id: null,
-                role_permissions: [
-                    { permission: perm1 },
-                    { permission: perm2 },
-                ],
+                role_permissions: [{ permission: perm1 }, { permission: perm2 }],
             };
 
             mockRolesRepository.findByIdWithPermissions.mockResolvedValue(role);
@@ -119,12 +125,8 @@ describe('RolesService', () => {
 
             expect(result).toEqual({
                 permissions: {
-                    'Point of Sale': [
-                        { id: 'p2', name: 'pos.create', description: 'Create pos' },
-                    ],
-                    Sales: [
-                        { id: 'p1', name: 'sales.view', description: 'View sales' },
-                    ],
+                    'Point of Sale': [{ id: 'p2', name: 'pos.create', description: 'Create pos' }],
+                    Sales: [{ id: 'p1', name: 'sales.view', description: 'View sales' }],
                 },
             });
         });
@@ -148,7 +150,10 @@ describe('RolesService', () => {
             mockRolesRepository.findByIdWithPermissions.mockResolvedValue(role);
             mockRolesRepository.isSelfOrChildRole.mockResolvedValue(false);
 
-            const currentUser = { id: 'u1', roles: [{ id: 'branch-mgr-id', name: 'Branch Manager' }] } as any;
+            const currentUser = {
+                id: 'u1',
+                roles: [{ id: 'branch-mgr-id', name: 'Branch Manager' }],
+            } as any;
 
             await expect(service.getPermissions('super-admin-role', currentUser)).rejects.toThrow(
                 ForbiddenException,
@@ -160,7 +165,10 @@ describe('RolesService', () => {
             mockRolesRepository.findByIdWithPermissions.mockResolvedValue(role);
             mockRolesRepository.isSelfOrChildRole.mockResolvedValue(true);
 
-            const currentUser = { id: 'u1', roles: [{ id: 'branch-mgr-id', name: 'Branch Manager' }] } as any;
+            const currentUser = {
+                id: 'u1',
+                roles: [{ id: 'branch-mgr-id', name: 'Branch Manager' }],
+            } as any;
 
             const result = await service.getPermissions('cashier-role', currentUser);
             expect(result).toEqual({ permissions: {} });

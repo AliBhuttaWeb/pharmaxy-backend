@@ -64,10 +64,7 @@ export class AuthConsoleController {
     }
 
     @Patch('me')
-    updateProfile(
-        @CurrentUser() user: AuthenticatedUser,
-        @Body() dto: UpdateProfileDto,
-    ) {
+    updateProfile(@CurrentUser() user: AuthenticatedUser, @Body() dto: UpdateProfileDto) {
         return this.authService.updateProfile(user, dto);
     }
 

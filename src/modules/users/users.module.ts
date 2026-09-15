@@ -15,4 +15,3 @@ import { UserBranchesRepository } from './repositories/user-branches.repository'
     exports: [UsersService, UsersRepository],
 })
 export class UsersModule {}
-

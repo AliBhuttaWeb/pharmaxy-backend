@@ -68,4 +68,3 @@ export function groupPermissionsByModule(permissions: PermissionItem[]): Grouped
 
     return grouped;
 }
-

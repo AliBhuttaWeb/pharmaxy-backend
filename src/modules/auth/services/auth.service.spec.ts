@@ -64,9 +64,9 @@ describe('AuthService - updateProfile', () => {
         mockAuthRepo.findUserById.mockResolvedValue(mockDbUser);
         mockAuthRepo.findUserByPhone.mockResolvedValue({ id: 'other-user' });
 
-        await expect(
-            service.updateProfile(mockUser, { phone: '+923009999999' }),
-        ).rejects.toThrow(ConflictException);
+        await expect(service.updateProfile(mockUser, { phone: '+923009999999' })).rejects.toThrow(
+            ConflictException,
+        );
     });
 
     it('should successfully update profile and return { profile, message }', async () => {

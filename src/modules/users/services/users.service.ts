@@ -94,14 +94,8 @@ export class UsersService {
             throw new BadRequestException(MESSAGES.ERROR.ROLE_SCOPE_MISMATCH);
         }
 
-        const {
-            branch_id,
-            role_scope,
-            role_id,
-            permission_ids,
-            permissions_modified,
-            ...userDto
-        } = dto;
+        const { branch_id, role_scope, role_id, permission_ids, permissions_modified, ...userDto } =
+            dto;
 
         const permissionsModified = Boolean(permissions_modified);
         if (permissionsModified && permission_ids?.length) {
@@ -237,7 +231,6 @@ export class UsersService {
             }
         }
     }
-
 
     async updateStatus(id: string, dto: UpdateUserStatusDto) {
         const user = await this.usersRepository.findById(id);

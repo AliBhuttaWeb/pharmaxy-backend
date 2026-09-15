@@ -186,7 +186,10 @@ describe('HoldOrdersService', () => {
 
             const result = await service.findMany(mockUser, { page: 1, limit: 10 });
 
-            expect(mockHoldOrdersRepo.findMany).toHaveBeenCalledWith('branch-1', { page: 1, limit: 10 });
+            expect(mockHoldOrdersRepo.findMany).toHaveBeenCalledWith('branch-1', {
+                page: 1,
+                limit: 10,
+            });
             expect(result.records).toHaveLength(1);
         });
     });

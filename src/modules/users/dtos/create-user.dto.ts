@@ -94,4 +94,3 @@ export class CreateUserDto {
     @IsBoolean()
     permissions_modified?: boolean;
 }
-

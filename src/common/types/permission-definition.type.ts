@@ -3,6 +3,3 @@ export interface PermissionDefinition {
     description: string;
     module?: string;
 }
-
-
-

@@ -15,10 +15,7 @@ describe('DashboardService', () => {
             validateReportAccess: jest.fn().mockResolvedValue(undefined),
         };
 
-        service = new DashboardService(
-            mockDashboardRepo,
-            mockSubscriptionConstraintService,
-        );
+        service = new DashboardService(mockDashboardRepo, mockSubscriptionConstraintService);
     });
 
     it('should pass userId = undefined to overview when user is Pharmacy Admin', async () => {
