@@ -18,6 +18,8 @@ export const MESSAGES = {
         ROLE_NOT_FOUND: 'Role not found.',
         ROLE_SCOPE_MISMATCH: 'Selected role does not match the specified role scope.',
         ROLE_MUST_BE_CHILD: 'Assigned role must be a child of your role.',
+        PERMISSION_MUST_BE_CHILD:
+            'Assigned permissions must belong to your role or its child roles.',
     },
 } as const;
 

@@ -94,7 +94,6 @@ export class UsersService {
             throw new BadRequestException(MESSAGES.ERROR.ROLE_SCOPE_MISMATCH);
         }
 
-        const hashedPassword = await bcrypt.hash(dto.password, 10);
         const {
             branch_id,
             role_scope,
@@ -103,6 +102,13 @@ export class UsersService {
             permissions_modified,
             ...userDto
         } = dto;
+
+        const permissionsModified = Boolean(permissions_modified);
+        if (permissionsModified && permission_ids?.length) {
+            await this.validateAssignedPermissions(permission_ids, currentUser);
+        }
+
+        const hashedPassword = await bcrypt.hash(dto.password, 10);
         const user = await this.prismaService.$transaction(async (tx) => {
             const createdUser = await this.usersRepository.create(
                 {
@@ -128,7 +134,6 @@ export class UsersService {
             return this.usersRepository.findById(createdUser.id, tx);
         });
 
-        const permissionsModified = Boolean(permissions_modified);
         await this.permissionsService.syncUserPermissionOverrides(
             user!.id,
             [role_id],
@@ -167,6 +172,11 @@ export class UsersService {
 
         const { permission_ids, permissions_modified, role_id, ...updateDto } = dto;
 
+        const permissionsModified = Boolean(permissions_modified);
+        if (permissionsModified && permission_ids?.length && currentUser) {
+            await this.validateAssignedPermissions(permission_ids, currentUser);
+        }
+
         let roleIds = user.user_roles.map((ur) => ur.role_id);
 
         if (role_id) {
@@ -193,7 +203,6 @@ export class UsersService {
 
         const updatedUser = await this.usersRepository.update(id, updateDto);
 
-        const permissionsModified = Boolean(permissions_modified);
         if (permissionsModified) {
             await this.permissionsService.syncUserPermissionOverrides(
                 id,
@@ -207,6 +216,26 @@ export class UsersService {
             user: updatedUser,
             message: MESSAGES.SUCCESS.UPDATED,
         };
+    }
+
+    private async validateAssignedPermissions(
+        permissionIds: string[],
+        currentUser: AuthenticatedUser,
+    ): Promise<void> {
+        if (!permissionIds.length) {
+            return;
+        }
+
+        const creatorRoleIds = (currentUser.roles ?? []).map((r) => r.id);
+        const allowedRoleIds = await this.rolesService.getSelfAndChildRoleIds(creatorRoleIds);
+        const allowedPermissionIds =
+            await this.permissionsService.getRolePermissions(allowedRoleIds);
+
+        for (const permissionId of permissionIds) {
+            if (!allowedPermissionIds.has(permissionId)) {
+                throw new ForbiddenException(MESSAGES.ERROR.PERMISSION_MUST_BE_CHILD);
+            }
+        }
     }
 
 

@@ -301,6 +301,52 @@ export class RolesRepository {
 
         return Array.from(childRoleIds);
     }
+
+    async isSelfOrChildRole(
+        parentRoleIds: string[],
+        targetRole: { id: string; parent_id?: string | null },
+    ): Promise<boolean> {
+        if (!parentRoleIds.length || !targetRole) {
+            return false;
+        }
+
+        let effectiveRoleIds = parentRoleIds;
+        const userRoles = await this.prisma.userRole.findMany({
+            where: { id: { in: parentRoleIds } },
+            select: { role_id: true },
+        });
+        if (userRoles.length > 0) {
+            effectiveRoleIds = [
+                ...new Set([...parentRoleIds, ...userRoles.map((ur) => ur.role_id)]),
+            ];
+        }
+
+        if (effectiveRoleIds.includes(targetRole.id)) {
+            return true;
+        }
+
+        return this.isChildRole(parentRoleIds, targetRole);
+    }
+
+    async getSelfAndChildRoleIds(parentRoleIds: string[]): Promise<string[]> {
+        if (!parentRoleIds.length) {
+            return [];
+        }
+
+        let effectiveRoleIds = parentRoleIds;
+        const userRoles = await this.prisma.userRole.findMany({
+            where: { id: { in: parentRoleIds } },
+            select: { role_id: true },
+        });
+        if (userRoles.length > 0) {
+            effectiveRoleIds = [
+                ...new Set([...parentRoleIds, ...userRoles.map((ur) => ur.role_id)]),
+            ];
+        }
+
+        const childRoleIds = await this.findChildRoleIds(parentRoleIds);
+        return Array.from(new Set([...effectiveRoleIds, ...childRoleIds]));
+    }
 }
 
 

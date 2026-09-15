@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { MESSAGES } from '../constants/messages.constants';
 
@@ -40,6 +40,10 @@ export class RolesService {
         return this.rolesRepository.findChildRoleIds(parentRoleIds);
     }
 
+    getSelfAndChildRoleIds(parentRoleIds: string[]) {
+        return this.rolesRepository.getSelfAndChildRoleIds(parentRoleIds);
+    }
+
     findById(id: string) {
         return this.rolesRepository.findById(id);
     }
@@ -49,6 +53,13 @@ export class RolesService {
         targetRole: { id: string; parent_id?: string | null; name?: string },
     ) {
         return this.rolesRepository.isChildRole(parentRoleIds, targetRole);
+    }
+
+    isSelfOrChildRole(
+        parentRoleIds: string[],
+        targetRole: { id: string; parent_id?: string | null; name?: string },
+    ) {
+        return this.rolesRepository.isSelfOrChildRole(parentRoleIds, targetRole);
     }
 
     async get(id: string) {
@@ -61,11 +72,19 @@ export class RolesService {
         return { role };
     }
 
-    async getPermissions(roleId: string) {
+    async getPermissions(roleId: string, currentUser?: AuthenticatedUser) {
         const role = await this.rolesRepository.findByIdWithPermissions(roleId);
 
         if (!role) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+        }
+
+        if (currentUser) {
+            const parentRoleIds = (currentUser.roles ?? []).map((r) => r.id);
+            const isSelfOrChild = await this.rolesRepository.isSelfOrChildRole(parentRoleIds, role);
+            if (!isSelfOrChild) {
+                throw new ForbiddenException(MESSAGES.ERROR.ROLE_PERMISSION_VIEW_FORBIDDEN);
+            }
         }
 
         const permissions = role.role_permissions.map(({ permission }) => permission);

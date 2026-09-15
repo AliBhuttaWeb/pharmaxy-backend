@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { MESSAGES } from '../constants/messages.constants';
 import { RoleScope } from '@gen/prisma/enums';
@@ -18,6 +18,8 @@ describe('RolesService', () => {
             findRoleAndDescendantsWithPermissions: jest.fn(),
             findChildRoleIds: jest.fn(),
             isChildRole: jest.fn(),
+            isSelfOrChildRole: jest.fn(),
+            getSelfAndChildRoleIds: jest.fn(),
         };
 
         service = new RolesService(mockRolesRepository);
@@ -140,6 +142,29 @@ describe('RolesService', () => {
 
             expect(result).toEqual({ permissions: {} });
         });
+
+        it('should throw ForbiddenException if currentUser cannot view role permissions', async () => {
+            const role = { id: 'super-admin-role', name: 'Super Admin', role_permissions: [] };
+            mockRolesRepository.findByIdWithPermissions.mockResolvedValue(role);
+            mockRolesRepository.isSelfOrChildRole.mockResolvedValue(false);
+
+            const currentUser = { id: 'u1', roles: [{ id: 'branch-mgr-id', name: 'Branch Manager' }] } as any;
+
+            await expect(service.getPermissions('super-admin-role', currentUser)).rejects.toThrow(
+                ForbiddenException,
+            );
+        });
+
+        it('should allow viewing permissions when isSelfOrChildRole is true', async () => {
+            const role = { id: 'cashier-role', name: 'Cashier', role_permissions: [] };
+            mockRolesRepository.findByIdWithPermissions.mockResolvedValue(role);
+            mockRolesRepository.isSelfOrChildRole.mockResolvedValue(true);
+
+            const currentUser = { id: 'u1', roles: [{ id: 'branch-mgr-id', name: 'Branch Manager' }] } as any;
+
+            const result = await service.getPermissions('cashier-role', currentUser);
+            expect(result).toEqual({ permissions: {} });
+        });
     });
 
     describe('replacePermissions', () => {
@@ -181,6 +206,27 @@ describe('RolesService', () => {
             const result = await service.isChildRole(['r1'], targetRole);
             expect(result).toBe(true);
             expect(mockRolesRepository.isChildRole).toHaveBeenCalledWith(['r1'], targetRole);
+        });
+    });
+
+    describe('isSelfOrChildRole', () => {
+        it('should delegate to rolesRepository.isSelfOrChildRole', async () => {
+            mockRolesRepository.isSelfOrChildRole.mockResolvedValue(true);
+            const targetRole = { id: 'r2', name: 'Cashier', parent_id: 'r1' };
+
+            const result = await service.isSelfOrChildRole(['r1'], targetRole);
+            expect(result).toBe(true);
+            expect(mockRolesRepository.isSelfOrChildRole).toHaveBeenCalledWith(['r1'], targetRole);
+        });
+    });
+
+    describe('getSelfAndChildRoleIds', () => {
+        it('should delegate to rolesRepository.getSelfAndChildRoleIds', async () => {
+            mockRolesRepository.getSelfAndChildRoleIds.mockResolvedValue(['r1', 'r2']);
+
+            const result = await service.getSelfAndChildRoleIds(['r1']);
+            expect(result).toEqual(['r1', 'r2']);
+            expect(mockRolesRepository.getSelfAndChildRoleIds).toHaveBeenCalledWith(['r1']);
         });
     });
 });

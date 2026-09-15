@@ -135,6 +135,10 @@ export class PermissionsService {
         });
     }
 
+    async getRolePermissions(roleIds: string[]): Promise<Set<string>> {
+        return this.permissionsRepository.getRolePermissions(roleIds);
+    }
+
     async list(query?: FindPermissionsQueryDto) {
         const permissions = await this.permissionsRepository.findManyForGrouping(query);
         return { permissions: groupPermissionsByModule(permissions) };

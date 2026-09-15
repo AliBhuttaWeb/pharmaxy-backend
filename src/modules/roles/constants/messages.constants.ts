@@ -9,5 +9,7 @@ export const MESSAGES = {
         NOT_FOUND: 'Role not found.',
         DUPLICATE: 'Role already exists.',
         CANNOT_DELETE: 'This role cannot be deleted.',
+        ROLE_PERMISSION_VIEW_FORBIDDEN:
+            'You can only view permissions for your role or its child roles.',
     },
 } as const;

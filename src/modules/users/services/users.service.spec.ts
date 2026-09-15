@@ -87,11 +87,13 @@ describe('UsersService', () => {
 
         mockPermissionsService = {
             syncUserPermissionOverrides: jest.fn().mockResolvedValue(undefined),
+            getRolePermissions: jest.fn().mockResolvedValue(new Set(['perm-1', 'perm-2'])),
         };
 
         mockRolesService = {
             findById: jest.fn(),
             isChildRole: jest.fn().mockResolvedValue(true),
+            getSelfAndChildRoleIds: jest.fn().mockResolvedValue(['role-branch-admin-id', 'role-cashier-id']),
         };
 
         service = new UsersService(
@@ -171,6 +173,19 @@ describe('UsersService', () => {
 
             await expect(service.create(dtoWithoutBranch as any, mockBranchAdminUser)).rejects.toThrow(
                 BadRequestException,
+            );
+        });
+
+        it('should throw ForbiddenException if permission_ids contains unauthorized permissions', async () => {
+            mockRolesService.findById.mockResolvedValue({
+                id: 'role-cashier-id',
+                name: ROLES.CASHIER.name,
+                role_scope: RoleScope.BRANCH,
+            });
+            mockPermissionsService.getRolePermissions.mockResolvedValue(new Set(['perm-1'])); // 'perm-2' unauthorized
+
+            await expect(service.create(createDto, mockBranchAdminUser)).rejects.toThrow(
+                new ForbiddenException(MESSAGES.ERROR.PERMISSION_MUST_BE_CHILD),
             );
         });
 
@@ -317,6 +332,19 @@ describe('UsersService', () => {
                     mockBranchAdminUser,
                 ),
             ).rejects.toThrow(new ForbiddenException(MESSAGES.ERROR.ROLE_MUST_BE_CHILD));
+        });
+
+        it('should throw ForbiddenException in update if permission_ids contains unauthorized permissions', async () => {
+            mockUsersRepository.findById.mockResolvedValue(existingUser);
+            mockPermissionsService.getRolePermissions.mockResolvedValue(new Set(['perm-1'])); // 'perm-2' unauthorized
+
+            await expect(
+                service.update(
+                    'user-1',
+                    { permission_ids: ['perm-2'], permissions_modified: true },
+                    mockBranchAdminUser,
+                ),
+            ).rejects.toThrow(new ForbiddenException(MESSAGES.ERROR.PERMISSION_MUST_BE_CHILD));
         });
     });
 });

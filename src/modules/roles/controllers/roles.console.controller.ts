@@ -34,8 +34,11 @@ export class RolesConsoleController {
 
     @Get(':id/permissions')
     @Permissions(ROLES_PERMISSIONS.VIEW_ROLE_PERMISSIONS_LIST.name)
-    getPermissions(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.rolesService.getPermissions(id);
+    getPermissions(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.rolesService.getPermissions(id, user);
     }
 
     @Put(':id/permissions')
