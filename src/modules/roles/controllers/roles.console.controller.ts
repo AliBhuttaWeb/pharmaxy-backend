@@ -1,8 +1,8 @@
 import { Body, Get, Param, ParseUUIDPipe, Put, Query } from '@nestjs/common';
 
-import { ConsoleController, Permissions, Public } from '@/common/decorators';
-
+import { ConsoleController, CurrentUser, Permissions, Public } from '@/common/decorators';
 import { ROLES_PERMISSIONS } from '@/common/constants';
+import type { AuthenticatedUser } from '@/modules/auth/types';
 
 import { FindRolesQueryDto, UpdateRolePermissionsDto } from '../dtos';
 
@@ -16,6 +16,14 @@ export class RolesConsoleController {
     @Public()
     list(@Query() query: FindRolesQueryDto) {
         return this.rolesService.list(query);
+    }
+
+    @Get('me/children')
+    getMyChildren(
+        @CurrentUser() user: AuthenticatedUser,
+        @Query() query: FindRolesQueryDto,
+    ) {
+        return this.rolesService.getChildRoles(user, query);
     }
 
     @Get(':id')

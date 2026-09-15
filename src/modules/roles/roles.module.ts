@@ -10,6 +10,6 @@ import { RolesService } from './services/roles.service';
     imports: [PrismaModule, PermissionsModule],
     controllers: [RolesConsoleController],
     providers: [RolesRepository, RolesService],
-    exports: [],
+    exports: [RolesService],
 })
 export class RolesModule {}

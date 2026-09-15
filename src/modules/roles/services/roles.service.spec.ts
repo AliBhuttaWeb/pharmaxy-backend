@@ -2,6 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { MESSAGES } from '../constants/messages.constants';
 import { RoleScope } from '@gen/prisma/enums';
+import { AuthenticatedUser } from '@/modules/auth/types';
 
 describe('RolesService', () => {
     let service: RolesService;
@@ -15,9 +16,56 @@ describe('RolesService', () => {
             findByIdWithPermissions: jest.fn(),
             replacePermissions: jest.fn(),
             findRoleAndDescendantsWithPermissions: jest.fn(),
+            findChildRoleIds: jest.fn(),
+            isChildRole: jest.fn(),
         };
 
         service = new RolesService(mockRolesRepository);
+    });
+
+    describe('list', () => {
+        it('should list roles', async () => {
+            const roles = [{ id: 'role-1', name: 'Role 1' }];
+            mockRolesRepository.findMany.mockResolvedValue({ records: roles, total: 1 });
+
+            const result = await service.list({ page: 1, limit: 10 });
+
+            expect(mockRolesRepository.findMany).toHaveBeenCalledWith({ page: 1, limit: 10 });
+            expect(result.records).toEqual(roles);
+            expect(result.pagination).toBeDefined();
+        });
+    });
+
+    describe('getChildRoles', () => {
+        it('should return child roles of the currentUser', async () => {
+            const user = {
+                id: 'user-1',
+                roles: [{ id: 'parent-role-id', name: 'Pharmacy Admin' }],
+            } as AuthenticatedUser;
+
+            const childRoles = [{ id: 'child-role-id', name: 'Cashier' }];
+            mockRolesRepository.findChildRoleIds.mockResolvedValue(['child-role-id']);
+            mockRolesRepository.findMany.mockResolvedValue({ records: childRoles, total: 1 });
+
+            const result = await service.getChildRoles(user, { page: 1, limit: 10 });
+
+            expect(mockRolesRepository.findChildRoleIds).toHaveBeenCalledWith(['parent-role-id']);
+            expect(mockRolesRepository.findMany).toHaveBeenCalledWith(
+                { page: 1, limit: 10 },
+                ['child-role-id'],
+            );
+            expect(result.records).toEqual(childRoles);
+        });
+    });
+
+    describe('findChildRoleIds', () => {
+        it('should delegate to rolesRepository.findChildRoleIds', async () => {
+            mockRolesRepository.findChildRoleIds.mockResolvedValue(['child-1']);
+
+            const result = await service.findChildRoleIds(['parent-1']);
+            expect(result).toEqual(['child-1']);
+            expect(mockRolesRepository.findChildRoleIds).toHaveBeenCalledWith(['parent-1']);
+        });
     });
 
     describe('get', () => {
@@ -129,6 +177,28 @@ describe('RolesService', () => {
                 permissions: [perm1],
             });
             expect(mockRolesRepository.replacePermissions).toHaveBeenCalledWith('role-1', ['p1']);
+        });
+    });
+
+    describe('findById', () => {
+        it('should call rolesRepository.findById', async () => {
+            const role = { id: 'role-1', name: 'Admin' };
+            mockRolesRepository.findById.mockResolvedValue(role);
+
+            const result = await service.findById('role-1');
+            expect(result).toEqual(role);
+            expect(mockRolesRepository.findById).toHaveBeenCalledWith('role-1');
+        });
+    });
+
+    describe('isChildRole', () => {
+        it('should delegate to rolesRepository.isChildRole', async () => {
+            mockRolesRepository.isChildRole = jest.fn().mockResolvedValue(true);
+            const targetRole = { id: 'r2', name: 'Cashier', parent_id: 'r1' };
+
+            const result = await service.isChildRole(['r1'], targetRole);
+            expect(result).toBe(true);
+            expect(mockRolesRepository.isChildRole).toHaveBeenCalledWith(['r1'], targetRole);
         });
     });
 });

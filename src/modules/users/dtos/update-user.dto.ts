@@ -1,6 +1,15 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import { IsEmail, IsOptional, IsPhoneNumber, IsString, MaxLength } from 'class-validator';
+import {
+    IsArray,
+    IsBoolean,
+    IsEmail,
+    IsOptional,
+    IsPhoneNumber,
+    IsString,
+    IsUUID,
+    MaxLength,
+} from 'class-validator';
 
 export class UpdateUserDto {
     @ApiPropertyOptional()
@@ -30,4 +39,30 @@ export class UpdateUserDto {
     @IsOptional()
     @IsString()
     avatar_url?: string;
+
+    @ApiPropertyOptional({
+        description: 'Optional role ID to reassign user role',
+    })
+    @IsOptional()
+    @IsUUID()
+    role_id?: string;
+
+    @ApiPropertyOptional({
+        description: 'Optional permission override IDs for the user',
+        type: [String],
+    })
+    @IsOptional()
+    @IsArray()
+    @IsUUID('4', { each: true })
+    permission_ids?: string[];
+
+    @ApiPropertyOptional({
+        description: 'Flag indicating whether permission overrides were modified',
+        default: false,
+    })
+    @IsOptional()
+    @IsBoolean()
+    permissions_modified?: boolean;
 }
+
+

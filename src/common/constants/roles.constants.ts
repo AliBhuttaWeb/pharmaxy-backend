@@ -19,7 +19,7 @@ export const ROLES = {
     CASHIER: {
         name: 'Cashier',
         description: 'Handles sales and customer transactions',
-        role_scope: RoleScope.PHARMACY,
+        role_scope: RoleScope.BRANCH,
         parent: 'Pharmacy Admin',
     },
 

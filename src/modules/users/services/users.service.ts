@@ -1,4 +1,10 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+    BadRequestException,
+    ConflictException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 
 import * as bcrypt from 'bcrypt';
 
@@ -12,6 +18,8 @@ import { UserBranchesRepository } from '../repositories/user-branches.repository
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { resolveUserScope } from '../helpers/resolve-user-scope.helper';
 import { buildPaginationMeta } from '@/common/pagination';
+import { PermissionsService } from '@/modules/permissions/services/permissions.service';
+import { RolesService } from '@/modules/roles/services/roles.service';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +28,8 @@ export class UsersService {
         private readonly subscriptionConstraintService: SubscriptionConstraintService,
         private readonly userBranchesRepository: UserBranchesRepository,
         private readonly prismaService: PrismaService,
+        private readonly permissionsService: PermissionsService,
+        private readonly rolesService: RolesService,
     ) {}
 
     private async validateUserUniqueness(dto: CreateUserDto) {
@@ -69,8 +79,30 @@ export class UsersService {
 
         await this.validateUserUniqueness(dto);
 
+        const role = await this.rolesService.findById(dto.role_id);
+        if (!role) {
+            throw new NotFoundException(MESSAGES.ERROR.ROLE_NOT_FOUND);
+        }
+
+        const creatorRoleIds = currentUser.roles.map((r) => r.id);
+        const isChildRole = await this.rolesService.isChildRole(creatorRoleIds, role);
+        if (!isChildRole) {
+            throw new ForbiddenException(MESSAGES.ERROR.ROLE_MUST_BE_CHILD);
+        }
+
+        if (role.role_scope !== dto.role_scope) {
+            throw new BadRequestException(MESSAGES.ERROR.ROLE_SCOPE_MISMATCH);
+        }
+
         const hashedPassword = await bcrypt.hash(dto.password, 10);
-        const { branch_id, role_scope, ...userDto } = dto;
+        const {
+            branch_id,
+            role_scope,
+            role_id,
+            permission_ids,
+            permissions_modified,
+            ...userDto
+        } = dto;
         const user = await this.prismaService.$transaction(async (tx) => {
             const createdUser = await this.usersRepository.create(
                 {
@@ -80,6 +112,8 @@ export class UsersService {
                 },
                 tx,
             );
+
+            await this.usersRepository.createUserRole(createdUser.id, role_id, tx);
 
             if (branchId) {
                 await this.userBranchesRepository.create(
@@ -91,8 +125,16 @@ export class UsersService {
                 );
             }
 
-            return createdUser;
+            return this.usersRepository.findById(createdUser.id, tx);
         });
+
+        const permissionsModified = Boolean(permissions_modified);
+        await this.permissionsService.syncUserPermissionOverrides(
+            user!.id,
+            [role_id],
+            permission_ids ?? [],
+            permissionsModified,
+        );
 
         return {
             user,
@@ -100,7 +142,7 @@ export class UsersService {
         };
     }
 
-    async update(id: string, dto: UpdateUserDto) {
+    async update(id: string, dto: UpdateUserDto, currentUser?: AuthenticatedUser) {
         const user = await this.usersRepository.findById(id);
 
         if (!user) {
@@ -123,12 +165,50 @@ export class UsersService {
             }
         }
 
-        const updatedUser = await this.usersRepository.update(id, dto);
+        const { permission_ids, permissions_modified, role_id, ...updateDto } = dto;
+
+        let roleIds = user.user_roles.map((ur) => ur.role_id);
+
+        if (role_id) {
+            const role = await this.rolesService.findById(role_id);
+            if (!role) {
+                throw new NotFoundException(MESSAGES.ERROR.ROLE_NOT_FOUND);
+            }
+
+            if (currentUser) {
+                const creatorRoleIds = currentUser.roles.map((r) => r.id);
+                const isChildRole = await this.rolesService.isChildRole(creatorRoleIds, role);
+                if (!isChildRole) {
+                    throw new ForbiddenException(MESSAGES.ERROR.ROLE_MUST_BE_CHILD);
+                }
+            }
+
+            await this.prismaService.$transaction(async (tx) => {
+                await this.usersRepository.deleteUserRoles(id, tx);
+                await this.usersRepository.createUserRole(id, role_id, tx);
+            });
+
+            roleIds = [role_id];
+        }
+
+        const updatedUser = await this.usersRepository.update(id, updateDto);
+
+        const permissionsModified = Boolean(permissions_modified);
+        if (permissionsModified) {
+            await this.permissionsService.syncUserPermissionOverrides(
+                id,
+                roleIds,
+                permission_ids ?? [],
+                permissionsModified,
+            );
+        }
+
         return {
             user: updatedUser,
             message: MESSAGES.SUCCESS.UPDATED,
         };
     }
+
 
     async updateStatus(id: string, dto: UpdateUserStatusDto) {
         const user = await this.usersRepository.findById(id);

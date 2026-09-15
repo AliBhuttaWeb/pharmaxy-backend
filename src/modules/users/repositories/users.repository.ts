@@ -233,4 +233,22 @@ export class UsersRepository {
             },
         });
     }
+
+    createUserRole(userId: string, roleId: string, tx?: Prisma.TransactionClient) {
+        return this.prisma.getClient(tx).userRole.create({
+            data: {
+                user_id: userId,
+                role_id: roleId,
+            },
+        });
+    }
+
+    deleteUserRoles(userId: string, tx?: Prisma.TransactionClient) {
+        return this.prisma.getClient(tx).userRole.deleteMany({
+            where: {
+                user_id: userId,
+            },
+        });
+    }
 }
+

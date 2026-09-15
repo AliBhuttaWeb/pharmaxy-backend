@@ -2,6 +2,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { RoleScope, UserStatus } from '@gen/prisma/enums';
 
 import {
+    IsArray,
+    IsBoolean,
     IsEmail,
     IsEnum,
     IsOptional,
@@ -68,4 +70,28 @@ export class CreateUserDto {
     })
     @IsEnum(RoleScope)
     role_scope!: RoleScope;
+
+    @ApiProperty({
+        description: 'Role ID to assign to the user',
+    })
+    @IsUUID()
+    role_id!: string;
+
+    @ApiPropertyOptional({
+        description: 'Optional permission override IDs for the user',
+        type: [String],
+    })
+    @IsOptional()
+    @IsArray()
+    @IsUUID('4', { each: true })
+    permission_ids?: string[];
+
+    @ApiPropertyOptional({
+        description: 'Flag indicating whether permission overrides were modified',
+        default: false,
+    })
+    @IsOptional()
+    @IsBoolean()
+    permissions_modified?: boolean;
 }
+

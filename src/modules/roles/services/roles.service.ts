@@ -6,6 +6,7 @@ import { FindRolesQueryDto, UpdateRolePermissionsDto } from '../dtos';
 
 import { RolesRepository } from '../repositories/roles.repository';
 import { buildPaginationMeta } from '@/common/pagination';
+import type { AuthenticatedUser } from '@/modules/auth/types';
 
 @Injectable()
 export class RolesService {
@@ -19,6 +20,34 @@ export class RolesService {
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
 
         return { records, pagination };
+    }
+
+    async getChildRoles(currentUser: AuthenticatedUser, query?: FindRolesQueryDto) {
+        const parentRoleIds = (currentUser.roles ?? []).map((r) => r.id);
+        const childRoleIds = await this.rolesRepository.findChildRoleIds(parentRoleIds);
+
+        const { page, limit } = query ?? {};
+        const { records, total } = await this.rolesRepository.findMany(query, childRoleIds);
+
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+
+        return { records, pagination };
+    }
+
+    findChildRoleIds(parentRoleIds: string[]) {
+        return this.rolesRepository.findChildRoleIds(parentRoleIds);
+    }
+
+    findById(id: string) {
+        return this.rolesRepository.findById(id);
+    }
+
+    isChildRole(
+        parentRoleIds: string[],
+        targetRole: { id: string; parent_id?: string | null; name?: string },
+    ) {
+        return this.rolesRepository.isChildRole(parentRoleIds, targetRole);
     }
 
     async get(id: string) {

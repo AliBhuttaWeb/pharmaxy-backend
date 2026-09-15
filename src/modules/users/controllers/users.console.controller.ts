@@ -31,8 +31,12 @@ export class UsersConsoleController {
 
     @Put(':id')
     @Permissions(USERS_PERMISSIONS.USER_UPDATE.name)
-    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateUserDto) {
-        return this.usersService.update(id, dto);
+    update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateUserDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.usersService.update(id, dto, user);
     }
 
     @Delete(':id')
