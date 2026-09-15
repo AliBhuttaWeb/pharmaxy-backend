@@ -134,4 +134,54 @@ export class RolesRepository {
             },
         });
     }
+
+    async findRoleAndDescendantsWithPermissions(id: string) {
+        const role = await this.findByIdWithPermissions(id);
+
+        if (!role) {
+            return null;
+        }
+
+        const childRoles: Array<
+            NonNullable<Awaited<ReturnType<typeof this.findByIdWithPermissions>>>
+        > = [];
+        const visitedIds = new Set<string>([id]);
+        let currentParentIds = [id];
+
+        while (currentParentIds.length > 0) {
+            const children = await this.prisma.role.findMany({
+                where: {
+                    parent_id: { in: currentParentIds },
+                },
+                include: {
+                    role_permissions: {
+                        include: {
+                            permission: true,
+                        },
+                    },
+                },
+            });
+
+            if (children.length === 0) {
+                break;
+            }
+
+            const unvisitedChildren = children.filter((child) => !visitedIds.has(child.id));
+            if (unvisitedChildren.length === 0) {
+                break;
+            }
+
+            for (const child of unvisitedChildren) {
+                visitedIds.add(child.id);
+            }
+
+            childRoles.push(...unvisitedChildren);
+            currentParentIds = unvisitedChildren.map((c) => c.id);
+        }
+
+        return {
+            role,
+            children: childRoles,
+        };
+    }
 }

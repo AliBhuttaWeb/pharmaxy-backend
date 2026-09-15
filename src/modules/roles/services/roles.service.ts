@@ -32,14 +32,41 @@ export class RolesService {
     }
 
     async getPermissions(roleId: string) {
-        const role = await this.rolesRepository.findByIdWithPermissions(roleId);
+        const result = await this.rolesRepository.findRoleAndDescendantsWithPermissions(roleId);
 
-        if (!role) {
+        if (!result) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
+        const { role, children } = result;
+
+        const rolePermissions = role.role_permissions.map(({ permission }) => permission);
+
+        const childPermissionsMap = new Map<string, (typeof rolePermissions)[number]>();
+        for (const child of children) {
+            for (const { permission } of child.role_permissions) {
+                if (!childPermissionsMap.has(permission.id)) {
+                    childPermissionsMap.set(permission.id, permission);
+                }
+            }
+        }
+        const childPermissions = Array.from(childPermissionsMap.values());
+
+        const childRoles = children.map((child) => ({
+            id: child.id,
+            name: child.name,
+            description: child.description,
+            role_scope: child.role_scope,
+            signup_scope: child.signup_scope,
+            parent_id: child.parent_id,
+            permissions: child.role_permissions.map(({ permission }) => permission),
+        }));
+
         return {
-            permissions: role.role_permissions.map(({ permission }) => permission),
+            role_permissions: rolePermissions,
+            child_permissions: childPermissions,
+            child_roles: childRoles,
+            permissions: rolePermissions,
         };
     }
 

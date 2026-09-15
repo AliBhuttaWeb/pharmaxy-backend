@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { PrismaModule } from '@/database/prisma/prisma.module';
 import { PermissionsModule } from '../permissions/permissions.module';
-import { RolesConsoleController } from './controllers/roles.console.controlle';
+import { RolesConsoleController } from './controllers/roles.console.controller';
 import { RolesRepository } from './repositories/roles.repository';
 import { RolesService } from './services/roles.service';
 

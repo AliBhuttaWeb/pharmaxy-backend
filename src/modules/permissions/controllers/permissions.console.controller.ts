@@ -17,14 +17,14 @@ export class PermissionsConsoleController {
         return this.permissionsService.list(query);
     }
 
+    @Get('me')
+    getMyPermissions(@CurrentUser() user: AuthenticatedUser) {
+        return this.permissionsService.getUserPermissions(user.id);
+    }
+
     @Get(':id')
     @Permissions(PERMISSIONS_PERMISSIONS.PERMISSION_VIEW_DETAIL.name)
     get(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.permissionsService.get(id);
-    }
-
-    @Get('me')
-    getMyPermissions(@CurrentUser() user: AuthenticatedUser) {
-        return this.permissionsService.getUserPermissions(user.id);
     }
 }

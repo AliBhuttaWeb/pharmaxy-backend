@@ -148,7 +148,7 @@ export class PermissionsService {
         return permission;
     }
 
-    async getUserPermissions(userId: string): Promise<string[]> {
+    async getUserPermissions(userId: string) {
         const [rolePermissions, userPermissions] = await Promise.all([
             this.rolePermissionsService.findUserRolePermissions(userId),
             this.userPermissionsService.findUserPermissions(userId),
@@ -176,6 +176,6 @@ export class PermissionsService {
             }
         }
 
-        return [...permissions];
+        return {permissions: [...permissions]};
     }
 }
