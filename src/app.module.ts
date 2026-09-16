@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 
 import envValidationSchema from '@/config/env-validation.config';
 import appConfig from '@/config/app.config';
@@ -8,6 +9,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard, PermissionsGuard } from '@common/guards';
 import { PrismaModule } from '@/database/prisma/prisma.module';
 import { AuthModule } from '@/modules/auth/auth.module';
+import { OtpModule } from '@/modules/otp/otp.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { UsersModule } from './modules/users/users.module';
@@ -42,8 +44,18 @@ import { SettingsModule } from './modules/settings/settings.module';
             expandVariables: true,
             cache: true,
         }),
+        ThrottlerModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => [
+                {
+                    ttl: config.getOrThrow<number>('throttler.ttl'),
+                    limit: config.getOrThrow<number>('throttler.limit'),
+                },
+            ],
+        }),
         PrismaModule,
         AuthModule,
+        OtpModule,
         RolesModule,
         PermissionsModule,
         UsersModule,
@@ -70,6 +82,10 @@ import { SettingsModule } from './modules/settings/settings.module';
         SettingsModule,
     ],
     providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
         {
             provide: APP_GUARD,
             useClass: JwtAuthGuard,

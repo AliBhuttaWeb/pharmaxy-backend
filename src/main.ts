@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
+import helmet from 'helmet';
+import compression from 'compression';
 import { AppModule } from '@/app.module';
 import { setupSwagger } from '@/config/swagger.config';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
@@ -17,6 +19,18 @@ async function bootstrap(): Promise<void> {
 
     // Trust reverse proxy (Nginx, Cloudflare, Kubernetes Ingress)
     app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
+    // Security HTTP headers (XSS, clickjacking, MIME-sniffing, HSTS, etc.)
+    // CSP is disabled since this is a JSON API — Swagger UI handles its own scripts.
+    app.use(
+        helmet({
+            contentSecurityPolicy: false,
+            crossOriginEmbedderPolicy: false,
+        }),
+    );
+
+    // Gzip response compression — improves throughput for large payloads
+    app.use(compression());
 
     // Global API prefix
     app.setGlobalPrefix('api');

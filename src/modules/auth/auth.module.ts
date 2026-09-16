@@ -16,12 +16,14 @@ import { BranchesModule } from '../branches/branches.module';
 import { PharmaciesModule } from '../pharmacies/pharmacies.module';
 import { RolesService } from './services/roles.service';
 import { RolesRepository } from './repositories/roles.repository';
+import { OtpModule } from '@/modules/otp/otp.module';
 
 @Module({
     imports: [
         PassportModule,
         ConfigModule,
         PrismaModule,
+        OtpModule,
         JwtModule.registerAsync({
             inject: [ConfigService],
             useFactory: (config: ConfigService) => ({
@@ -31,6 +33,9 @@ import { RolesRepository } from './repositories/roles.repository';
                 },
             }),
         }),
+        SubscriptionsModule,
+        BranchesModule,
+        PharmaciesModule,
     ],
     controllers: [AuthConsoleController],
     providers: [

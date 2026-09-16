@@ -21,6 +21,18 @@ export default Joi.object({
 
     JWT_REFRESH_TOKEN_TTL: Joi.string().default('30d'),
 
+    OTP_LENGTH: Joi.number().integer().min(4).max(10).default(6),
+
+    OTP_EXPIRE_MINUTES: Joi.number().integer().min(1).default(10),
+
+    OTP_MAX_VERIFY_ATTEMPTS: Joi.number().integer().min(1).default(5),
+
+    OTP_MAX_RESEND_PER_24H: Joi.number().integer().min(1).default(3),
+
+    THROTTLER_TTL_MS: Joi.number().integer().min(1000).default(60000),
+
+    THROTTLER_LIMIT: Joi.number().integer().min(1).default(100),
+
     SWAGGER_ENABLED: Joi.boolean().default(true),
 
     SWAGGER_PATH: Joi.string().default('docs'),

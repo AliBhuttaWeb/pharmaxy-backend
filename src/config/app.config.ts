@@ -21,6 +21,19 @@ export default () => ({
         refreshTokenTtl: env.JWT_REFRESH_TOKEN_TTL ?? '30d',
     },
 
+    otp: {
+        length: Number(env.OTP_LENGTH ?? 6),
+        expireMinutes: Number(env.OTP_EXPIRE_MINUTES ?? 10),
+        maxVerifyAttempts: Number(env.OTP_MAX_VERIFY_ATTEMPTS ?? 5),
+        maxResendPer24h: Number(env.OTP_MAX_RESEND_PER_24H ?? 3),
+    },
+
+    throttler: {
+        /** Global rate limit — requests per TTL window */
+        ttl: Number(env.THROTTLER_TTL_MS ?? 60000),
+        limit: Number(env.THROTTLER_LIMIT ?? 100),
+    },
+
     swagger: {
         enabled: env.SWAGGER_ENABLED === 'true',
         path: env.SWAGGER_PATH ?? 'docs',

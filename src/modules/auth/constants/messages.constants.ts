@@ -3,6 +3,8 @@ export const MESSAGES = {
         LOGIN: 'Login successful.',
         LOGOUT: 'Logout successful.',
         REGISTER: 'Registration completed successfully.',
+        SIGNUP_OTP_SENT:
+            'Account created successfully. An OTP has been sent to your email address. Please verify your account to continue.',
         PASSWORD_CHANGED: 'Password changed successfully.',
         PASSWORD_RESET: 'Password reset successfully.',
         PASSWORD_RESET_LINK_SENT: 'Password reset link sent successfully.',

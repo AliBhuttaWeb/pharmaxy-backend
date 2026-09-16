@@ -2,6 +2,7 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import { OtpChannel, OtpType } from '@gen/prisma/enums';
 
 import {
     AuthenticatedUser,
@@ -27,6 +28,7 @@ import { AuthRepository } from '../repositories/auth.repository';
 import { buildAuthenticatedUser, hashPassword } from '../helpers';
 import { ensureSignupRole } from '../helpers/ensure-signup-role.helper';
 import { RolesService } from './roles.service';
+import { OtpService } from '@/modules/otp/services/otp.service';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +38,7 @@ export class AuthService {
         private readonly refreshTokenService: RefreshTokenService,
         private readonly authRepository: AuthRepository,
         private readonly roleService: RolesService,
+        private readonly otpService: OtpService,
     ) {}
 
     private async generateAccessToken(payload: SessionTokenPayload): Promise<string> {
@@ -314,6 +317,14 @@ export class AuthService {
             password,
         });
 
-        return { user: buildAuthenticatedUser(user) };
+        // Trigger email OTP verification (email integration to be added later)
+        await this.otpService.generate({
+            userId: user.id,
+            destination: dto.email,
+            type: OtpType.EMAIL_VERIFICATION,
+            channel: OtpChannel.EMAIL,
+        });
+
+        return { message: MESSAGES.SUCCESS.SIGNUP_OTP_SENT };
     }
 }
