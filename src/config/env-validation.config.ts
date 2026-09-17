@@ -29,6 +29,12 @@ export default Joi.object({
 
     OTP_MAX_RESEND_PER_24H: Joi.number().integer().min(1).default(3),
 
+    OTP_RESEND_COOLDOWN_SECONDS: Joi.number().integer().min(0).default(60),
+
+    MAINTENANCE_MODE: Joi.boolean().default(false),
+
+    MAINTENANCE_BYPASS_KEY: Joi.string().optional(),
+
     THROTTLER_TTL_MS: Joi.number().integer().min(1000).default(60000),
 
     THROTTLER_LIMIT: Joi.number().integer().min(1).default(100),

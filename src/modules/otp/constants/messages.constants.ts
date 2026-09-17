@@ -12,6 +12,11 @@ export const MESSAGES = {
         MAX_ATTEMPTS_EXCEEDED: 'Maximum verification attempts exceeded. Please request a new OTP.',
         RESEND_LIMIT_EXCEEDED:
             'You have exceeded the maximum number of OTP requests. Please try again after 24 hours.',
+        NO_PREVIOUS_OTP:
+            'No previous OTP request found for this destination. Please request a new OTP first.',
+        RESEND_COOLDOWN:
+            'Please wait before requesting another OTP.',
         USER_NOT_FOUND: 'No account found for the provided destination.',
+        ACCOUNT_INACTIVE: 'Your account is disabled or inactive.',
     },
 } as const;

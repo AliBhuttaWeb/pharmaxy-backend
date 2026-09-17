@@ -26,6 +26,12 @@ export default () => ({
         expireMinutes: Number(env.OTP_EXPIRE_MINUTES ?? 10),
         maxVerifyAttempts: Number(env.OTP_MAX_VERIFY_ATTEMPTS ?? 5),
         maxResendPer24h: Number(env.OTP_MAX_RESEND_PER_24H ?? 3),
+        resendCooldownSeconds: Number(env.OTP_RESEND_COOLDOWN_SECONDS ?? 60),
+    },
+
+    maintenance: {
+        enabled: env.MAINTENANCE_MODE === 'true',
+        bypassKey: env.MAINTENANCE_BYPASS_KEY,
     },
 
     throttler: {

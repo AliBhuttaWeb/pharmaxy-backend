@@ -9,7 +9,7 @@ export class OtpRepository {
 
     create(
         data: {
-            user_id?: string;
+            user_id: string;
             destination: string;
             type: OtpType;
             channel: OtpChannel;
@@ -22,11 +22,17 @@ export class OtpRepository {
     }
 
     /**
-     * Find the most recent unexpired, unverified OTP for a destination+type.
+     * Find the most recent unexpired, unverified OTP for a user+destination+type.
      */
-    findLatestValid(destination: string, type: OtpType, tx?: Prisma.TransactionClient) {
+    findLatestValid(
+        userId: string,
+        destination: string,
+        type: OtpType,
+        tx?: Prisma.TransactionClient,
+    ) {
         return this.prisma.getClient(tx).otp.findFirst({
             where: {
+                user_id: userId,
                 destination,
                 type,
                 expires_at: { gt: new Date() },
@@ -37,12 +43,38 @@ export class OtpRepository {
     }
 
     /**
-     * Expire all active (unexpired + unverified) OTPs for a destination+type
+     * Find the most recent OTP for user+destination+type regardless of expiry or verification status.
+     * Used by resend to verify that an OTP was previously requested for this exact user and destination.
+     */
+    findLatestAny(
+        userId: string,
+        destination: string,
+        type: OtpType,
+        tx?: Prisma.TransactionClient,
+    ) {
+        return this.prisma.getClient(tx).otp.findFirst({
+            where: {
+                user_id: userId,
+                destination,
+                type,
+            },
+            orderBy: { created_at: 'desc' },
+        });
+    }
+
+    /**
+     * Expire all active (unexpired + unverified) OTPs for user+destination+type
      * by setting expires_at = now(). Records are kept for 24h resend counting.
      */
-    async expireAll(destination: string, type: OtpType, tx?: Prisma.TransactionClient) {
+    async expireAll(
+        userId: string,
+        destination: string,
+        type: OtpType,
+        tx?: Prisma.TransactionClient,
+    ) {
         await this.prisma.getClient(tx).otp.updateMany({
             where: {
+                user_id: userId,
                 destination,
                 type,
                 expires_at: { gt: new Date() },
@@ -53,10 +85,11 @@ export class OtpRepository {
     }
 
     /**
-     * Count how many OTPs were created for destination+type since `since` date.
+     * Count how many OTPs were created for user+destination+type since `since` date.
      * Used to enforce the max-resend-per-24h limit.
      */
     countRecentByDestination(
+        userId: string,
         destination: string,
         type: OtpType,
         since: Date,
@@ -64,6 +97,7 @@ export class OtpRepository {
     ): Promise<number> {
         return this.prisma.getClient(tx).otp.count({
             where: {
+                user_id: userId,
                 destination,
                 type,
                 created_at: { gte: since },
@@ -82,26 +116,6 @@ export class OtpRepository {
         await this.prisma.getClient(tx).otp.update({
             where: { id },
             data: { attempts: { increment: 1 } },
-        });
-    }
-
-    /**
-     * Mark a user's email as verified. Called after successful EMAIL_VERIFICATION OTP.
-     */
-    async markEmailVerified(email: string, tx?: Prisma.TransactionClient) {
-        await this.prisma.getClient(tx).user.updateMany({
-            where: { email },
-            data: { is_email_verified: true },
-        });
-    }
-
-    /**
-     * Mark a user's phone as verified. Called after successful PHONE_VERIFICATION OTP.
-     */
-    async markPhoneVerified(phone: string, tx?: Prisma.TransactionClient) {
-        await this.prisma.getClient(tx).user.updateMany({
-            where: { phone },
-            data: { is_phone_verified: true },
         });
     }
 }

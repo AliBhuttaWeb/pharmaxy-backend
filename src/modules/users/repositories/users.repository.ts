@@ -250,4 +250,18 @@ export class UsersRepository {
             },
         });
     }
+
+    markEmailVerified(userId: string, tx?: Prisma.TransactionClient) {
+        return this.prisma.getClient(tx).user.update({
+            where: { id: userId },
+            data: { is_email_verified: true },
+        });
+    }
+
+    markPhoneVerified(userId: string, tx?: Prisma.TransactionClient) {
+        return this.prisma.getClient(tx).user.update({
+            where: { id: userId },
+            data: { is_phone_verified: true },
+        });
+    }
 }

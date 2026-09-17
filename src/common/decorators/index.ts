@@ -4,3 +4,4 @@ export * from './roles.decorator';
 export * from './console-controller.decorator';
 export * from './store-controller.decorator';
 export * from './permissions.decorator';
+export * from './bypass-maintenance.decorator';

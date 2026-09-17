@@ -20,6 +20,7 @@ export const MESSAGES = Object.freeze({
         TOO_MANY_REQUESTS: 'Too many requests. Please try again later.',
         INTERNAL_SERVER_ERROR: 'Something went wrong.',
         SERVICE_UNAVAILABLE: 'Service is temporarily unavailable.',
+        MAINTENANCE_MODE: 'The system is currently under maintenance. Please try again later.',
         UNAUTHORIZED: "You're not unauthorized person to perform this action.",
         NO_ROLE_ASSIGNED: 'No role assigned to this user.',
         BRANCH_ACCESS_DENIED: 'You do not have access to this branch.',

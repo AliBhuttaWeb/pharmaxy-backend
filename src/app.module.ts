@@ -6,7 +6,7 @@ import envValidationSchema from '@/config/env-validation.config';
 import appConfig from '@/config/app.config';
 import { APP_GUARD } from '@nestjs/core';
 
-import { JwtAuthGuard, PermissionsGuard } from '@common/guards';
+import { MaintenanceGuard, JwtAuthGuard, PermissionsGuard } from '@common/guards';
 import { PrismaModule } from '@/database/prisma/prisma.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { OtpModule } from '@/modules/otp/otp.module';
@@ -82,6 +82,10 @@ import { SettingsModule } from './modules/settings/settings.module';
         SettingsModule,
     ],
     providers: [
+        {
+            provide: APP_GUARD,
+            useClass: MaintenanceGuard,
+        },
         {
             provide: APP_GUARD,
             useClass: ThrottlerGuard,
