@@ -74,7 +74,15 @@ async function bootstrap(): Promise<void> {
         origin: true, // replace with whitelist in production
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'Accept',
+            'Origin',
+            'X-Requested-With',
+            'x-branch-id',
+            'x-request-id',
+        ],
         exposedHeaders: ['Content-Disposition'],
     });
 
