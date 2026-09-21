@@ -4,4 +4,7 @@ import { AuthenticatedUser } from '../types';
 export class ProfileDto {
     @ApiProperty({ type: AuthenticatedUser })
     profile!: AuthenticatedUser;
+
+    @ApiProperty({ type: [String] })
+    permissions!: string[];
 }

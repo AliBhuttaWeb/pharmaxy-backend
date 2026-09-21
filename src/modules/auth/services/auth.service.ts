@@ -29,6 +29,7 @@ import { buildAuthenticatedUser, hashPassword } from '../helpers';
 import { ensureSignupRole } from '../helpers/ensure-signup-role.helper';
 import { RolesService } from './roles.service';
 import { OtpService } from '@/modules/otp/services/otp.service';
+import { PermissionsService } from '@/modules/permissions/services/permissions.service';
 
 @Injectable()
 export class AuthService {
@@ -39,6 +40,7 @@ export class AuthService {
         private readonly authRepository: AuthRepository,
         private readonly roleService: RolesService,
         private readonly otpService: OtpService,
+        private readonly permissionsService: PermissionsService,
     ) {}
 
     private async generateAccessToken(payload: SessionTokenPayload): Promise<string> {
@@ -249,13 +251,19 @@ export class AuthService {
     }
 
     async getProfile(user: AuthenticatedUser): Promise<ProfileDto> {
-        const dbUser = await this.authRepository.findUserById(user.id);
+        const [dbUser, { permissions }] = await Promise.all([
+            this.authRepository.findUserById(user.id),
+            this.permissionsService.getUserPermissions(user.id),
+        ]);
 
         if (!dbUser) {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
         }
 
-        return { profile: buildAuthenticatedUser(dbUser, user.branch_id) };
+        return {
+            profile: buildAuthenticatedUser(dbUser, user.branch_id),
+            permissions,
+        };
     }
 
     async updateProfile(user: AuthenticatedUser, dto: UpdateProfileDto) {

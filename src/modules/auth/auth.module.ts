@@ -17,6 +17,7 @@ import { PharmaciesModule } from '../pharmacies/pharmacies.module';
 import { RolesService } from './services/roles.service';
 import { RolesRepository } from './repositories/roles.repository';
 import { OtpModule } from '@/modules/otp/otp.module';
+import { PermissionsModule } from '@/modules/permissions/permissions.module';
 
 @Module({
     imports: [
@@ -36,6 +37,7 @@ import { OtpModule } from '@/modules/otp/otp.module';
         SubscriptionsModule,
         BranchesModule,
         PharmaciesModule,
+        PermissionsModule,
     ],
     controllers: [AuthConsoleController],
     providers: [
