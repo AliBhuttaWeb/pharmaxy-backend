@@ -1,142 +1,51 @@
-# Pharmaxy Backend Engineering Guidelines
+# Pharmaxy Backend — Engineering Guidelines
 
-## 1. Project Overview
-
-Pharmaxy is a multi-tenant Pharmacy POS & Inventory SaaS platform.
-
-The backend is designed to support:
-
-- Multiple pharmacies
-- Multiple branches per pharmacy
-- Pharmacy owners and staff
-- POS operations
-- Inventory management
-- Purchase workflows
-- Sales and invoices
-- Subscription management
-- Payment processing
-- Notifications
-- Future pharmacy storefronts
-- Ecommerce capabilities
-- Mobile applications
-- Third-party integrations
-
-The system must be designed for:
-
-- Scalability
-- Maintainability
-- Security
-- High performance
-- Clear separation of responsibilities
-- Future feature expansion
+> Multi-tenant Pharmacy POS & Inventory SaaS — NestJS · Prisma · PostgreSQL · pnpm · Node 25
 
 ---
 
-# 2. Core Engineering Principles
+## Quick Reference
 
-## 2.1 Clean Architecture
-
-The application follows a layered architecture.
-
-The dependency direction must always be:
-
----
-
-# 3. Responsibility Separation
-
-## 3.1 Controller Layer
-
-Controllers are responsible for:
-
-- HTTP handling
-- Request validation
-- Calling services
-- Returning responses
-- Swagger documentation
-- Route definitions
-
-Controllers must NOT contain:
-
-- Business logic
-- Database queries
-- Permission checks
-- Complex calculations
-- Data transformation logic
-
-Example:
-
-Good:
-
-```ts
-@Post()
-create(
-    @Body() dto: CreateProductDto,
-) {
-    return this.productService.create(dto);
-}
+```
+Controller → Service → Repository → Prisma
 ```
 
-Bad:
+| Layer | Does | Never does |
+|-------|------|------------|
+| Controller | HTTP, call one service method | Business logic, DB access |
+| Service | Business logic, throw exceptions | `this.prisma.*`, other module's repositories |
+| Repository | All `this.prisma.*` | Business logic, throw exceptions |
 
-```ts
-@Post()
-async create(@Body() dto: CreateProductDto) {
-    const existing = await this.prisma.product.findUnique({ where: { name: dto.name } });
-    if (existing) throw new BadRequestException();
-    // ...
-}
-```
-
-## 3.2 Service Layer
-
-Services are responsible for:
-
-- Business logic
-- Orchestrating calls to multiple repositories or other services
-- Validation of business rules
-- Error throwing (e.g. `NotFoundException`, `ForbiddenException`)
-
-Services must NOT contain:
-
-- Direct Prisma/database calls (`this.prisma...` should not exist here)
-- Request/Response HTTP objects
-
-## 3.3 Repository Layer
-
-Repositories are responsible for:
-
-- All direct database access (`this.prisma...`)
-- Complex queries
-- Transaction management
-
-Repositories must NOT contain:
-
-- Business logic or validations that belong in services
-- HTTP specific logic
+**Cross-module:** service calls another module's **service**, never its repository.  
+**Exports:** export **services**; repositories only when a sibling repository genuinely needs direct DB access.  
+**Strings:** no inline strings anywhere — every module owns a `constants/messages.constants.ts`.  
+**Permissions:** every non-public route requires `@Permissions(...)`.
 
 ---
 
-# 4. Tech Stack & Project Structure
+## Deep Dives
 
-## 4.1 Tech Stack
+| Topic | File |
+|-------|------|
+| Module structure & file naming | [docs/module.md](./docs/module.md) |
+| DTOs | [docs/dtos.md](./docs/dtos.md) |
+| Repository patterns | [docs/repository.md](./docs/repository.md) |
+| Service patterns | [docs/service.md](./docs/service.md) |
+| Controller patterns | [docs/controller.md](./docs/controller.md) |
+| Permissions | [docs/permissions.md](./docs/permissions.md) |
+| Prisma schema conventions | [docs/schema.md](./docs/schema.md) |
+| Adding a new module (checklist) | [docs/new-module.md](./docs/new-module.md) |
 
-- **Framework:** NestJS
-- **Language:** TypeScript
-- **ORM:** Prisma
-- **Authentication:** JWT, Passport
-- **Database:** PostgreSQL (implied by typical Prisma usage)
+---
 
-## 4.2 Project Structure
+## Tech Stack
 
-The `src/` directory is organized as follows:
-
-- `common/`: Cross-cutting concerns such as decorators, exceptions, filters, guards, interceptors, pagination, and shared types.
-- `config/`: Application configuration files.
-- `database/`: Prisma schema, seeders, transaction utilities, and shared/base repositories.
-- `modules/`: Feature-based modules (e.g., `auth`). Each module typically contains:
-    - `controllers/`: HTTP route handlers.
-    - `services/`: Business logic.
-    - `repositories/`: Database access.
-    - `dtos/`: Data Transfer Objects for validation.
-    - `types/` & `constants/`: Module-specific types and constants.
-    - `strategies/`: Authentication strategies (e.g., JWT).
+| | |
+|-|-|
+| Framework | NestJS |
+| ORM | Prisma (output → `generated/prisma`) |
+| Database | PostgreSQL |
+| Auth | JWT + Passport |
+| Package manager | pnpm |
+| Node | 25 (`nvm use 25`) |
+| Build | `pnpm run build` |

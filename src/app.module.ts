@@ -36,6 +36,7 @@ import { PaymentMethodsModule } from './modules/payment-methods/payment-methods.
 import { SettingsModule } from './modules/settings/settings.module';
 import { SupportTicketsModule } from './modules/support-tickets/support-tickets.module';
 import { SystemLogsModule } from './modules/system-logs/system-logs.module';
+import { InvoicesModule } from './modules/invoices/invoices.module';
 
 @Module({
     imports: [
@@ -84,6 +85,7 @@ import { SystemLogsModule } from './modules/system-logs/system-logs.module';
         SettingsModule,
         SupportTicketsModule,
         SystemLogsModule,
+        InvoicesModule,
     ],
     providers: [
         {

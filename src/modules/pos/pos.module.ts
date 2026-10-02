@@ -5,11 +5,17 @@ import { ProductsModule } from '../products/products.module';
 import { PosConsoleController } from './controllers/pos.console.controller';
 import { PosRepository } from './repositories/pos.repository';
 import { PosService } from './services/pos.service';
-import { HoldOrdersService } from '../hold-orders/services/hold-orders.service';
 import { HoldOrdersModule } from '../hold-orders/hold-orders.module';
+import { InvoicesModule } from '../invoices/invoices.module';
 
 @Module({
-    imports: [ProductsModule, BranchProductsModule, CustomersModule, HoldOrdersModule],
+    imports: [
+        ProductsModule,
+        BranchProductsModule,
+        CustomersModule,
+        HoldOrdersModule,
+        InvoicesModule,
+    ],
 
     controllers: [PosConsoleController],
 

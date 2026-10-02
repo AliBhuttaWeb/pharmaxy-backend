@@ -11,6 +11,7 @@ import { ProductBatchesRepository } from '@/modules/branch-products/repositories
 import { CreatePosSaleDto } from '../dtos';
 
 import { PosRepository } from '../repositories/pos.repository';
+import { InvoicesRepository } from '@/modules/invoices/repositories/invoices.repository';
 
 import { allocateStock } from '../helpers/allocate-stock';
 import { generateInvoiceNumber } from '../helpers/generate-invoice-number';
@@ -39,6 +40,8 @@ export class PosService {
         private readonly prisma: PrismaService,
 
         private readonly posRepository: PosRepository,
+
+        private readonly invoicesRepository: InvoicesRepository,
 
         private readonly branchProductsRepository: BranchProductsRepository,
 
@@ -175,7 +178,7 @@ export class PosService {
                 throw new NotFoundException(CUSTOMER_MESSAGES.ERROR.NOT_FOUND);
             }
 
-            const latestInvoice = await this.posRepository.findLatestInvoice(branchId, tx);
+            const latestInvoice = await this.invoicesRepository.findLatestInvoice(branchId, tx);
 
             const invoiceNumber = generateInvoiceNumber(latestInvoice?.invoice_number);
 
@@ -183,7 +186,7 @@ export class PosService {
             const dueAmount = Math.max(0, subtotal - totalPaid);
             const isFullyPaid = totalPaid >= subtotal;
 
-            const invoice = await this.posRepository.createInvoice(
+            const invoice = await this.invoicesRepository.createInvoice(
                 {
                     invoice_number: invoiceNumber,
 
@@ -330,3 +333,4 @@ export class PosService {
         );
     }
 }
+
