@@ -13,8 +13,8 @@ export class UsersConsoleController {
 
     @Get()
     @Permissions(USERS_PERMISSIONS.USER_VIEW_LIST.name)
-    list(@Query() query: FindUsersQueryDto) {
-        return this.usersService.list(query);
+    list(@Query() query: FindUsersQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.usersService.list(query, user);
     }
 
     @Post()

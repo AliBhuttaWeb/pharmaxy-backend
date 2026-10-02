@@ -9,11 +9,34 @@ import { FindUsersQueryDto } from '../dtos';
 export class UsersRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findMany(query: FindUsersQueryDto) {
+    async findMany(query: FindUsersQueryDto, pharmacyId?: string, excludeId?: string) {
         const { search, status, page, limit, sort_by, sort_order } = query;
 
-        const where: Prisma.UserWhereInput = {
-            ...(search && {
+        const andConditions: Prisma.UserWhereInput[] = [];
+
+        if (excludeId) {
+            andConditions.push({ NOT: { id: excludeId } });
+        }
+
+        if (pharmacyId) {
+            andConditions.push({
+                OR: [
+                    { pharmacy_id: pharmacyId },
+                    {
+                        user_branches: {
+                            some: {
+                                branch: {
+                                    pharmacy_id: pharmacyId,
+                                },
+                            },
+                        },
+                    },
+                ],
+            });
+        }
+
+        if (search) {
+            andConditions.push({
                 OR: [
                     {
                         first_name: {
@@ -40,12 +63,16 @@ export class UsersRepository {
                         },
                     },
                 ],
-            }),
+            });
+        }
 
-            ...(status && {
+        if (status) {
+            andConditions.push({
                 status,
-            }),
-        };
+            });
+        }
+
+        const where: Prisma.UserWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
         const sortableFields = [
             'first_name',

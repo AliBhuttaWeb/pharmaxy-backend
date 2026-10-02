@@ -1,5 +1,7 @@
 import { ConflictException } from '@nestjs/common';
 
+import { MESSAGES } from '../constants/messages.constants';
+
 export function allocateStock(
     batches: {
         id: string;
@@ -7,6 +9,10 @@ export function allocateStock(
     }[],
     requestedQuantity: number,
 ) {
+    if (requestedQuantity <= 0) {
+        throw new ConflictException(MESSAGES.ERROR.QUANTITY_MUST_BE_AT_LEAST_ONE);
+    }
+
     let remaining = requestedQuantity;
 
     const allocations: {
@@ -30,7 +36,7 @@ export function allocateStock(
     }
 
     if (remaining > 0) {
-        throw new ConflictException('Insufficient batch stock');
+        throw new ConflictException(MESSAGES.ERROR.INSUFFICIENT_BATCH_STOCK);
     }
 
     return allocations;

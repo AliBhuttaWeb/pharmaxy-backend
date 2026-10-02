@@ -20,6 +20,7 @@ import { resolveUserScope } from '../helpers/resolve-user-scope.helper';
 import { buildPaginationMeta } from '@/common/pagination';
 import { PermissionsService } from '@/modules/permissions/services/permissions.service';
 import { RolesService } from '@/modules/roles/services/roles.service';
+import { isSuperAdmin } from '@/common/helpers';
 
 @Injectable()
 export class UsersService {
@@ -48,9 +49,12 @@ export class UsersService {
         }
     }
 
-    async list(query: FindUsersQueryDto) {
+    async list(query: FindUsersQueryDto, user: AuthenticatedUser) {
+        const isUserSuperAdmin = isSuperAdmin(user.roles);
+        const pharmacyId = !isUserSuperAdmin ? (user.pharmacy_id || undefined) : undefined;
+
         const { limit, page } = query;
-        const { records, total } = await this.usersRepository.findMany(query);
+        const { records, total } = await this.usersRepository.findMany(query, pharmacyId, user.id);
         if (!total || !page || !limit) return { records };
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
         return { records, pagination };

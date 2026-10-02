@@ -72,7 +72,11 @@ export class PosService {
 
                 const quantity = Number(item.quantity);
 
-                if (Number(branchProduct.quantity) < quantity) {
+                if (quantity <= 0) {
+                    throw new ConflictException(MESSAGES.ERROR.SALE_ITEM_QUANTITY_MUST_BE_AT_LEAST_ONE);
+                }
+
+                if (Number(branchProduct.quantity) <= 0 || Number(branchProduct.quantity) < quantity) {
                     throw new ConflictException(PRODUCT_MESSAGES.ERROR.INSUFFIENT_STOCK);
                 }
 
