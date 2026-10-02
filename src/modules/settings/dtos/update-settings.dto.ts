@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
     IsBoolean,
     IsEnum,
@@ -75,18 +76,21 @@ export class UpdateSettingsDto {
     // -----------------------------
     @ApiPropertyOptional({ example: 10 })
     @IsOptional()
+    @Type(() => Number)
     @IsInt()
     @Min(0)
     minimum_stock_quantity?: number;
 
     @ApiPropertyOptional({ example: 5 })
     @IsOptional()
+    @Type(() => Number)
     @IsInt()
     @Min(0)
     critical_stock_quantity?: number;
 
     @ApiPropertyOptional({ example: 30 })
     @IsOptional()
+    @Type(() => Number)
     @IsInt()
     @Min(0)
     expiry_alert_before_days?: number;
@@ -111,6 +115,7 @@ export class UpdateSettingsDto {
 
     @ApiPropertyOptional({ example: 5.0 })
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     @Min(0)
     search_radius?: number;

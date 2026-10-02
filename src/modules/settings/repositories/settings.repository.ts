@@ -10,6 +10,13 @@ export class SettingsRepository {
     async findByBranchId(branchId: string) {
         return this.prisma.branchSettings.findUnique({
             where: { branch_id: branchId },
+            include: {
+                branch: {
+                    include: {
+                        pharmacy: true,
+                    },
+                },
+            },
         });
     }
 
@@ -19,6 +26,13 @@ export class SettingsRepository {
                 ...DEFAULT_BRANCH_SETTINGS,
                 branch: {
                     connect: { id: branchId },
+                },
+            },
+            include: {
+                branch: {
+                    include: {
+                        pharmacy: true,
+                    },
                 },
             },
         });
@@ -97,6 +111,13 @@ export class SettingsRepository {
             where: { branch_id: branchId },
             create: createData,
             update: data,
+            include: {
+                branch: {
+                    include: {
+                        pharmacy: true,
+                    },
+                },
+            },
         });
     }
 }
