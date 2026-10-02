@@ -34,6 +34,8 @@ import { CommonModule } from './common/common.module';
 import { PharmacyPaymentMethodsModule } from './modules/pharmacy-payment-methods/pharmacy-payment-methods.module';
 import { PaymentMethodsModule } from './modules/payment-methods/payment-methods.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { SupportTicketsModule } from './modules/support-tickets/support-tickets.module';
+import { SystemLogsModule } from './modules/system-logs/system-logs.module';
 
 @Module({
     imports: [
@@ -80,6 +82,8 @@ import { SettingsModule } from './modules/settings/settings.module';
         PharmacyPaymentMethodsModule,
         PaymentMethodsModule,
         SettingsModule,
+        SupportTicketsModule,
+        SystemLogsModule,
     ],
     providers: [
         {
