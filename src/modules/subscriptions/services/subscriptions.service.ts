@@ -18,6 +18,8 @@ import { SubscriptionsRepository } from '../repositories/subscriptions.repositor
 
 import { SubscriptionPlansService } from '@/modules/subscription-plans/services/subscription-plans.service';
 import { buildPaginationMeta } from '@/common/pagination';
+import { AuthenticatedUser } from '@/modules/auth/types';
+import { getActivePharmacyId } from '@/common/helpers';
 
 @Injectable()
 export class SubscriptionsService {
@@ -25,6 +27,16 @@ export class SubscriptionsService {
         private readonly subscriptionsRepository: SubscriptionsRepository,
         private readonly subscriptionPlansService: SubscriptionPlansService,
     ) {}
+
+    async getCurrent(user: AuthenticatedUser) {
+        const pharmacyId = getActivePharmacyId(user);
+        if (!pharmacyId) {
+            return { subscription: null };
+        }
+
+        const subscription = await this.subscriptionsRepository.findActiveByPharmacyId(pharmacyId);
+        return { subscription: subscription ?? null };
+    }
 
     async findMany(query: SubscriptionQueryDto) {
         const { limit, page } = query;

@@ -2,6 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { buildPaginationMeta } from '@/common/pagination';
 
 import { Prisma } from '@gen/prisma/client';
+import { InvoiceStatus } from '@gen/prisma/enums';
 
 import { CustomersRepository } from '../repositories/customers.repository';
 
@@ -20,6 +21,41 @@ export class CustomersService {
         private readonly branchesService: BranchesService,
     ) {}
 
+    private mapCustomerStats(customer: any) {
+        const invoices = customer.invoices || [];
+
+        let totalOrders = 0;
+        let totalSpent = 0;
+
+        for (const invoice of invoices) {
+            const paid = Number(invoice.paid_amount || 0);
+            const grandTotal = Number(invoice.grand_total || 0);
+            const invoiceAmount = paid > 0 ? paid : grandTotal;
+
+            const totalRefunded = (invoice.returns || []).reduce(
+                (sum: number, ret: any) => sum + Number(ret.refund_amount || 0),
+                0,
+            );
+
+            const netSpent = Math.max(0, invoiceAmount - totalRefunded);
+
+            const isFullyRefunded =
+                invoice.status === InvoiceStatus.REFUNDED ||
+                (invoiceAmount > 0 && totalRefunded >= invoiceAmount);
+
+            if (!isFullyRefunded) {
+                totalOrders += 1;
+                totalSpent += netSpent;
+            }
+        }
+
+        return {
+            ...customer,
+            total_orders: totalOrders,
+            total_spent: Math.round((totalSpent + Number.EPSILON) * 100) / 100,
+        };
+    }
+
     async findMany(branchId: string, query: CustomerQueryDto) {
         const branch = await this.branchesService.findById(branchId);
         const { limit, page } = query;
@@ -27,9 +63,10 @@ export class CustomersService {
             branch.pharmacy_id,
             query,
         );
-        if (!total || !page || !limit) return { records };
+        const mappedRecords = (records || []).map((customer: any) => this.mapCustomerStats(customer));
+        if (!total || !page || !limit) return { records: mappedRecords };
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
-        return { records, pagination };
+        return { records: mappedRecords, pagination };
     }
 
     async findById(id: string) {
@@ -39,7 +76,7 @@ export class CustomersService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return { customer };
+        return { customer: this.mapCustomerStats(customer) };
     }
 
     async findByPhone(pharmacyId: string, phone: string) {

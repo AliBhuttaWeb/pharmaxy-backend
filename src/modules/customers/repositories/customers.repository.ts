@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@gen/prisma/client';
+import { InvoiceStatus, ReturnStatus } from '@gen/prisma/enums';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
 
@@ -11,6 +12,34 @@ export class CustomersRepository {
 
     private readonly customerRelations: Prisma.CustomerInclude = {
         pharmacy: true,
+        invoices: {
+            where: {
+                deleted_at: null,
+                status: {
+                    in: [
+                        InvoiceStatus.COMPLETED,
+                        InvoiceStatus.PARTIALLY_REFUNDED,
+                        InvoiceStatus.REFUNDED,
+                    ],
+                },
+            },
+            select: {
+                id: true,
+                status: true,
+                grand_total: true,
+                paid_amount: true,
+                created_at: true,
+                returns: {
+                    where: {
+                        status: ReturnStatus.COMPLETED,
+                    },
+                    select: {
+                        id: true,
+                        refund_amount: true,
+                    },
+                },
+            },
+        },
     };
 
     private buildWhere(pharmacyId: string, query: CustomerQueryDto): Prisma.CustomerWhereInput {

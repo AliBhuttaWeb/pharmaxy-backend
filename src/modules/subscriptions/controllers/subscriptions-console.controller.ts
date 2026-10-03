@@ -10,13 +10,20 @@ import {
 
 import { SubscriptionsService } from '../services/subscriptions.service';
 
-import { ConsoleController, Permissions } from '@/common/decorators';
+import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
 
 import { SUBSCRIPTIONS_PERMISSIONS } from '@/common/constants/permissions';
+import { AuthenticatedUser } from '@/modules/auth/types';
 
 @ConsoleController('subscriptions')
 export class SubscriptionsConsoleController {
     constructor(private readonly subscriptionsService: SubscriptionsService) {}
+
+    @Get('current')
+    @Permissions(SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_DETAIL.name)
+    getCurrent(@CurrentUser() user: AuthenticatedUser) {
+        return this.subscriptionsService.getCurrent(user);
+    }
 
     @Get()
     @Permissions(SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_LIST.name)
