@@ -22,37 +22,47 @@ export class CustomersService {
     ) {}
 
     private mapCustomerStats(customer: any) {
-        const invoices = customer.invoices || [];
+        const { invoices = [], ...rest } = customer;
 
-        let totalOrders = 0;
         let totalSpent = 0;
+        let refundedAmount = 0;
+        let refundedOrders = 0;
+        let fullyRefundedOrders = 0;
 
         for (const invoice of invoices) {
             const paid = Number(invoice.paid_amount || 0);
-            const grandTotal = Number(invoice.grand_total || 0);
-            const invoiceAmount = paid > 0 ? paid : grandTotal;
+            const invoiceAmount = paid > 0 ? paid : Number(invoice.grand_total || 0);
 
-            const totalRefunded = (invoice.returns || []).reduce(
+            const invoiceRefunded = (invoice.returns || []).reduce(
                 (sum: number, ret: any) => sum + Number(ret.refund_amount || 0),
                 0,
             );
 
-            const netSpent = Math.max(0, invoiceAmount - totalRefunded);
+            totalSpent += invoiceAmount;
+            refundedAmount += invoiceRefunded;
 
-            const isFullyRefunded =
+            if (invoiceRefunded > 0) {
+                refundedOrders += 1;
+            }
+
+            if (
                 invoice.status === InvoiceStatus.REFUNDED ||
-                (invoiceAmount > 0 && totalRefunded >= invoiceAmount);
-
-            if (!isFullyRefunded) {
-                totalOrders += 1;
-                totalSpent += netSpent;
+                (invoiceAmount > 0 && invoiceRefunded >= invoiceAmount)
+            ) {
+                fullyRefundedOrders += 1;
             }
         }
 
+        const round = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+
         return {
-            ...customer,
-            total_orders: totalOrders,
-            total_spent: Math.round((totalSpent + Number.EPSILON) * 100) / 100,
+            ...rest,
+            total_orders: invoices.length,
+            total_spent: round(totalSpent),
+            refunded_orders: refundedOrders,
+            refunded_amount: round(refundedAmount),
+            net_orders: invoices.length - fullyRefundedOrders,
+            net_spent: round(Math.max(0, totalSpent - refundedAmount)),
         };
     }
 
