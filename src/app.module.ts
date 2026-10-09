@@ -17,7 +17,7 @@ import { PharmaciesModule } from './modules/pharmacies/pharmacies.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { SuppliersModule } from './modules/suppliers/suppliers.module';
 import { ManufacturersModule } from './modules/manufacturers/manufacturers.module';
-import { RetailCategoriesModule } from './modules/retail-categories/retail-categories.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 import { DosageFormsModule } from './modules/dosage-forms/dosage-forms.module';
 import { ProductsModule } from './modules/products/products.module';
 import { BranchProductsModule } from './modules/branch-products/branch-products.module';
@@ -65,7 +65,7 @@ import { InvoicesModule } from './modules/invoices/invoices.module';
         BranchesModule,
         SuppliersModule,
         ManufacturersModule,
-        RetailCategoriesModule,
+        CategoriesModule,
         DosageFormsModule,
         ProductsModule,
         BranchProductsModule,

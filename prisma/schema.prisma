@@ -545,7 +545,7 @@ model Product {
   name         String @db.VarChar(255)
   generic_name String @db.VarChar(255) //It's what we pakistani call formula
 
-  retail_category_id String? @db.Uuid
+  category_id String? @db.Uuid
 
   dosage_form_id String @db.Uuid
 
@@ -575,7 +575,7 @@ model Product {
 
   manufacturer Manufacturer @relation(fields: [manufacturer_id], references: [id], onDelete: Restrict)
 
-  retail_category RetailCategory? @relation(fields: [retail_category_id], references: [id], onDelete: SetNull)
+  category Category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
 
   dosage_form DosageForm @relation(fields: [dosage_form_id], references: [id], onDelete: Restrict)
 
@@ -595,7 +595,7 @@ model Product {
   @@index([barcode])
   @@index([requires_prescription])
   @@index([is_active])
-  @@index([retail_category_id])
+  @@index([category_id])
   @@index([dosage_form_id])
   @@map("products")
 }
@@ -653,7 +653,7 @@ model BranchProduct {
   @@map("branch_products")
 }
 
-model RetailCategory {
+model Category {
   id String @id @default(uuid()) @db.Uuid
 
   name String @unique @db.VarChar(150)
@@ -666,14 +666,14 @@ model RetailCategory {
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
-  parent   RetailCategory?  @relation("retail_category_parent", fields: [parent_id], references: [id], onDelete: SetNull)
-  children RetailCategory[] @relation("retail_category_parent")
+  parent   Category?  @relation("category_parent", fields: [parent_id], references: [id], onDelete: SetNull)
+  children Category[] @relation("category_parent")
 
   products Product[]
 
   @@index([parent_id])
   @@index([name])
-  @@map("retail_categories")
+  @@map("categories")
 }
 
 model DosageForm {

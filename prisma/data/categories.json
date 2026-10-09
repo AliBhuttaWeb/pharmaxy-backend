@@ -1,0 +1,42 @@
+{
+    "version": 2,
+    "description": "Seed-ready generic category master data for a pharmacy platform.",
+    "categories": [
+        {
+            "name": "Medicines",
+            "description": "Prescription and OTC pharmaceuticals including tablets, capsules, syrups, injections, and ointments."
+        },
+        {
+            "name": "Vitamins & Supplements",
+            "description": "Multivitamins, minerals, dietary supplements, and fitness nutrition."
+        },
+        {
+            "name": "Baby & Mother Care",
+            "description": "Infant formula, baby food, diapers, wipes, and mother care products."
+        },
+        {
+            "name": "Personal Care & Hygiene",
+            "description": "Skincare, haircare, oral hygiene, bath products, feminine care, and sexual wellness."
+        },
+        {
+            "name": "Medical Devices & Diagnostics",
+            "description": "Blood pressure monitors, glucometers, thermometers, nebulizers, and diagnostic tools."
+        },
+        {
+            "name": "Surgical & First Aid",
+            "description": "Bandages, gauze, syringes, surgical tape, wound care, and emergency first aid supplies."
+        },
+        {
+            "name": "Herbal & Alternative Medicine",
+            "description": "Traditional herbal remedies, Unani, homeopathic, and organic wellness products."
+        },
+        {
+            "name": "Food, Beverages & Confectionery",
+            "description": "Juices, energy drinks, water, snacks, and front-counter confectionery."
+        },
+        {
+            "name": "Other / General",
+            "description": "General household items, miscellaneous products, and uncategorized goods."
+        }
+    ]
+}

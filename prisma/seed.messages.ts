@@ -5,7 +5,7 @@ export const MESSAGES = {
         PERMISSIONS_SEEDED: 'Permissions seeded successfully.',
         SUPER_ADMIN_CREATED: 'Super Admin seeded successfully.',
 
-        RETAIL_CATEGORIES_SEEDED: 'Retail categories seeded successfully.',
+        CATEGORIES_SEEDED: 'Categories seeded successfully.',
         MANUFACTURERS_SEEDED: 'Manufacturers seeded successfully.',
         DOSAGE_FORMS_SEEDED: 'Dosage forms seeded successfully.',
         SUBSCRIPTION_PLANS_SEEDED: 'Subscription Plans seeded successfully.',

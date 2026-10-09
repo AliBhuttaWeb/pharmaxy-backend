@@ -1,10 +1,10 @@
 import { MESSAGES } from 'prisma/seed.messages';
 import { SeedContext } from '../seed.type';
-import retailCategoriesData from '../data/retail-categories.json';
+import categoriesData from '../data/categories.json';
 
-export async function seedRetailCategories({ prisma }: SeedContext) {
-    for (const category of retailCategoriesData.retailCategories) {
-        await prisma.retailCategory.upsert({
+export async function seedCategories({ prisma }: SeedContext) {
+    for (const category of categoriesData.categories) {
+        await prisma.category.upsert({
             where: {
                 name: category.name,
             },
@@ -20,5 +20,5 @@ export async function seedRetailCategories({ prisma }: SeedContext) {
         });
     }
 
-    console.log(MESSAGES.SUCCESS.RETAIL_CATEGORIES_SEEDED);
+    console.log(MESSAGES.SUCCESS.CATEGORIES_SEEDED);
 }

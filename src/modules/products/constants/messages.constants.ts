@@ -12,7 +12,7 @@ export const MESSAGES = {
         ALREADY_EXISTS: 'A product with the same name and generic name already exists.',
         BARCODE_ALREADY_EXISTS: 'Product with this barcode already exists.',
         MANUFACTURER_NOT_FOUND: 'Manufacturer not found.',
-        RETAIL_CATEGORY_NOT_FOUND: 'Retail category not found.',
+        CATEGORY_NOT_FOUND: 'Category not found.',
         DOSAGE_FORM_NOT_FOUND: 'Dosage form not found.',
         INSUFFIENT_STOCK: 'Insufficient stock.',
         IN_USE: 'Product cannot be deleted because it is assigned to branch products.',

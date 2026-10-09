@@ -11,7 +11,7 @@ import { MESSAGES } from '../constants';
 import { CreateProductDto, ProductQueryDto, UpdateProductDto } from '../dtos';
 import { ProductsRepository } from '../repositories/products.repository';
 import { ManufacturersService } from '@/modules/manufacturers/services/manufacturer.service';
-import { RetailCategoriesService } from '@/modules/retail-categories/services/retail-categories.service';
+import { CategoriesService } from '@/modules/categories/services/categories.service';
 import { DosageFormsService } from '@/modules/dosage-forms/services/dosage-forms.service';
 import { buildPaginationMeta } from '@/common/pagination';
 
@@ -21,8 +21,8 @@ export class ProductsService {
         private readonly productsRepository: ProductsRepository,
         @Inject(forwardRef(() => ManufacturersService))
         private readonly manufacturersService: ManufacturersService,
-        @Inject(forwardRef(() => RetailCategoriesService))
-        private readonly retailCategoriesService: RetailCategoriesService,
+        @Inject(forwardRef(() => CategoriesService))
+        private readonly categoriesService: CategoriesService,
         @Inject(forwardRef(() => DosageFormsService))
         private readonly dosageFormsService: DosageFormsService,
     ) {}
@@ -128,8 +128,8 @@ export class ProductsService {
         return this.productsRepository.existsByDosageForm(dosageFormId);
     }
 
-    async existsByRetailCategory(retailCategoryId: string): Promise<boolean> {
-        return this.productsRepository.existsByRetailCategory(retailCategoryId);
+    async existsByCategory(categoryId: string): Promise<boolean> {
+        return this.productsRepository.existsByCategory(categoryId);
     }
 
     async existsByManufacturer(manufacturerId: string): Promise<boolean> {
@@ -141,8 +141,8 @@ export class ProductsService {
             await this.manufacturersService.get(dto.manufacturer_id);
         }
 
-        if (dto.retail_category_id) {
-            await this.retailCategoriesService.findById(dto.retail_category_id);
+        if (dto.category_id) {
+            await this.categoriesService.findById(dto.category_id);
         }
 
         if (dto.dosage_form_id) {

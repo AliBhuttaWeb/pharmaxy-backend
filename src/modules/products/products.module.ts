@@ -3,13 +3,13 @@ import { ProductsConsoleController } from './controllers/products.consoe.control
 import { ProductsRepository } from './repositories/products.repository';
 import { ProductsService } from './services/products.service';
 import { ManufacturersModule } from '../manufacturers/manufacturers.module';
-import { RetailCategoriesModule } from '../retail-categories/retail-categories.module';
+import { CategoriesModule } from '../categories/categories.module';
 import { DosageFormsModule } from '../dosage-forms/dosage-forms.module';
 
 @Module({
     imports: [
         forwardRef(() => ManufacturersModule),
-        forwardRef(() => RetailCategoriesModule),
+        forwardRef(() => CategoriesModule),
         forwardRef(() => DosageFormsModule),
     ],
 

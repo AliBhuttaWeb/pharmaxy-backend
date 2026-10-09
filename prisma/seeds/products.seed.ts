@@ -4,7 +4,7 @@ import products from '../data/products.json';
 
 export async function seedProducts({ prisma }: SeedContext): Promise<void> {
     for (const product of products.products) {
-        const category = await prisma.retailCategory.findUnique({
+        const category = await prisma.category.findUnique({
             where: {
                 name: product.category,
             },
@@ -12,7 +12,7 @@ export async function seedProducts({ prisma }: SeedContext): Promise<void> {
 
         if (!category) {
             throw new Error(
-                `Product seed failed: RetailCategory "${product.category}" not found for product "${product.name}".`,
+                `Product seed failed: Category "${product.category}" not found for product "${product.name}".`,
             );
         }
 
@@ -48,7 +48,7 @@ export async function seedProducts({ prisma }: SeedContext): Promise<void> {
             pack_unit: product.packUnit ?? 'Pack',
 
             manufacturer_id: manufacturer.id,
-            retail_category_id: category.id,
+            category_id: category.id,
             dosage_form_id: dosageForm.id,
 
             is_active: true,

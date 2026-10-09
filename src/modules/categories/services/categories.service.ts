@@ -6,69 +6,69 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 
-import { CreateRetailCategoryDto, RetailCategoryQueryDto, UpdateRetailCategoryDto } from '../dtos';
+import { CreateCategoryDto, CategoryQueryDto, UpdateCategoryDto } from '../dtos';
 import { MESSAGES } from '../constants';
-import { RetailCategoriesRepository } from '../repositories/retail-categories.repository';
+import { CategoriesRepository } from '../repositories/categories.repository';
 import { ProductsService } from '@/modules/products/services/products.service';
 import { buildPaginationMeta } from '@/common/pagination';
 
 @Injectable()
-export class RetailCategoriesService {
+export class CategoriesService {
     constructor(
-        private readonly retailCategoryRepository: RetailCategoriesRepository,
+        private readonly categoriesRepository: CategoriesRepository,
         @Inject(forwardRef(() => ProductsService))
         private readonly productsService: ProductsService,
     ) {}
 
-    async findMany(query: RetailCategoryQueryDto) {
+    async findMany(query: CategoryQueryDto) {
         const { limit, page } = query;
-        const { records, total } = await this.retailCategoryRepository.findMany(query);
+        const { records, total } = await this.categoriesRepository.findMany(query);
         if (!total || !page || !limit) return { records };
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
         return { records, pagination };
     }
 
     async findById(id: string) {
-        const retailCategory = await this.retailCategoryRepository.findById(id);
+        const category = await this.categoriesRepository.findById(id);
 
-        if (!retailCategory) {
+        if (!category) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return { retailCategory };
+        return { category };
     }
 
-    async create(dto: CreateRetailCategoryDto) {
-        const existingRetailCategory = await this.retailCategoryRepository.findByName(dto.name);
+    async create(dto: CreateCategoryDto) {
+        const existingCategory = await this.categoriesRepository.findByName(dto.name);
 
-        if (existingRetailCategory) {
+        if (existingCategory) {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
         }
 
-        const retailCategory = await this.retailCategoryRepository.create(dto);
+        const category = await this.categoriesRepository.create(dto);
         return {
-            retailCategory,
+            category,
             message: MESSAGES.SUCCESS.CREATED,
         };
     }
 
-    async update(id: string, dto: UpdateRetailCategoryDto) {
+    async update(id: string, dto: UpdateCategoryDto) {
         await this.findById(id);
 
         if (dto.name) {
-            const existingRetailCategory = await this.retailCategoryRepository.findByName(
+            const existingCategory = await this.categoriesRepository.findByName(
                 dto.name,
                 id,
             );
 
-            if (existingRetailCategory) {
+            if (existingCategory) {
                 throw new ConflictException(MESSAGES.ERROR.ALREADY_EXISTS);
             }
         }
 
-        const retailCategory = await this.retailCategoryRepository.update(id, dto);
+        const category = await this.categoriesRepository.update(id, dto);
         return {
-            retailCategory,
+            category,
             message: MESSAGES.SUCCESS.UPDATED,
         };
     }
@@ -76,12 +76,12 @@ export class RetailCategoriesService {
     async delete(id: string) {
         await this.findById(id);
 
-        const isInUse = await this.productsService.existsByRetailCategory(id);
+        const isInUse = await this.productsService.existsByCategory(id);
         if (isInUse) {
             throw new ConflictException(MESSAGES.ERROR.IN_USE);
         }
 
-        await this.retailCategoryRepository.delete(id);
+        await this.categoriesRepository.delete(id);
 
         return { message: MESSAGES.SUCCESS.DELETED };
     }

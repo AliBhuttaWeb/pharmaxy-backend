@@ -28,7 +28,7 @@ export class BranchProductsRepository {
                 manufacturer: {
                     select: { name: true, description: true },
                 },
-                retail_category: {
+                category: {
                     select: { name: true, description: true },
                 },
                 dosage_form: {

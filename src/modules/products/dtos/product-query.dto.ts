@@ -12,7 +12,7 @@ export class ProductQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsUUID()
-    retail_category_id?: string;
+    category_id?: string;
 
     @ApiPropertyOptional()
     @IsOptional()

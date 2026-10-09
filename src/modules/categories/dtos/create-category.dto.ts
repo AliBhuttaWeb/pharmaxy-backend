@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, MaxLength } from 'class-validator';
 
-export class CreateRetailCategoryDto {
+export class CreateCategoryDto {
     @ApiProperty({
-        example: 'Pain Relief',
-        maxLength: 100,
+        example: 'Medicines',
+        maxLength: 150,
     })
     @IsString()
-    @MaxLength(100)
+    @MaxLength(150)
     name!: string;
 
     @ApiProperty({
-        example: 'Pain killers and analgesics',
+        example: 'Prescription and OTC pharmaceuticals',
         required: false,
         maxLength: 500,
     })

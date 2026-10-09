@@ -1,9 +1,9 @@
 import { PaginationQueryDto } from '@/common/pagination';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsOptional } from 'class-validator';
 
-export class RetailCategoryQueryDto extends PaginationQueryDto {
+export class CategoryQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional()
     @IsOptional()
     @Transform(({ value }) => value === 'true')

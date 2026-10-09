@@ -44,7 +44,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         permissions.PRODUCT_BATCHES_PERMISSIONS.PRODUCT_BATCH_VIEW_LIST,
         permissions.PRODUCT_BATCHES_PERMISSIONS.PRODUCT_BATCH_VIEW_DETAIL,
 
-        ...Object.values(permissions.RETAIL_CATEGORIES_PERMISSIONS),
+        ...Object.values(permissions.CATEGORIES_PERMISSIONS),
         ...Object.values(permissions.DOSAGE_FORMS_PERMISSIONS),
         ...Object.values(permissions.MANUFACTURERS_PERMISSIONS),
 
@@ -156,7 +156,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         // Pharmacy Payment Methods
         ...Object.values(permissions.PHARMACY_PAYMENT_METHODS_PERMISSIONS),
 
-        permissions.RETAIL_CATEGORIES_PERMISSIONS.RETAIL_CATEGORY_VIEW_LIST,
+        permissions.CATEGORIES_PERMISSIONS.CATEGORY_VIEW_LIST,
         permissions.DOSAGE_FORMS_PERMISSIONS.DOSAGE_FORM_VIEW_LIST,
         permissions.MANUFACTURERS_PERMISSIONS.MANUFACTURER_VIEW_LIST,
 
