@@ -204,7 +204,12 @@ export class BranchProductsService {
                 batch = await this.productBatchesRepository.createBatch(id, dto, tx);
             }
 
-            await this.branchProductsRepository.incrementQuantity(id, dto.quantity, tx);
+            await this.branchProductsRepository.incrementQuantity(
+                id,
+                dto.quantity,
+                dto.selling_price,
+                tx,
+            );
 
             return {
                 message: MESSAGES.SUCCESS.STOCK_RECEIVED,

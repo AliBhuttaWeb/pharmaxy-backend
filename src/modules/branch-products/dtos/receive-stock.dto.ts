@@ -45,6 +45,15 @@ export class ReceiveStockDto {
     @Min(0.0001)
     mrp!: number;
 
+    @ApiPropertyOptional({
+        example: 3.5,
+        description: 'Optional selling price to update for the branch product',
+    })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 4 })
+    @Min(0.0001)
+    selling_price?: number;
+
     @ApiProperty({
         example: 100,
     })

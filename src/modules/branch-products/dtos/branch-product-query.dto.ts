@@ -17,7 +17,7 @@ export class BranchProductQueryDto extends PaginationQueryDto {
 
     @ApiPropertyOptional()
     @IsOptional()
-    @Transform(({ value }) => value === 'true')
+    @Transform(({ value }) => value === 'true' || value === true)
     @IsBoolean()
     is_active?: boolean;
 }

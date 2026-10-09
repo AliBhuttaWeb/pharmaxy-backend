@@ -205,7 +205,12 @@ export class BranchProductsRepository {
         });
     }
 
-    incrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
+    incrementQuantity(
+        id: string,
+        quantity: number,
+        sellingPrice?: number,
+        tx?: Prisma.TransactionClient,
+    ) {
         return this.prisma.getClient(tx).branchProduct.update({
             where: {
                 id,
@@ -214,6 +219,9 @@ export class BranchProductsRepository {
                 quantity: {
                     increment: quantity,
                 },
+                ...(sellingPrice !== undefined && {
+                    selling_price: sellingPrice,
+                }),
             },
             include: this.branchProductRelations,
         });
