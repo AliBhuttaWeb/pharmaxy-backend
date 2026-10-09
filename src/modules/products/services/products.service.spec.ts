@@ -6,7 +6,6 @@ describe('ProductsService', () => {
     let service: ProductsService;
     let mockProductsRepo: any;
     let mockManufacturersService: any;
-    let mockProductTypesService: any;
     let mockRetailCategoriesService: any;
     let mockDosageFormsService: any;
 
@@ -20,17 +19,12 @@ describe('ProductsService', () => {
             update: jest.fn(),
             delete: jest.fn(),
             existsByDosageForm: jest.fn(),
-            existsByProductType: jest.fn(),
             existsByRetailCategory: jest.fn(),
             existsByManufacturer: jest.fn(),
         };
 
         mockManufacturersService = {
             get: jest.fn(),
-        };
-
-        mockProductTypesService = {
-            findById: jest.fn(),
         };
 
         mockRetailCategoriesService = {
@@ -44,7 +38,6 @@ describe('ProductsService', () => {
         service = new ProductsService(
             mockProductsRepo,
             mockManufacturersService,
-            mockProductTypesService,
             mockRetailCategoriesService,
             mockDosageFormsService,
         );
@@ -79,13 +72,6 @@ describe('ProductsService', () => {
             expect(res).toBe(true);
         });
 
-        it('should delegate existsByProductType to repository', async () => {
-            mockProductsRepo.existsByProductType.mockResolvedValue(true);
-            const res = await service.existsByProductType('pt-1');
-            expect(mockProductsRepo.existsByProductType).toHaveBeenCalledWith('pt-1');
-            expect(res).toBe(true);
-        });
-
         it('should delegate existsByRetailCategory to repository', async () => {
             mockProductsRepo.existsByRetailCategory.mockResolvedValue(true);
             const res = await service.existsByRetailCategory('rc-1');
@@ -107,13 +93,11 @@ describe('ProductsService', () => {
                 name: 'Panadol',
                 generic_name: 'Paracetamol',
                 manufacturer_id: 'm-1',
-                product_type_id: 'pt-1',
                 retail_category_id: 'rc-1',
                 dosage_form_id: 'df-1',
             };
 
             mockManufacturersService.get.mockResolvedValue({ id: 'm-1' });
-            mockProductTypesService.findById.mockResolvedValue({ id: 'pt-1' });
             mockRetailCategoriesService.findById.mockResolvedValue({ id: 'rc-1' });
             mockDosageFormsService.findById.mockResolvedValue({ id: 'df-1' });
             mockProductsRepo.findByNameAndGenericName.mockResolvedValue(null);
@@ -122,7 +106,6 @@ describe('ProductsService', () => {
             await service.create(dto);
 
             expect(mockManufacturersService.get).toHaveBeenCalledWith('m-1');
-            expect(mockProductTypesService.findById).toHaveBeenCalledWith('pt-1');
             expect(mockRetailCategoriesService.findById).toHaveBeenCalledWith('rc-1');
             expect(mockDosageFormsService.findById).toHaveBeenCalledWith('df-1');
         });

@@ -6,7 +6,6 @@
             "name": "Panadol",
             "genericName": "Paracetamol",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Tablet",
@@ -17,7 +16,6 @@
             "name": "Panadol Extra",
             "genericName": "Paracetamol + Caffeine",
             "strength": "500mg + 65mg",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Tablet",
@@ -28,7 +26,6 @@
             "name": "Brufen",
             "genericName": "Ibuprofen",
             "strength": "400mg",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet",
@@ -39,7 +36,6 @@
             "name": "Brufen Syrup",
             "genericName": "Ibuprofen",
             "strength": "100mg/5ml",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Syrup",
@@ -50,7 +46,6 @@
             "name": "Ponstan",
             "genericName": "Mefenamic Acid",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet",
@@ -61,7 +56,6 @@
             "name": "Voltaren",
             "genericName": "Diclofenac Sodium",
             "strength": "50mg",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Novartis Pakistan",
             "dosageForm": "Tablet",
@@ -72,7 +66,6 @@
             "name": "Voltaren Emulgel",
             "genericName": "Diclofenac Diethylamine",
             "strength": "1.16%",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Novartis Pakistan",
             "dosageForm": "Gel",
@@ -83,7 +76,6 @@
             "name": "Calpol",
             "genericName": "Paracetamol",
             "strength": "120mg/5ml",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Syrup",
@@ -94,7 +86,6 @@
             "name": "Augmentin",
             "genericName": "Amoxicillin + Clavulanic Acid",
             "strength": "625mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Tablet",
@@ -105,7 +96,6 @@
             "name": "Augmentin Suspension",
             "genericName": "Amoxicillin + Clavulanic Acid",
             "strength": "228.5mg/5ml",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Suspension",
@@ -116,7 +106,6 @@
             "name": "Amoxil",
             "genericName": "Amoxicillin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Capsule",
@@ -127,7 +116,6 @@
             "name": "Cefspan",
             "genericName": "Cefixime",
             "strength": "400mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet",
@@ -138,7 +126,6 @@
             "name": "Cefspan Suspension",
             "genericName": "Cefixime",
             "strength": "100mg/5ml",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Suspension",
@@ -149,7 +136,6 @@
             "name": "Flagyl",
             "genericName": "Metronidazole",
             "strength": "400mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Sanofi Pakistan",
             "dosageForm": "Tablet",
@@ -160,7 +146,6 @@
             "name": "Ciproxin",
             "genericName": "Ciprofloxacin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Bayer Pakistan",
             "dosageForm": "Tablet",
@@ -171,7 +156,6 @@
             "name": "Zithromax",
             "genericName": "Azithromycin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Pfizer Pakistan",
             "dosageForm": "Tablet",
@@ -182,7 +166,6 @@
             "name": "Klaricid",
             "genericName": "Clarithromycin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet",
@@ -193,7 +176,6 @@
             "name": "Actifed",
             "genericName": "Pseudoephedrine + Triprolidine",
             "strength": "60mg + 2.5mg",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Tablet",
@@ -204,7 +186,6 @@
             "name": "Benadryl",
             "genericName": "Diphenhydramine",
             "strength": "12.5mg/5ml",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Johnson & Johnson",
             "dosageForm": "Syrup",
@@ -215,7 +196,6 @@
             "name": "Vicks Formula 44",
             "genericName": "Dextromethorphan",
             "strength": "15mg/5ml",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Procter & Gamble",
             "dosageForm": "Syrup",
@@ -226,7 +206,6 @@
             "name": "Hydryllin",
             "genericName": "Diphenhydramine + Ammonium Chloride",
             "strength": "Combination",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "The Searle Company",
             "dosageForm": "Syrup",
@@ -237,7 +216,6 @@
             "name": "Losec",
             "genericName": "Omeprazole",
             "strength": "20mg",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "AstraZeneca",
             "dosageForm": "Capsule",
@@ -248,7 +226,6 @@
             "name": "Nexum",
             "genericName": "Esomeprazole",
             "strength": "40mg",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet",
@@ -259,7 +236,6 @@
             "name": "Gaviscon",
             "genericName": "Sodium Alginate + Sodium Bicarbonate + Calcium Carbonate",
             "strength": "Combination",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Reckitt",
             "dosageForm": "Syrup",
@@ -270,7 +246,6 @@
             "name": "Imodium",
             "genericName": "Loperamide",
             "strength": "2mg",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Johnson & Johnson",
             "dosageForm": "Capsule",
@@ -281,7 +256,6 @@
             "name": "Buscopan",
             "genericName": "Hyoscine Butylbromide",
             "strength": "10mg",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Sanofi Pakistan",
             "dosageForm": "Tablet",
@@ -292,7 +266,6 @@
             "name": "Flagyl Suspension",
             "genericName": "Metronidazole",
             "strength": "200mg/5ml",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Sanofi Pakistan",
             "dosageForm": "Suspension",
@@ -303,7 +276,6 @@
             "name": "Glucophage",
             "genericName": "Metformin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Diabetes Care",
             "manufacturer": "Merck",
             "dosageForm": "Tablet",
@@ -314,7 +286,6 @@
             "name": "Glucophage XR",
             "genericName": "Metformin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Diabetes Care",
             "manufacturer": "Merck",
             "dosageForm": "Tablet",
@@ -325,7 +296,6 @@
             "name": "Diamicron MR",
             "genericName": "Gliclazide",
             "strength": "60mg",
-            "productType": "Medicine",
             "category": "Diabetes Care",
             "manufacturer": "Servier",
             "dosageForm": "Tablet",
@@ -336,7 +306,6 @@
             "name": "Januvia",
             "genericName": "Sitagliptin",
             "strength": "100mg",
-            "productType": "Medicine",
             "category": "Diabetes Care",
             "manufacturer": "Merck",
             "dosageForm": "Tablet",
@@ -347,7 +316,6 @@
             "name": "Lantus",
             "genericName": "Insulin Glargine",
             "strength": "100IU/ml",
-            "productType": "Medicine",
             "category": "Diabetes Care",
             "manufacturer": "Sanofi Pakistan",
             "dosageForm": "Injection",
@@ -358,7 +326,6 @@
             "name": "Norvasc",
             "genericName": "Amlodipine",
             "strength": "5mg",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Pfizer Pakistan",
             "dosageForm": "Tablet",
@@ -369,7 +336,6 @@
             "name": "Concor",
             "genericName": "Bisoprolol",
             "strength": "5mg",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Merck",
             "dosageForm": "Tablet",
@@ -380,7 +346,6 @@
             "name": "Lasix",
             "genericName": "Furosemide",
             "strength": "40mg",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Sanofi Pakistan",
             "dosageForm": "Tablet",
@@ -391,7 +356,6 @@
             "name": "Lipitor",
             "genericName": "Atorvastatin",
             "strength": "20mg",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Pfizer Pakistan",
             "dosageForm": "Tablet",
@@ -402,7 +366,6 @@
             "name": "Plavix",
             "genericName": "Clopidogrel",
             "strength": "75mg",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Sanofi Pakistan",
             "dosageForm": "Tablet",
@@ -413,7 +376,6 @@
             "name": "Cozaar",
             "genericName": "Losartan Potassium",
             "strength": "50mg",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Merck",
             "dosageForm": "Tablet",
@@ -424,7 +386,6 @@
             "name": "Betnovate Cream",
             "genericName": "Betamethasone Valerate",
             "strength": "0.1%",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Cream",
@@ -435,7 +396,6 @@
             "name": "Fucidin Cream",
             "genericName": "Fusidic Acid",
             "strength": "2%",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Cream",
@@ -446,7 +406,6 @@
             "name": "Canesten Cream",
             "genericName": "Clotrimazole",
             "strength": "1%",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "Bayer Pakistan",
             "dosageForm": "Cream",
@@ -457,7 +416,6 @@
             "name": "Brufen Gel",
             "genericName": "Ibuprofen",
             "strength": "5%",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Gel",
@@ -468,7 +426,6 @@
             "name": "Tobrex Eye Drops",
             "genericName": "Tobramycin",
             "strength": "0.3%",
-            "productType": "Medicine",
             "category": "Eye Care",
             "manufacturer": "Alcon",
             "dosageForm": "Drops",
@@ -479,7 +436,6 @@
             "name": "Tears Naturale",
             "genericName": "Hypromellose + Dextran",
             "strength": "Combination",
-            "productType": "Medicine",
             "category": "Eye Care",
             "manufacturer": "Alcon",
             "dosageForm": "Drops",
@@ -490,7 +446,6 @@
             "name": "Refresh Tears",
             "genericName": "Carboxymethylcellulose Sodium",
             "strength": "0.5%",
-            "productType": "Medicine",
             "category": "Eye Care",
             "manufacturer": "Allergan",
             "dosageForm": "Drops",
@@ -501,7 +456,6 @@
             "name": "Otrivin",
             "genericName": "Xylometazoline",
             "strength": "0.1%",
-            "productType": "Medicine",
             "category": "ENT Care",
             "manufacturer": "Novartis Pakistan",
             "dosageForm": "Drops",
@@ -512,7 +466,6 @@
             "name": "Otrivin Paediatric",
             "genericName": "Xylometazoline",
             "strength": "0.05%",
-            "productType": "Medicine",
             "category": "ENT Care",
             "manufacturer": "Novartis Pakistan",
             "dosageForm": "Drops",
@@ -523,7 +476,6 @@
             "name": "Soframycin Ear Drops",
             "genericName": "Framycetin",
             "strength": "0.5%",
-            "productType": "Medicine",
             "category": "ENT Care",
             "manufacturer": "Sanofi Pakistan",
             "dosageForm": "Drops",
@@ -534,7 +486,6 @@
             "name": "Centrum",
             "genericName": "Multivitamins + Minerals",
             "strength": "Combination",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Pfizer Pakistan",
             "dosageForm": "Tablet",
@@ -545,7 +496,6 @@
             "name": "Neurobion",
             "genericName": "Vitamin B1 + B6 + B12",
             "strength": "Combination",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Merck",
             "dosageForm": "Tablet",
@@ -556,7 +506,6 @@
             "name": "Caltrate",
             "genericName": "Calcium + Vitamin D",
             "strength": "Combination",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Pfizer Pakistan",
             "dosageForm": "Tablet",
@@ -567,7 +516,6 @@
             "name": "Vitamin D3",
             "genericName": "Cholecalciferol",
             "strength": "2000 IU",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet",
@@ -578,7 +526,6 @@
             "name": "Vitamin C",
             "genericName": "Ascorbic Acid",
             "strength": "500mg",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet",
@@ -589,7 +536,6 @@
             "name": "Ferosoft",
             "genericName": "Ferrous Fumarate + Folic Acid",
             "strength": "Combination",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet",
@@ -600,7 +546,6 @@
             "name": "Ensure",
             "genericName": "Complete Nutritional Formula",
             "strength": "Powder",
-            "productType": "Supplement",
             "category": "Protein Supplements",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Powder",
@@ -611,7 +556,6 @@
             "name": "Ensure Plus",
             "genericName": "Complete Nutritional Formula",
             "strength": "Powder",
-            "productType": "Supplement",
             "category": "Protein Supplements",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Powder",
@@ -622,7 +566,6 @@
             "name": "Nutren Optimum",
             "genericName": "Protein + Vitamins + Minerals",
             "strength": "Powder",
-            "productType": "Supplement",
             "category": "Protein Supplements",
             "manufacturer": "Nestle",
             "dosageForm": "Powder",
@@ -633,7 +576,6 @@
             "name": "Nivea Soft",
             "genericName": "Moisturizing Cream",
             "strength": "Combination",
-            "productType": "Personal Care",
             "category": "Skin Care",
             "manufacturer": "Beiersdorf",
             "dosageForm": "Cream",
@@ -644,7 +586,6 @@
             "name": "Vaseline Petroleum Jelly",
             "genericName": "Petrolatum",
             "strength": "100%",
-            "productType": "Personal Care",
             "category": "Skin Care",
             "manufacturer": "Unilever",
             "dosageForm": "Ointment",
@@ -655,7 +596,6 @@
             "name": "Pond's Cold Cream",
             "genericName": "Moisturizing Cream",
             "strength": "Combination",
-            "productType": "Cosmetic",
             "category": "Skin Care",
             "manufacturer": "Unilever",
             "dosageForm": "Cream",
@@ -666,7 +606,6 @@
             "name": "Clear Shampoo",
             "genericName": "Anti-Dandruff Shampoo",
             "strength": "Combination",
-            "productType": "Personal Care",
             "category": "Hair Care",
             "manufacturer": "Unilever",
             "dosageForm": "Lotion",
@@ -677,7 +616,6 @@
             "name": "Sunsilk Shampoo",
             "genericName": "Hair Cleansing Formula",
             "strength": "Combination",
-            "productType": "Personal Care",
             "category": "Hair Care",
             "manufacturer": "Unilever",
             "dosageForm": "Lotion",
@@ -688,7 +626,6 @@
             "name": "Pantene Shampoo",
             "genericName": "Hair Cleansing Formula",
             "strength": "Combination",
-            "productType": "Personal Care",
             "category": "Hair Care",
             "manufacturer": "Procter & Gamble",
             "dosageForm": "Lotion",
@@ -699,7 +636,6 @@
             "name": "Sensodyne",
             "genericName": "Potassium Nitrate + Sodium Fluoride",
             "strength": "Combination",
-            "productType": "Personal Care",
             "category": "Oral Care",
             "manufacturer": "Haleon",
             "dosageForm": "Gel",
@@ -710,7 +646,6 @@
             "name": "Colgate Total",
             "genericName": "Fluoride Toothpaste",
             "strength": "1450ppm fluoride",
-            "productType": "Personal Care",
             "category": "Oral Care",
             "manufacturer": "Colgate-Palmolive",
             "dosageForm": "Gel",
@@ -721,7 +656,6 @@
             "name": "Listerine",
             "genericName": "Antiseptic Mouthwash",
             "strength": "Combination",
-            "productType": "Personal Care",
             "category": "Oral Care",
             "manufacturer": "Johnson & Johnson",
             "dosageForm": "Drops",
@@ -732,7 +666,6 @@
             "name": "Dettol Liquid",
             "genericName": "Chloroxylenol",
             "strength": "4.8%",
-            "productType": "Personal Care",
             "category": "Bath & Hygiene",
             "manufacturer": "Reckitt",
             "dosageForm": "Lotion",
@@ -743,7 +676,6 @@
             "name": "Lifebuoy Soap",
             "genericName": "Antibacterial Cleansing Formula",
             "strength": "Combination",
-            "productType": "Personal Care",
             "category": "Bath & Hygiene",
             "manufacturer": "Unilever",
             "dosageForm": "Ointment",
@@ -754,7 +686,6 @@
             "name": "NAN 1",
             "genericName": "Infant Milk Formula",
             "strength": "Powder",
-            "productType": "Baby Care",
             "category": "Baby Food",
             "manufacturer": "Nestle",
             "dosageForm": "Powder",
@@ -765,7 +696,6 @@
             "name": "NAN 2",
             "genericName": "Follow-up Infant Formula",
             "strength": "Powder",
-            "productType": "Baby Care",
             "category": "Baby Food",
             "manufacturer": "Nestle",
             "dosageForm": "Powder",
@@ -776,7 +706,6 @@
             "name": "Cerelac Rice",
             "genericName": "Infant Cereal",
             "strength": "Powder",
-            "productType": "Baby Care",
             "category": "Baby Food",
             "manufacturer": "Nestle",
             "dosageForm": "Powder",
@@ -787,7 +716,6 @@
             "name": "Pampers Baby Dry",
             "genericName": "Disposable Baby Diaper",
             "strength": "Size M",
-            "productType": "Baby Care",
             "category": "Baby Hygiene",
             "manufacturer": "Procter & Gamble",
             "dosageForm": "Other",
@@ -798,7 +726,6 @@
             "name": "Huggies Diapers",
             "genericName": "Disposable Baby Diaper",
             "strength": "Size M",
-            "productType": "Baby Care",
             "category": "Baby Hygiene",
             "manufacturer": "Kimberly-Clark",
             "dosageForm": "Other",
@@ -809,7 +736,6 @@
             "name": "Johnson's Baby Lotion",
             "genericName": "Baby Skin Moisturizer",
             "strength": "Combination",
-            "productType": "Baby Care",
             "category": "Baby Hygiene",
             "manufacturer": "Johnson & Johnson",
             "dosageForm": "Lotion",
@@ -820,7 +746,6 @@
             "name": "Surgical Gloves",
             "genericName": "Latex Examination Gloves",
             "strength": "Medium",
-            "productType": "Surgical Item",
             "category": "Surgical Supplies",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Other",
@@ -831,7 +756,6 @@
             "name": "Face Mask",
             "genericName": "3-Ply Surgical Mask",
             "strength": "Standard",
-            "productType": "Surgical Item",
             "category": "Surgical Supplies",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Other",
@@ -842,7 +766,6 @@
             "name": "Sterile Gauze",
             "genericName": "Sterile Cotton Gauze",
             "strength": "4x4 inch",
-            "productType": "Surgical Item",
             "category": "Surgical Supplies",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Other",
@@ -853,7 +776,6 @@
             "name": "Elastic Bandage",
             "genericName": "Elastic Compression Bandage",
             "strength": "4 inch",
-            "productType": "Surgical Item",
             "category": "Surgical Supplies",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Other",
@@ -864,7 +786,6 @@
             "name": "Digital Thermometer",
             "genericName": "Digital Clinical Thermometer",
             "strength": "Standard",
-            "productType": "Medical Device",
             "category": "Medical Equipment",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Other",
@@ -875,7 +796,6 @@
             "name": "Blood Pressure Monitor",
             "genericName": "Automatic BP Monitor",
             "strength": "Standard",
-            "productType": "Medical Device",
             "category": "Medical Equipment",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Other",
@@ -886,7 +806,6 @@
             "name": "Glucometer",
             "genericName": "Blood Glucose Monitoring Device",
             "strength": "Standard",
-            "productType": "Medical Device",
             "category": "Medical Equipment",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Other",
@@ -897,7 +816,6 @@
             "name": "Nestle Pure Life Water",
             "genericName": "Bottled Drinking Water",
             "strength": "500ml",
-            "productType": "FMCG",
             "category": "Beverages",
             "manufacturer": "Nestle",
             "dosageForm": "Other",
@@ -908,7 +826,6 @@
             "name": "Rooh Afza",
             "genericName": "Rose Flavoured Syrup",
             "strength": "800ml",
-            "productType": "Food & Beverage",
             "category": "Beverages",
             "manufacturer": "Hamdard",
             "dosageForm": "Syrup",
@@ -919,7 +836,6 @@
             "name": "Surf Excel",
             "genericName": "Laundry Detergent",
             "strength": "Powder",
-            "productType": "FMCG",
             "category": "Household Items",
             "manufacturer": "Unilever",
             "dosageForm": "Powder",
@@ -930,7 +846,6 @@
             "name": "Lux Soap",
             "genericName": "Bath Soap",
             "strength": "Standard",
-            "productType": "FMCG",
             "category": "Household Items",
             "manufacturer": "Unilever",
             "dosageForm": "Other",
@@ -941,7 +856,6 @@
             "name": "Durex Classic",
             "genericName": "Latex Condom",
             "strength": "Standard",
-            "productType": "Other",
             "category": "Sexual Wellness",
             "manufacturer": "Reckitt",
             "dosageForm": "Other",
@@ -952,7 +866,6 @@
             "name": "Durex Extra Safe",
             "genericName": "Latex Condom",
             "strength": "Standard",
-            "productType": "Other",
             "category": "Sexual Wellness",
             "manufacturer": "Reckitt",
             "dosageForm": "Other",
@@ -963,7 +876,6 @@
             "name": "Panadol CF",
             "genericName": "Paracetamol + Caffeine",
             "strength": "500mg/65mg",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Tablet",
@@ -974,7 +886,6 @@
             "name": "Panadol Syrup",
             "genericName": "Paracetamol",
             "strength": "120mg/5ml",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Syrup",
@@ -985,7 +896,6 @@
             "name": "Brufen DS",
             "genericName": "Ibuprofen",
             "strength": "200mg/5ml",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Suspension",
@@ -996,7 +906,6 @@
             "name": "Ponstan Forte",
             "genericName": "Mefenamic Acid",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Pfizer Pakistan",
             "dosageForm": "Tablet",
@@ -1007,7 +916,6 @@
             "name": "Novidat",
             "genericName": "Ciprofloxacin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet",
@@ -1018,7 +926,6 @@
             "name": "Leflox",
             "genericName": "Levofloxacin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet",
@@ -1029,7 +936,6 @@
             "name": "Zetro",
             "genericName": "Azithromycin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet",
@@ -1040,7 +946,6 @@
             "name": "Azomax",
             "genericName": "Azithromycin",
             "strength": "500mg",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet",
@@ -1051,7 +956,6 @@
             "name": "Softin",
             "genericName": "Loratadine",
             "strength": "10mg",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet",
@@ -1062,7 +966,6 @@
             "name": "Rigix",
             "genericName": "Cetirizine",
             "strength": "10mg",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet",
@@ -1073,7 +976,6 @@
             "name": "Arinac",
             "genericName": "Ibuprofen + Pseudoephedrine",
             "strength": "Combination",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet",
@@ -1084,7 +986,6 @@
             "name": "Risek",
             "genericName": "Omeprazole",
             "strength": "40mg",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Capsule",
@@ -1095,7 +996,6 @@
             "name": "Gravinate",
             "genericName": "Dimenhydrinate",
             "strength": "50mg",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet",
@@ -1106,7 +1006,6 @@
             "name": "Mucaine",
             "genericName": "Oxethazaine + Alumina + Magnesia",
             "strength": "120ml",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Pfizer Pakistan",
             "dosageForm": "Syrup",
@@ -1117,7 +1016,6 @@
             "name": "Getryl",
             "genericName": "Glimepiride",
             "strength": "2mg",
-            "productType": "Medicine",
             "category": "Diabetes Care",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet",
@@ -1128,7 +1026,6 @@
             "name": "Amaryl",
             "genericName": "Glimepiride",
             "strength": "2mg",
-            "productType": "Medicine",
             "category": "Diabetes Care",
             "manufacturer": "Sanofi Pakistan",
             "dosageForm": "Tablet",
@@ -1139,7 +1036,6 @@
             "name": "Lipget",
             "genericName": "Atorvastatin",
             "strength": "20mg",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet",
@@ -1150,7 +1046,6 @@
             "name": "Zestril",
             "genericName": "Lisinopril",
             "strength": "10mg",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "AstraZeneca",
             "dosageForm": "Tablet",
@@ -1161,7 +1056,6 @@
             "name": "Polyfax Eye Ointment",
             "genericName": "Polymyxin B + Bacitracin",
             "strength": "4g",
-            "productType": "Medicine",
             "category": "Eye Care",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Ointment",
@@ -1172,7 +1066,6 @@
             "name": "Fucidin",
             "genericName": "Fusidic Acid",
             "strength": "2%",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Cream",
@@ -1183,7 +1076,6 @@
             "name": "Betnovate",
             "genericName": "Betamethasone Valerate",
             "strength": "0.1%",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Cream",
@@ -1194,7 +1086,6 @@
             "name": "Surbex Z",
             "genericName": "Multivitamin + Zinc",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet",
@@ -1205,7 +1096,6 @@
             "name": "CAC-1000 Plus",
             "genericName": "Calcium + Vitamin C + Vitamin D3 + B6",
             "strength": "1000mg",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Haleon",
             "dosageForm": "Tablet",
@@ -1216,7 +1106,6 @@
             "name": "Calsan",
             "genericName": "Calcium Carbonate + Vitamin D3",
             "strength": "500mg/400IU",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Novartis Pakistan",
             "dosageForm": "Tablet",
@@ -1227,7 +1116,6 @@
             "name": "Nutra-C",
             "genericName": "Vitamin C",
             "strength": "500mg",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Nutrifactor",
             "dosageForm": "Tablet",
@@ -1238,7 +1126,6 @@
             "name": "Vitamax Women",
             "genericName": "Multivitamin",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Nutrifactor",
             "dosageForm": "Tablet",
@@ -1249,7 +1136,6 @@
             "name": "Bonex-D",
             "genericName": "Calcium + Vitamin D3",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Nutrifactor",
             "dosageForm": "Tablet",
@@ -1260,7 +1146,6 @@
             "name": "Biotin Plus",
             "genericName": "Biotin + Folic Acid",
             "strength": "2500mcg",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Nutrifactor",
             "dosageForm": "Tablet",
@@ -1271,7 +1156,6 @@
             "name": "Herbiotics Pro Collagen",
             "genericName": "Collagen Peptides",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Herbiotics",
             "dosageForm": "Powder",
@@ -1282,7 +1166,6 @@
             "name": "Herbion Ivy Leaf Syrup",
             "genericName": "Ivy Leaf Extract",
             "strength": "120ml",
-            "productType": "Supplement",
             "category": "Cold & Flu",
             "manufacturer": "Herbion Pakistan",
             "dosageForm": "Syrup",
@@ -1293,7 +1176,6 @@
             "name": "Insta-Link",
             "genericName": "Ivy Leaf + Thyme",
             "strength": "120ml",
-            "productType": "Supplement",
             "category": "Cold & Flu",
             "manufacturer": "Herbion Pakistan",
             "dosageForm": "Syrup",
@@ -1304,7 +1186,6 @@
             "name": "Joshanda",
             "genericName": "Herbal Tea Extract",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Cold & Flu",
             "manufacturer": "Qarshi",
             "dosageForm": "Sachet",
@@ -1315,7 +1196,6 @@
             "name": "Johar Joshanda",
             "genericName": "Herbal Tea Extract",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Cold & Flu",
             "manufacturer": "Qarshi",
             "dosageForm": "Sachet",
@@ -1326,7 +1206,6 @@
             "name": "Safi",
             "genericName": "Herbal Blood Purifier",
             "strength": "175ml",
-            "productType": "Supplement",
             "category": "Skin Care",
             "manufacturer": "Hamdard",
             "dosageForm": "Syrup",
@@ -1337,7 +1216,6 @@
             "name": "Carmina",
             "genericName": "Herbal Digestive Aid",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Gastrointestinal",
             "manufacturer": "Hamdard",
             "dosageForm": "Tablet",
@@ -1348,7 +1226,6 @@
             "name": "Ginkgo Biloba",
             "genericName": "Ginkgo Biloba Extract",
             "strength": "120mg",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Nutrifactor",
             "dosageForm": "Tablet",
@@ -1359,7 +1236,6 @@
             "name": "Folio",
             "genericName": "Folic Acid + Iodine",
             "strength": "400mcg",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Martin Dow",
             "dosageForm": "Tablet",
@@ -1370,7 +1246,6 @@
             "name": "Nims",
             "genericName": "Nimesulide",
             "strength": "100mg",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet",
@@ -1381,7 +1256,6 @@
             "name": "Iberet Folic 500",
             "genericName": "Iron + Vitamin C + B-Complex",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet",
@@ -1392,7 +1266,6 @@
             "name": "Sangobion",
             "genericName": "Iron + Multivitamin",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Martin Dow",
             "dosageForm": "Capsule",
@@ -1403,7 +1276,6 @@
             "name": "Centrum Lutein",
             "genericName": "Multivitamin + Lutein",
             "strength": "Standard",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Haleon",
             "dosageForm": "Tablet",
@@ -1414,7 +1286,6 @@
             "name": "Glucerna",
             "genericName": "Diabetes Nutritional Formula",
             "strength": "400g",
-            "productType": "Supplement",
             "category": "Protein Supplements",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Powder",
@@ -1427,7 +1298,6 @@
             "strength": "300mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Reckitt",
             "dosageForm": "Tablet"
@@ -1438,7 +1308,6 @@
             "strength": "550mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Martin Dow",
             "dosageForm": "Tablet"
@@ -1449,7 +1318,6 @@
             "strength": "650mg/50mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -1460,7 +1328,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Novartis Pakistan",
             "dosageForm": "Tablet"
@@ -1471,7 +1338,6 @@
             "strength": "50mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -1482,7 +1348,6 @@
             "strength": "500mg",
             "packQuantity": 12,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Capsule"
@@ -1493,7 +1358,6 @@
             "strength": "300mg",
             "packQuantity": 10,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Pfizer Pakistan",
             "dosageForm": "Capsule"
@@ -1504,7 +1368,6 @@
             "strength": "500mg",
             "packQuantity": 20,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Capsule"
@@ -1515,7 +1378,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -1526,7 +1388,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Sanofi Pakistan",
             "dosageForm": "Tablet"
@@ -1537,7 +1398,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -1548,7 +1408,6 @@
             "strength": "4mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Tablet"
@@ -1559,7 +1418,6 @@
             "strength": "120ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Syrup"
@@ -1570,7 +1428,6 @@
             "strength": "120ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "The Searle Company",
             "dosageForm": "Syrup"
@@ -1581,7 +1438,6 @@
             "strength": "10mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -1592,7 +1448,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Capsule"
@@ -1603,7 +1458,6 @@
             "strength": "10mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -1614,7 +1468,6 @@
             "strength": "10mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Johnson & Johnson",
             "dosageForm": "Tablet"
@@ -1625,7 +1478,6 @@
             "strength": "5g",
             "packQuantity": 6,
             "packUnit": "Sachets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Haleon",
             "dosageForm": "Powder"
@@ -1636,7 +1488,6 @@
             "strength": "250mg/200mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -1647,7 +1498,6 @@
             "strength": "500mg/400mg",
             "packQuantity": 15,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -1658,7 +1508,6 @@
             "strength": "10mg/500mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Martin Dow",
             "dosageForm": "Tablet"
@@ -1669,7 +1518,6 @@
             "strength": "50mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "AstraZeneca",
             "dosageForm": "Tablet"
@@ -1680,7 +1528,6 @@
             "strength": "10mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "AstraZeneca",
             "dosageForm": "Tablet"
@@ -1691,7 +1538,6 @@
             "strength": "2mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Pfizer Pakistan",
             "dosageForm": "Tablet"
@@ -1702,7 +1548,6 @@
             "strength": "100IU/ml",
             "packQuantity": 1,
             "packUnit": "Vial",
-            "productType": "Medicine",
             "category": "Diabetes Care",
             "manufacturer": "Novartis Pakistan",
             "dosageForm": "Injection"
@@ -1713,7 +1558,6 @@
             "strength": "20g",
             "packQuantity": 1,
             "packUnit": "Tube",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Cream"
@@ -1724,7 +1568,6 @@
             "strength": "10g",
             "packQuantity": 1,
             "packUnit": "Tube",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Cream"
@@ -1735,7 +1578,6 @@
             "strength": "0.05%",
             "packQuantity": 1,
             "packUnit": "Tube",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Ointment"
@@ -1746,7 +1588,6 @@
             "strength": "1%",
             "packQuantity": 1,
             "packUnit": "Tube",
-            "productType": "Medicine",
             "category": "Dermatology",
             "manufacturer": "Bayer Pakistan",
             "dosageForm": "Cream"
@@ -1757,7 +1598,6 @@
             "strength": "1%",
             "packQuantity": 1,
             "packUnit": "Tube",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Novartis Pakistan",
             "dosageForm": "Gel"
@@ -1768,7 +1608,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Novartis Pakistan",
             "dosageForm": "Tablet"
@@ -1779,7 +1618,6 @@
             "strength": "Standard",
             "packQuantity": 30,
             "packUnit": "Capsules",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "GlaxoSmithKline Pakistan",
             "dosageForm": "Capsule"
@@ -1790,7 +1628,6 @@
             "strength": "Standard",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -1801,7 +1638,6 @@
             "strength": "15ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Drops"
@@ -1812,7 +1648,6 @@
             "strength": "400g",
             "packQuantity": 1,
             "packUnit": "Tin",
-            "productType": "Supplement",
             "category": "Protein Supplements",
             "manufacturer": "Nestle",
             "dosageForm": "Powder"
@@ -1823,7 +1658,6 @@
             "strength": "800ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Food & Beverage",
             "category": "Beverages",
             "manufacturer": "Qarshi",
             "dosageForm": "Syrup"
@@ -1834,7 +1668,6 @@
             "strength": "Standard",
             "packQuantity": 30,
             "packUnit": "Sachets",
-            "productType": "Supplement",
             "category": "Cold & Flu",
             "manufacturer": "Qarshi",
             "dosageForm": "Sachet"
@@ -1845,7 +1678,6 @@
             "strength": "250ml",
             "packQuantity": 1,
             "packUnit": "Can",
-            "productType": "Food & Beverage",
             "category": "Beverages",
             "manufacturer": "Hamdard",
             "dosageForm": "Liquid"
@@ -1856,7 +1688,6 @@
             "strength": "60ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Surgical Item",
             "category": "Surgical Supplies",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Liquid"
@@ -1867,7 +1698,6 @@
             "strength": "100ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Personal Care",
             "category": "Bath & Hygiene",
             "manufacturer": "Reckitt",
             "dosageForm": "Liquid"
@@ -1878,7 +1708,6 @@
             "strength": "5ml",
             "packQuantity": 100,
             "packUnit": "Ampoules",
-            "productType": "Surgical Item",
             "category": "Surgical Supplies",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Injection"
@@ -1889,7 +1718,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Capsule"
@@ -1900,7 +1728,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Capsule"
@@ -1911,7 +1738,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Capsule"
@@ -1922,7 +1748,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Capsule"
@@ -1933,7 +1758,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Capsule"
@@ -1944,7 +1768,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Capsule"
@@ -1955,7 +1778,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Capsule"
@@ -1966,7 +1788,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Capsule"
@@ -1977,7 +1798,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "The Searle Company",
             "dosageForm": "Capsule"
@@ -1988,7 +1808,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Capsule"
@@ -1999,7 +1818,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Capsule"
@@ -2010,7 +1828,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Capsule"
@@ -2021,7 +1838,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Capsule"
@@ -2032,7 +1848,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Capsule"
@@ -2043,7 +1858,6 @@
             "strength": "400mg",
             "packQuantity": 5,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Capsule"
@@ -2054,7 +1868,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Suspension"
@@ -2065,7 +1878,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Suspension"
@@ -2076,7 +1888,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Suspension"
@@ -2087,7 +1898,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Suspension"
@@ -2098,7 +1908,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Suspension"
@@ -2109,7 +1918,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Suspension"
@@ -2120,7 +1928,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Suspension"
@@ -2131,7 +1938,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Suspension"
@@ -2142,7 +1948,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Suspension"
@@ -2153,7 +1958,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Suspension"
@@ -2164,7 +1968,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Suspension"
@@ -2175,7 +1978,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Suspension"
@@ -2186,7 +1988,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Suspension"
@@ -2197,7 +1998,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Suspension"
@@ -2208,7 +2008,6 @@
             "strength": "200mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Suspension"
@@ -2219,7 +2018,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "The Searle Company",
             "dosageForm": "Capsule"
@@ -2230,7 +2028,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Capsule"
@@ -2241,7 +2038,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Capsule"
@@ -2252,7 +2048,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "The Searle Company",
             "dosageForm": "Capsule"
@@ -2263,7 +2058,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Capsule"
@@ -2274,7 +2068,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Capsule"
@@ -2285,7 +2078,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Capsule"
@@ -2296,7 +2088,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Capsule"
@@ -2307,7 +2098,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Capsule"
@@ -2318,7 +2108,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Capsule"
@@ -2329,7 +2118,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "The Searle Company",
             "dosageForm": "Capsule"
@@ -2340,7 +2128,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Capsule"
@@ -2351,7 +2138,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Capsule"
@@ -2362,7 +2148,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Capsule"
@@ -2373,7 +2158,6 @@
             "strength": "20mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Capsule"
@@ -2384,7 +2168,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Capsule"
@@ -2395,7 +2178,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Capsule"
@@ -2406,7 +2188,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Capsule"
@@ -2417,7 +2198,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Capsule"
@@ -2428,7 +2208,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "The Searle Company",
             "dosageForm": "Capsule"
@@ -2439,7 +2218,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Capsule"
@@ -2450,7 +2228,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Capsule"
@@ -2461,7 +2238,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Capsule"
@@ -2472,7 +2248,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Capsule"
@@ -2483,7 +2258,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Capsule"
@@ -2494,7 +2268,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Capsule"
@@ -2505,7 +2278,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "AGP Limited",
             "dosageForm": "Capsule"
@@ -2516,7 +2288,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Capsule"
@@ -2527,7 +2298,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Capsules",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Capsule"
@@ -2538,7 +2308,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -2549,7 +2318,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -2560,7 +2328,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -2571,7 +2338,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -2582,7 +2348,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -2593,7 +2358,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -2604,7 +2368,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -2615,7 +2378,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -2626,7 +2388,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -2637,7 +2398,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -2648,7 +2408,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -2659,7 +2418,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -2670,7 +2428,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -2681,7 +2438,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Syrup"
@@ -2692,7 +2448,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Syrup"
@@ -2703,7 +2458,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "The Searle Company",
             "dosageForm": "Syrup"
@@ -2714,7 +2468,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Syrup"
@@ -2725,7 +2478,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "The Searle Company",
             "dosageForm": "Syrup"
@@ -2736,7 +2488,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Syrup"
@@ -2747,7 +2498,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Syrup"
@@ -2758,7 +2508,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Syrup"
@@ -2769,7 +2518,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Syrup"
@@ -2780,7 +2528,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Syrup"
@@ -2791,7 +2538,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Syrup"
@@ -2802,7 +2548,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Syrup"
@@ -2813,7 +2558,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Syrup"
@@ -2824,7 +2568,6 @@
             "strength": "120mg/5ml",
             "packQuantity": 1,
             "packUnit": "Bottle",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Syrup"
@@ -2835,7 +2578,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -2846,7 +2588,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -2857,7 +2598,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -2868,7 +2608,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -2879,7 +2618,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -2890,7 +2628,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -2901,7 +2638,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -2912,7 +2648,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Tablet"
@@ -2923,7 +2658,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -2934,7 +2668,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -2945,7 +2678,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -2956,7 +2688,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -2967,7 +2698,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Tablet"
@@ -2978,7 +2708,6 @@
             "strength": "400mg",
             "packQuantity": 50,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -2989,7 +2718,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -3000,7 +2728,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3011,7 +2738,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -3022,7 +2748,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -3033,7 +2758,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -3044,7 +2768,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3055,7 +2778,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3066,7 +2788,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -3077,7 +2798,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -3088,7 +2808,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -3099,7 +2818,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -3110,7 +2828,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -3121,7 +2838,6 @@
             "strength": "500mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -3132,7 +2848,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3143,7 +2858,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Tablet"
@@ -3154,7 +2868,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -3165,7 +2878,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -3176,7 +2888,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -3187,7 +2898,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Tablet"
@@ -3198,7 +2908,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -3209,7 +2918,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3220,7 +2928,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -3231,7 +2938,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -3242,7 +2948,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3253,7 +2958,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -3264,7 +2968,6 @@
             "strength": "500mg",
             "packQuantity": 6,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -3275,7 +2978,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -3286,7 +2988,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -3297,7 +2998,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -3308,7 +3008,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -3319,7 +3018,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -3330,7 +3028,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3341,7 +3038,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3352,7 +3048,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3363,7 +3058,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -3374,7 +3068,6 @@
             "strength": "625mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -3385,7 +3078,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -3396,7 +3088,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3407,7 +3098,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -3418,7 +3108,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3429,7 +3118,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -3440,7 +3128,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -3451,7 +3138,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -3462,7 +3148,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -3473,7 +3158,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -3484,7 +3168,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -3495,7 +3178,6 @@
             "strength": "1g",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Antibiotics",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -3506,7 +3188,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3517,7 +3198,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -3528,7 +3208,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -3539,7 +3218,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -3550,7 +3228,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3561,7 +3238,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3572,7 +3248,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -3583,7 +3258,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -3594,7 +3268,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -3605,7 +3278,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -3616,7 +3288,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -3627,7 +3298,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -3638,7 +3308,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -3649,7 +3318,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -3660,7 +3328,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -3671,7 +3338,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3682,7 +3348,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3693,7 +3358,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3704,7 +3368,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -3715,7 +3378,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Tablet"
@@ -3726,7 +3388,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3737,7 +3398,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -3748,7 +3408,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -3759,7 +3418,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3770,7 +3428,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -3781,7 +3438,6 @@
             "strength": "5mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3792,7 +3448,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -3803,7 +3458,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -3814,7 +3468,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -3825,7 +3478,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3836,7 +3488,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -3847,7 +3498,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -3858,7 +3508,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3869,7 +3518,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -3880,7 +3528,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -3891,7 +3538,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -3902,7 +3548,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -3913,7 +3558,6 @@
             "strength": "10mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cardiac Care",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -3924,7 +3568,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -3935,7 +3578,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -3946,7 +3588,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -3957,7 +3598,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -3968,7 +3608,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -3979,7 +3618,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -3990,7 +3628,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -4001,7 +3638,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -4012,7 +3648,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Leo Pharma",
             "dosageForm": "Tablet"
@@ -4023,7 +3658,6 @@
             "strength": "40mg",
             "packQuantity": 14,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Gastrointestinal",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -4034,7 +3668,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -4045,7 +3678,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -4056,7 +3688,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -4067,7 +3698,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -4078,7 +3708,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -4089,7 +3718,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Tablet"
@@ -4100,7 +3728,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -4111,7 +3738,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -4122,7 +3748,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -4133,7 +3758,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -4144,7 +3768,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -4155,7 +3778,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -4166,7 +3788,6 @@
             "strength": "50mg",
             "packQuantity": 20,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -4177,7 +3798,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -4188,7 +3808,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -4199,7 +3818,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -4210,7 +3828,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -4221,7 +3838,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Ferozsons Laboratories",
             "dosageForm": "Tablet"
@@ -4232,7 +3848,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -4243,7 +3858,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -4254,7 +3868,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Getz Pharma",
             "dosageForm": "Tablet"
@@ -4265,7 +3878,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Bosch Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -4276,7 +3888,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -4287,7 +3898,6 @@
             "strength": "120mg",
             "packQuantity": 10,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Cold & Flu",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -4298,7 +3908,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Hilton Pharma",
             "dosageForm": "Tablet"
@@ -4309,7 +3918,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -4320,7 +3928,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Abbott Laboratories Pakistan",
             "dosageForm": "Tablet"
@@ -4331,7 +3938,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "The Searle Company",
             "dosageForm": "Tablet"
@@ -4342,7 +3948,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Tabros Pharma",
             "dosageForm": "Tablet"
@@ -4353,7 +3958,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Highnoon Laboratories",
             "dosageForm": "Tablet"
@@ -4364,7 +3968,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "AGP Limited",
             "dosageForm": "Tablet"
@@ -4375,7 +3978,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "SAMI Pharmaceuticals",
             "dosageForm": "Tablet"
@@ -4386,7 +3988,6 @@
             "strength": "500mg",
             "packQuantity": 30,
             "packUnit": "Tablets",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Brookes Pharma",
             "dosageForm": "Tablet"
@@ -4397,7 +3998,6 @@
             "strength": "200,000 IU",
             "packQuantity": 1,
             "packUnit": "Capsules",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Scilife Pharma",
             "dosageForm": "Softgel"
@@ -4408,7 +4008,6 @@
             "strength": "200,000 IU",
             "packQuantity": 1,
             "packUnit": "Ampoules",
-            "productType": "Supplement",
             "category": "Vitamins",
             "manufacturer": "Scilife Pharma",
             "dosageForm": "Injection"
@@ -4419,7 +4018,6 @@
             "strength": "Size M",
             "packQuantity": 1,
             "packUnit": "Pack",
-            "productType": "Baby Care",
             "category": "Baby Hygiene",
             "manufacturer": "Bona Papa",
             "dosageForm": "Other"
@@ -4430,7 +4028,6 @@
             "strength": "Size L",
             "packQuantity": 1,
             "packUnit": "Pack",
-            "productType": "Baby Care",
             "category": "Baby Hygiene",
             "manufacturer": "Bona Papa",
             "dosageForm": "Other"
@@ -4441,7 +4038,6 @@
             "strength": "Size M",
             "packQuantity": 1,
             "packUnit": "Pack",
-            "productType": "Baby Care",
             "category": "Baby Hygiene",
             "manufacturer": "Hayat Kimya",
             "dosageForm": "Other"
@@ -4452,7 +4048,6 @@
             "strength": "Size L",
             "packQuantity": 1,
             "packUnit": "Pack",
-            "productType": "Baby Care",
             "category": "Baby Hygiene",
             "manufacturer": "Hayat Kimya",
             "dosageForm": "Other"
@@ -4463,7 +4058,6 @@
             "strength": "Size M",
             "packQuantity": 1,
             "packUnit": "Pack",
-            "productType": "Baby Care",
             "category": "Baby Hygiene",
             "manufacturer": "Ontex",
             "dosageForm": "Other"
@@ -4474,7 +4068,6 @@
             "strength": "500mg",
             "packQuantity": 100,
             "packUnit": "Tablets",
-            "productType": "Medicine",
             "category": "Pain Relief",
             "manufacturer": "CCL Pharmaceuticals",
             "dosageForm": "Tablet"

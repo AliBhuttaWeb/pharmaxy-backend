@@ -11,7 +11,6 @@ import { seedRolePermissions } from './seeds/role-permissions.seed';
 import { seedUsers } from './seeds/users.seeder';
 import { seedDosageForms } from './seeds/dosage-forms.seed';
 import { seedManufacturers } from './seeds/manufacturers.seed';
-import { seedProductTypes } from './seeds/product-types.seed';
 import { seedRetailCategories } from './seeds/retail-categories.seed';
 import { seedSubscriptionPlans } from './seeds/subscription-plans.seed';
 import { seedPaymentProviders } from './seeds/payment-providers.seed';
@@ -48,7 +47,6 @@ async function main() {
     await seedUsers(ctx);
     await seedDosageForms(ctx);
     await seedManufacturers(ctx);
-    await seedProductTypes(ctx);
     await seedRetailCategories(ctx);
     await seedProducts(ctx);
     await seedSubscriptionPlans(ctx);

@@ -11,7 +11,6 @@ import { MESSAGES } from '../constants';
 import { CreateProductDto, ProductQueryDto, UpdateProductDto } from '../dtos';
 import { ProductsRepository } from '../repositories/products.repository';
 import { ManufacturersService } from '@/modules/manufacturers/services/manufacturer.service';
-import { ProductTypesService } from '@/modules/product-types/services/product-types.service';
 import { RetailCategoriesService } from '@/modules/retail-categories/services/retail-categories.service';
 import { DosageFormsService } from '@/modules/dosage-forms/services/dosage-forms.service';
 import { buildPaginationMeta } from '@/common/pagination';
@@ -22,8 +21,6 @@ export class ProductsService {
         private readonly productsRepository: ProductsRepository,
         @Inject(forwardRef(() => ManufacturersService))
         private readonly manufacturersService: ManufacturersService,
-        @Inject(forwardRef(() => ProductTypesService))
-        private readonly productTypesService: ProductTypesService,
         @Inject(forwardRef(() => RetailCategoriesService))
         private readonly retailCategoriesService: RetailCategoriesService,
         @Inject(forwardRef(() => DosageFormsService))
@@ -131,10 +128,6 @@ export class ProductsService {
         return this.productsRepository.existsByDosageForm(dosageFormId);
     }
 
-    async existsByProductType(productTypeId: string): Promise<boolean> {
-        return this.productsRepository.existsByProductType(productTypeId);
-    }
-
     async existsByRetailCategory(retailCategoryId: string): Promise<boolean> {
         return this.productsRepository.existsByRetailCategory(retailCategoryId);
     }
@@ -146,10 +139,6 @@ export class ProductsService {
     private async validateRelations(dto: CreateProductDto | UpdateProductDto) {
         if (dto.manufacturer_id) {
             await this.manufacturersService.get(dto.manufacturer_id);
-        }
-
-        if (dto.product_type_id) {
-            await this.productTypesService.findById(dto.product_type_id);
         }
 
         if (dto.retail_category_id) {

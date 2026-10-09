@@ -33,10 +33,6 @@ export class CreateProductDto {
 
     @ApiPropertyOptional()
     @IsUUID()
-    product_type_id!: string;
-
-    @ApiPropertyOptional()
-    @IsUUID()
     retail_category_id!: string;
 
     @ApiProperty()

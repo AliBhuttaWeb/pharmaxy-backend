@@ -28,9 +28,6 @@ export class BranchProductsRepository {
                 manufacturer: {
                     select: { name: true, description: true },
                 },
-                product_type: {
-                    select: { name: true, description: true },
-                },
                 retail_category: {
                     select: { name: true, description: true },
                 },

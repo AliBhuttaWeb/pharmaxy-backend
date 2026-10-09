@@ -18,7 +18,6 @@ import { BranchesModule } from './modules/branches/branches.module';
 import { SuppliersModule } from './modules/suppliers/suppliers.module';
 import { ManufacturersModule } from './modules/manufacturers/manufacturers.module';
 import { RetailCategoriesModule } from './modules/retail-categories/retail-categories.module';
-import { ProductTypesModule } from './modules/product-types/product-types.module';
 import { DosageFormsModule } from './modules/dosage-forms/dosage-forms.module';
 import { ProductsModule } from './modules/products/products.module';
 import { BranchProductsModule } from './modules/branch-products/branch-products.module';
@@ -67,7 +66,6 @@ import { InvoicesModule } from './modules/invoices/invoices.module';
         SuppliersModule,
         ManufacturersModule,
         RetailCategoriesModule,
-        ProductTypesModule,
         DosageFormsModule,
         ProductsModule,
         BranchProductsModule,

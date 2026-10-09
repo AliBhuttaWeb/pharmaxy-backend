@@ -12,11 +12,6 @@ export class ProductQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsUUID()
-    product_type_id?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsUUID()
     retail_category_id?: string;
 
     @ApiPropertyOptional()

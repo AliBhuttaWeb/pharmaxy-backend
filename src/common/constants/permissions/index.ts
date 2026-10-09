@@ -28,7 +28,6 @@ export * from './support-ticket-messages.permissions';
 export * from './support-ticket-attachments.permissions';
 export * from './nearby-inventories.permissions';
 export * from './retail-categories.permissions';
-export * from './product-types.permissions';
 export * from './dosage-forms.permissions';
 export * from './branch-products.permissions';
 export * from './payment-methods.permissions';

@@ -6,7 +6,6 @@ export const MESSAGES = {
         SUPER_ADMIN_CREATED: 'Super Admin seeded successfully.',
 
         RETAIL_CATEGORIES_SEEDED: 'Retail categories seeded successfully.',
-        PRODUCT_TYPES_SEEDED: 'Product types seeded successfully.',
         MANUFACTURERS_SEEDED: 'Manufacturers seeded successfully.',
         DOSAGE_FORMS_SEEDED: 'Dosage forms seeded successfully.',
         SUBSCRIPTION_PLANS_SEEDED: 'Subscription Plans seeded successfully.',

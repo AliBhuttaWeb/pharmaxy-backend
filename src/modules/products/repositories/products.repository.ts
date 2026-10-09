@@ -11,7 +11,6 @@ export class ProductsRepository {
 
     private readonly productRelations: Prisma.ProductInclude = {
         manufacturer: true,
-        product_type: true,
         retail_category: true,
         dosage_form: true,
     };
@@ -20,7 +19,6 @@ export class ProductsRepository {
         const {
             search,
             manufacturer_id,
-            product_type_id,
             retail_category_id,
             dosage_form_id,
             requires_prescription,
@@ -62,10 +60,6 @@ export class ProductsRepository {
 
             ...(manufacturer_id && {
                 manufacturer_id,
-            }),
-
-            ...(product_type_id && {
-                product_type_id,
             }),
 
             ...(retail_category_id && {
@@ -197,16 +191,6 @@ export class ProductsRepository {
         const count = await this.prisma.product.count({
             where: {
                 dosage_form_id: dosageFormId,
-                deleted_at: null,
-            },
-        });
-        return count > 0;
-    }
-
-    async existsByProductType(productTypeId: string): Promise<boolean> {
-        const count = await this.prisma.product.count({
-            where: {
-                product_type_id: productTypeId,
                 deleted_at: null,
             },
         });

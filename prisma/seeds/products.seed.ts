@@ -4,18 +4,6 @@ import products from '../data/products.json';
 
 export async function seedProducts({ prisma }: SeedContext): Promise<void> {
     for (const product of products.products) {
-        const productType = await prisma.productType.findUnique({
-            where: {
-                name: product.productType,
-            },
-        });
-
-        if (!productType) {
-            throw new Error(
-                `Product seed failed: ProductType "${product.productType}" not found for product "${product.name}".`,
-            );
-        }
-
         const category = await prisma.retailCategory.findUnique({
             where: {
                 name: product.category,
@@ -60,11 +48,8 @@ export async function seedProducts({ prisma }: SeedContext): Promise<void> {
             pack_unit: product.packUnit ?? 'Pack',
 
             manufacturer_id: manufacturer.id,
-            product_type_id: productType.id,
             retail_category_id: category.id,
             dosage_form_id: dosageForm.id,
-
-            // requires_prescription: product.productType === 'Medicine',
 
             is_active: true,
             deleted_at: null,
