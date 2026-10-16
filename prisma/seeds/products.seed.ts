@@ -45,7 +45,6 @@ export async function seedProducts({ prisma }: SeedContext): Promise<void> {
             generic_name: product.genericName ?? null, // Also known as formula
             strength: product.strength ?? null,
             pack_quantity: product.packQuantity ?? 1,
-            pack_unit: product.packUnit ?? 'Pack',
 
             manufacturer_id: manufacturer.id,
             category_id: category.id,

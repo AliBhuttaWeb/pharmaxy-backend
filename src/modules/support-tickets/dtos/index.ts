@@ -27,6 +27,11 @@ export class SupportTicketQueryDto {
     @IsOptional()
     @IsString()
     search?: string;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsString()
+    branch_id?: string;
 }
 
 export class CreateSupportTicketDto {
@@ -38,6 +43,11 @@ export class CreateSupportTicketDto {
     @IsOptional()
     @IsString()
     message?: string;
+
+    @ApiPropertyOptional({ example: 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11' })
+    @IsOptional()
+    @IsString()
+    branch_id?: string;
 }
 
 export class UpdateSupportTicketStatusDto {

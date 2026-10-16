@@ -8,6 +8,18 @@ export class SupportTicketsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     private readonly includeRelations: Prisma.SupportTicketInclude = {
+        branch: {
+            select: {
+                id: true,
+                name: true,
+                pharmacy: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+            },
+        },
         creator: {
             select: {
                 id: true,
@@ -24,11 +36,11 @@ export class SupportTicketsRepository {
         },
     };
 
-    async findMany(pharmacyId: string, query: SupportTicketQueryDto) {
+    async findMany(branchId: string | undefined, query: SupportTicketQueryDto) {
         const { page, limit, status, search } = query;
 
         const where: Prisma.SupportTicketWhereInput = {
-            pharmacy_id: pharmacyId,
+            ...(branchId && { branch_id: branchId }),
             ...(status && { status }),
             ...(search && {
                 OR: [
@@ -63,19 +75,22 @@ export class SupportTicketsRepository {
         return { records, total };
     }
 
-    async findById(id: string, pharmacyId: string) {
+    async findById(id: string, branchId?: string) {
         return this.prisma.supportTicket.findFirst({
-            where: { id, pharmacy_id: pharmacyId },
+            where: {
+                id,
+                ...(branchId && { branch_id: branchId }),
+            },
             include: this.includeRelations,
         });
     }
 
-    async create(pharmacyId: string, userId: string, dto: CreateSupportTicketDto) {
-        const count = await this.prisma.supportTicket.count({ where: { pharmacy_id: pharmacyId } });
+    async create(branchId: string, userId: string, dto: CreateSupportTicketDto) {
+        const count = await this.prisma.supportTicket.count({ where: { branch_id: branchId } });
         const ticketNumber = `TK-${String(count + 1).padStart(4, '0')}`;
 
         const data: Prisma.SupportTicketCreateInput = {
-            pharmacy: { connect: { id: pharmacyId } },
+            branch: { connect: { id: branchId } },
             creator: { connect: { id: userId } },
             ticket_number: ticketNumber,
             subject: dto.subject,
@@ -95,7 +110,7 @@ export class SupportTicketsRepository {
         });
     }
 
-    async updateStatus(id: string, pharmacyId: string, dto: UpdateSupportTicketStatusDto) {
+    async updateStatus(id: string, dto: UpdateSupportTicketStatusDto) {
         return this.prisma.supportTicket.update({
             where: { id },
             data: { status: dto.status },

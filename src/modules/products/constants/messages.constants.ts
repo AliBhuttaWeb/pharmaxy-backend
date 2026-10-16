@@ -5,6 +5,7 @@ export const MESSAGES = {
         CREATED: 'Product created successfully.',
         UPDATED: 'Product updated successfully.',
         DELETED: 'Product deleted successfully.',
+        RESTORED: 'Product restored successfully.',
     },
 
     ERROR: {

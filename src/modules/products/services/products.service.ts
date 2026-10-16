@@ -124,6 +124,21 @@ export class ProductsService {
         };
     }
 
+    async restore(id: string) {
+        const product = await this.productsRepository.findById(id, true);
+
+        if (!product) {
+            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+        }
+
+        const restored = await this.productsRepository.restore(id);
+
+        return {
+            product: restored,
+            message: MESSAGES.SUCCESS.RESTORED,
+        };
+    }
+
     async existsByDosageForm(dosageFormId: string): Promise<boolean> {
         return this.productsRepository.existsByDosageForm(dosageFormId);
     }

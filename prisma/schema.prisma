@@ -285,8 +285,6 @@ model Pharmacy {
 
   notifications Notification[]
 
-  support_tickets SupportTicket[]
-
   audit_logs AuditLog[]
 
   pharmacy_payment_methods PharmacyPaymentMethod[]
@@ -361,6 +359,8 @@ model Branch {
   user_branches UserBranch[]
 
   settings BranchSettings?
+
+  support_tickets SupportTicket[]
 
   @@unique([pharmacy_id, name])
   @@index([pharmacy_id])
@@ -545,15 +545,13 @@ model Product {
   name         String @db.VarChar(255)
   generic_name String @db.VarChar(255) //It's what we pakistani call formula
 
-  category_id String? @db.Uuid
+  category_id String @db.Uuid
 
   dosage_form_id String @db.Uuid
 
   strength String @db.VarChar(100)
 
   pack_quantity Int
-
-  pack_unit String @db.VarChar(50)
 
   barcode String? @unique @db.VarChar(100)
 
@@ -575,7 +573,7 @@ model Product {
 
   manufacturer Manufacturer @relation(fields: [manufacturer_id], references: [id], onDelete: Restrict)
 
-  category Category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  category Category @relation(fields: [category_id], references: [id], onDelete: Restrict)
 
   dosage_form DosageForm @relation(fields: [dosage_form_id], references: [id], onDelete: Restrict)
 
@@ -1527,7 +1525,7 @@ enum SupportTicketStatus {
 model SupportTicket {
   id String @id @default(uuid()) @db.Uuid
 
-  pharmacy_id String @db.Uuid
+  branch_id String @db.Uuid
 
   created_by String @db.Uuid
 
@@ -1540,7 +1538,7 @@ model SupportTicket {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  pharmacy Pharmacy @relation(fields: [pharmacy_id], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Cascade)
 
   creator User @relation("SupportTicketCreator", fields: [created_by], references: [id], onDelete: Restrict)
 
@@ -1548,7 +1546,8 @@ model SupportTicket {
 
   attachments SupportTicketAttachment[]
 
-  @@unique([pharmacy_id, ticket_number])
+  @@unique([branch_id, ticket_number])
+  @@index([branch_id])
   @@index([status])
   @@index([created_by])
   @@map("support_tickets")

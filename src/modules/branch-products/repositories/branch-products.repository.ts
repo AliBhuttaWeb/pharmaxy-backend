@@ -23,7 +23,6 @@ export class BranchProductsRepository {
                 generic_name: true,
                 strength: true,
                 pack_quantity: true,
-                pack_unit: true,
                 is_active: true,
                 manufacturer: {
                     select: { name: true, description: true },

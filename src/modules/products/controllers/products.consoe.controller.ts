@@ -38,4 +38,10 @@ export class ProductsConsoleController {
     delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.productsService.delete(id);
     }
+
+    @Patch(':id/restore')
+    @Permissions(PRODUCTS_PERMISSIONS.PRODUCT_UPDATE.name)
+    restore(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.productsService.restore(id);
+    }
 }

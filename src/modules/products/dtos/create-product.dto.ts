@@ -31,7 +31,7 @@ export class CreateProductDto {
     @IsUUID()
     manufacturer_id!: string;
 
-    @ApiPropertyOptional()
+    @ApiProperty()
     @IsUUID()
     category_id!: string;
 
@@ -53,14 +53,6 @@ export class CreateProductDto {
     @IsInt()
     @Min(1)
     pack_quantity!: number;
-
-    @ApiProperty({
-        example: 'Tablet',
-        maxLength: 50,
-    })
-    @IsString()
-    @MaxLength(50)
-    pack_unit!: string;
 
     @ApiPropertyOptional({
         example: '8964001234567',

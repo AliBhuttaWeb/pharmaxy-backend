@@ -115,11 +115,11 @@ export class ProductsRepository {
         };
     }
 
-    findById(id: string) {
+    findById(id: string, includeDeleted = false) {
         return this.prisma.product.findFirst({
             where: {
                 id,
-                deleted_at: null,
+                ...(!includeDeleted && { deleted_at: null }),
             },
 
             include: this.productRelations,
@@ -226,6 +226,20 @@ export class ProductsRepository {
             data: {
                 deleted_at: new Date(),
             },
+        });
+    }
+
+    restore(id: string, tx?: Prisma.TransactionClient) {
+        return this.prisma.getClient(tx).product.update({
+            where: {
+                id,
+            },
+
+            data: {
+                deleted_at: null,
+            },
+
+            include: this.productRelations,
         });
     }
 }
