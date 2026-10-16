@@ -54,7 +54,7 @@ export class SubscriptionPlansService {
 
             max_branches: dto.max_branches,
 
-            max_users_per_branch: dto.max_users,
+            max_users_per_branch: dto.max_users_per_branch,
 
             report_history_months: dto.report_history_months,
 
@@ -104,8 +104,8 @@ export class SubscriptionPlansService {
                 max_branches: dto.max_branches,
             }),
 
-            ...(dto.max_users !== undefined && {
-                max_users: dto.max_users,
+            ...(dto.max_users_per_branch !== undefined && {
+                max_users: dto.max_users_per_branch,
             }),
 
             ...(dto.report_history_months !== undefined && {

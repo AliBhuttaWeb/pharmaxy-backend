@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { BillingCycle } from '@gen/prisma/client';
 
@@ -40,21 +40,19 @@ export class CreateSubscriptionPlanDto {
     @IsPositive()
     price!: number;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         example: 3,
     })
-    @IsOptional()
     @IsInt()
     @Min(1)
-    max_branches?: number;
+    max_branches!: number;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         example: 10,
     })
-    @IsOptional()
     @IsInt()
     @Min(1)
-    max_users?: number;
+    max_users_per_branch!: number;
 
     @ApiProperty({
         example: 3,
