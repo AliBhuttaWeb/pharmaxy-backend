@@ -20,5 +20,7 @@ export const MESSAGES = {
         ROLE_MUST_BE_CHILD: 'Assigned role must be a child of your role.',
         PERMISSION_MUST_BE_CHILD:
             'Assigned permissions must belong to your role or its child roles.',
+        BRANCH_ROLE_NOT_ALLOWED_FOR_QUICK_CREATE:
+            'Branch-scoped roles require branch assignment and cannot be quick-created.',
     },
 } as const;

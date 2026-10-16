@@ -98,7 +98,15 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         ...Object.values(permissions.STOCK_ADJUSTMENTS_PERMISSIONS),
 
         //Staff
-        ...Object.values(permissions.USERS_PERMISSIONS),
+        permissions.USERS_PERMISSIONS.USER_VIEW_LIST,
+        permissions.USERS_PERMISSIONS.USER_VIEW_DETAIL,
+        permissions.USERS_PERMISSIONS.USER_CREATE,
+        permissions.USERS_PERMISSIONS.USER_UPDATE,
+        permissions.USERS_PERMISSIONS.USER_UPDATE_STATUS,
+        permissions.USERS_PERMISSIONS.USER_DELETE,
+        permissions.USERS_PERMISSIONS.USER_ASSIGN_ROLE,
+        permissions.USERS_PERMISSIONS.USER_UPDATE_PROFILE,
+        permissions.USERS_PERMISSIONS.USER_VIEW_PROFILE,
 
         // Customers
         ...Object.values(permissions.CUSTOMERS_PERMISSIONS),

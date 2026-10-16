@@ -4,7 +4,7 @@ import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators
 import { USERS_PERMISSIONS } from '@/common/constants';
 import type { AuthenticatedUser } from '@/modules/auth/types';
 
-import { CreateUserDto, FindUsersQueryDto, UpdateUserDto } from '../dtos';
+import { CreateUserDto, FindUsersQueryDto, QuickCreateUserDto, UpdateUserDto } from '../dtos';
 import { UsersService } from '../services/users.service';
 
 @ConsoleController('users')
@@ -21,6 +21,12 @@ export class UsersConsoleController {
     @Permissions(USERS_PERMISSIONS.USER_CREATE.name)
     create(@Body() dto: CreateUserDto, @CurrentUser() user: AuthenticatedUser) {
         return this.usersService.create(dto, user);
+    }
+
+    @Post('quick-create')
+    @Permissions(USERS_PERMISSIONS.USER_QUICK_CREATE.name)
+    quickCreate(@Body() dto: QuickCreateUserDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.usersService.quickCreate(dto, user);
     }
 
     @Get(':id')

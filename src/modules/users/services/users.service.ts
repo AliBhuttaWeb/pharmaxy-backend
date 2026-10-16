@@ -10,7 +10,13 @@ import * as bcrypt from 'bcrypt';
 
 import { MESSAGES } from '../constants';
 
-import { CreateUserDto, FindUsersQueryDto, UpdateUserDto, UpdateUserStatusDto } from '../dtos';
+import {
+    CreateUserDto,
+    FindUsersQueryDto,
+    QuickCreateUserDto,
+    UpdateUserDto,
+    UpdateUserStatusDto,
+} from '../dtos';
 import { UsersRepository } from '../repositories/users.repository';
 import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
@@ -21,6 +27,7 @@ import { buildPaginationMeta } from '@/common/pagination';
 import { PermissionsService } from '@/modules/permissions/services/permissions.service';
 import { RolesService } from '@/modules/roles/services/roles.service';
 import { isSuperAdmin } from '@/common/helpers';
+import { ROLE_SCOPES } from '@/common/constants';
 
 @Injectable()
 export class UsersService {
@@ -33,7 +40,7 @@ export class UsersService {
         private readonly rolesService: RolesService,
     ) {}
 
-    private async validateUserUniqueness(dto: CreateUserDto) {
+    private async validateUserUniqueness(dto: { email: string; phone?: string }) {
         const existingEmail = await this.usersRepository.findByEmail(dto.email);
 
         if (existingEmail) {
@@ -138,6 +145,47 @@ export class UsersService {
             permission_ids ?? [],
             permissionsModified,
         );
+
+        return {
+            user,
+            message: MESSAGES.SUCCESS.CREATED,
+        };
+    }
+
+    async quickCreate(dto: QuickCreateUserDto, currentUser: AuthenticatedUser) {
+        await this.validateUserUniqueness(dto);
+
+        const role = await this.rolesService.findById(dto.role_id);
+        if (!role) {
+            throw new NotFoundException(MESSAGES.ERROR.ROLE_NOT_FOUND);
+        }
+
+        const creatorRoleIds = currentUser.roles.map((r) => r.id);
+        const isChildRole = await this.rolesService.isChildRole(creatorRoleIds, role);
+        if (!isChildRole) {
+            throw new ForbiddenException(MESSAGES.ERROR.ROLE_MUST_BE_CHILD);
+        }
+
+        if (role.role_scope === ROLE_SCOPES.BRANCH) {
+            throw new BadRequestException(MESSAGES.ERROR.BRANCH_ROLE_NOT_ALLOWED_FOR_QUICK_CREATE);
+        }
+
+        const { role_id, ...userDto } = dto;
+        const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+        const user = await this.prismaService.$transaction(async (tx) => {
+            const createdUser = await this.usersRepository.create(
+                {
+                    ...userDto,
+                    password: hashedPassword,
+                },
+                tx,
+            );
+
+            await this.usersRepository.createUserRole(createdUser.id, role_id, tx);
+
+            return this.usersRepository.findById(createdUser.id, tx);
+        });
 
         return {
             user,

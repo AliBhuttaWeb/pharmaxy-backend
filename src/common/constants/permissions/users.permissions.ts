@@ -14,6 +14,11 @@ export const USERS_PERMISSIONS = {
         description: 'Create users',
     },
 
+    USER_QUICK_CREATE: {
+        name: 'users.quick.create',
+        description: 'Quick create user with minimal details',
+    },
+
     USER_UPDATE: {
         name: 'users.update',
         description: 'Update users',
