@@ -14,7 +14,7 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
                 description: 'Basic monthly plan for small pharmacies.',
                 billing_cycle: BillingCycle.MONTHLY,
                 price: 1999,
-                max_branches: 2,
+                max_branches: 1,
                 max_users_per_branch: 2,
                 report_history_months: 2,
                 allow_nearby_inventory: false,
@@ -27,7 +27,7 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
                 description: 'Basic yearly plan for small pharmacies.',
                 billing_cycle: BillingCycle.YEARLY,
                 price: 19999,
-                max_branches: 2,
+                max_branches: 1,
                 max_users_per_branch: 2,
                 report_history_months: 2,
                 allow_nearby_inventory: false,
@@ -44,8 +44,8 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
                 description: 'Professional monthly plan for growing pharmacies.',
                 billing_cycle: BillingCycle.MONTHLY,
                 price: 3999,
-                max_branches: 5,
-                max_users_per_branch: 5,
+                max_branches: 3,
+                max_users_per_branch: 3,
                 report_history_months: 6,
                 allow_nearby_inventory: true,
                 allow_quick_sale: true,
@@ -61,9 +61,9 @@ export async function seedSubscriptionPlans({ prisma }: SeedContext) {
 
                 price: 39999,
 
-                max_branches: 5,
+                max_branches: 3,
 
-                max_users_per_branch: 5,
+                max_users_per_branch: 3,
 
                 report_history_months: 6,
 
