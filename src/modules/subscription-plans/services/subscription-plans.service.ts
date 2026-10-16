@@ -105,7 +105,7 @@ export class SubscriptionPlansService {
             }),
 
             ...(dto.max_users_per_branch !== undefined && {
-                max_users: dto.max_users_per_branch,
+                max_users_per_branch: dto.max_users_per_branch,
             }),
 
             ...(dto.report_history_months !== undefined && {
