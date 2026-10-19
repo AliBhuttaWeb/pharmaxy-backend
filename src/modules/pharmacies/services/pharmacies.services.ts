@@ -29,11 +29,10 @@ export class PharmaciesService {
 
     private mapPharmacyWithSubscription(pharmacy: any) {
         if (!pharmacy) return pharmacy;
-        const currentSubscription = pharmacy.subscriptions?.[0] ?? null;
+        const { subscriptions, ...rest } = pharmacy;
         return {
-            ...pharmacy,
-            current_subscription: currentSubscription,
-            subscription: currentSubscription,
+            ...rest,
+            current_subscription: subscriptions?.[0] ?? null,
         };
     }
 

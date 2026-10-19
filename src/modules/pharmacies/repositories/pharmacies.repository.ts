@@ -18,8 +18,24 @@ export class PharmaciesRepository {
                 created_at: 'desc',
             },
             take: 1,
-            include: {
-                plan: true,
+            select: {
+                id: true,
+                status: true,
+                started_at: true,
+                expires_at: true,
+                trial_started_at: true,
+                trial_expires_at: true,
+                auto_renew: true,
+                plan: {
+                    select: {
+                        id: true,
+                        name: true,
+                        billing_cycle: true,
+                        price: true,
+                        max_branches: true,
+                        max_users_per_branch: true,
+                    },
+                },
             },
         },
     };
@@ -204,7 +220,6 @@ export class PharmaciesRepository {
             where: {
                 id,
             },
-            include: this.pharmacyRelations,
         });
     }
 
