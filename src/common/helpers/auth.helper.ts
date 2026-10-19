@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { MESSAGES, ROLES } from '../constants';
@@ -36,3 +36,17 @@ export function isSuperAdmin(roles: RoleLike[]): boolean {
 export function isPharmacyAdmin(roles: RoleLike[]): boolean {
     return hasRole(roles, ROLES.PHARMACY_ADMIN.name);
 }
+
+export function ensurePharmacyAccess(
+    pharmacyId: string | null | undefined,
+    user: AuthenticatedUser,
+): void {
+    if (isSuperAdmin(user.roles)) {
+        return;
+    }
+
+    if (!pharmacyId || !user.pharmacy_id || pharmacyId !== user.pharmacy_id) {
+        throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+    }
+}
+

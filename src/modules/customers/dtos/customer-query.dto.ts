@@ -1,6 +1,6 @@
 import { PaginationQueryDto } from '@/common/pagination';
 
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 export class CustomerQueryDto extends PaginationQueryDto {
     @IsOptional()

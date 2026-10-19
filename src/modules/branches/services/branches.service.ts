@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     ConflictException,
     ForbiddenException,
     Injectable,
@@ -16,7 +17,7 @@ import { MESSAGES } from '../constants/messages.constants';
 import { BranchesRepository } from '../repositories/branches.repository';
 import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
-import { isSuperAdmin } from '@/common/helpers';
+import { ensurePharmacyAccess, getActivePharmacyId, isSuperAdmin } from '@/common/helpers';
 import { Branch } from '@gen/prisma/client';
 import { buildPaginationMeta } from '@/common/pagination';
 
@@ -28,9 +29,11 @@ export class BranchesService {
     ) {}
 
     async list(query: FindBranchesQueryDto, currentUser: AuthenticatedUser) {
-        const targetPharmacyId = isSuperAdmin(currentUser.roles) ? query.pharmacy_id : (currentUser.pharmacy_id ?? query.pharmacy_id);
+        const targetPharmacyId = isSuperAdmin(currentUser.roles)
+            ? query.pharmacy_id
+            : getActivePharmacyId(currentUser);
         const { limit, page } = query;
-        query.pharmacy_id = targetPharmacyId
+        query.pharmacy_id = targetPharmacyId;
         const { records, total } = await this.branchesRepository.findMany(query);
 
         if (!total || !page || !limit) return { records };
@@ -38,12 +41,14 @@ export class BranchesService {
         return { records, pagination };
     }
 
-    async get(id: string) {
+    async get(id: string, currentUser: AuthenticatedUser) {
         const branch = await this.branchesRepository.findById(id);
 
         if (!branch) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
+
+        ensurePharmacyAccess(branch.pharmacy_id, currentUser);
 
         return { branch };
     }
@@ -51,10 +56,15 @@ export class BranchesService {
     async create(dto: CreateBranchDto, currentUser: AuthenticatedUser) {
         const targetPharmacyId = isSuperAdmin(currentUser.roles)
             ? dto.pharmacy_id
-            : (currentUser.pharmacy_id ?? dto.pharmacy_id);
+            : getActivePharmacyId(currentUser);
+
+        if (!targetPharmacyId) {
+            throw new BadRequestException(MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
+        }
 
         const currentBranchCount =
             await this.branchesRepository.countByPharmacyId(targetPharmacyId);
+
 
         // Enforce subscription branch limit (SUPER_ADMIN is automatically bypassed)
         await this.subscriptionConstraintService.validateBranchesLimit({
@@ -88,12 +98,14 @@ export class BranchesService {
         };
     }
 
-    async update(id: string, dto: UpdateBranchDto) {
+    async update(id: string, dto: UpdateBranchDto, currentUser: AuthenticatedUser) {
         const branch = await this.branchesRepository.findById(id);
 
         if (!branch) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
+
+        ensurePharmacyAccess(branch.pharmacy_id, currentUser);
 
         if (dto.name && dto.name !== branch.name) {
             const existingBranch = await this.branchesRepository.findByName(
@@ -122,12 +134,14 @@ export class BranchesService {
         };
     }
 
-    async updateStatus(id: string, dto: UpdateBranchStatusDto) {
+    async updateStatus(id: string, dto: UpdateBranchStatusDto, currentUser: AuthenticatedUser) {
         const branch = await this.branchesRepository.findById(id);
 
         if (!branch) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
+
+        ensurePharmacyAccess(branch.pharmacy_id, currentUser);
 
         const updatedBranch = await this.branchesRepository.updateStatus(id, dto.is_active);
 
@@ -137,12 +151,14 @@ export class BranchesService {
         };
     }
 
-    async delete(id: string) {
+    async delete(id: string, currentUser: AuthenticatedUser) {
         const branch = await this.branchesRepository.findById(id);
 
         if (!branch) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
+
+        ensurePharmacyAccess(branch.pharmacy_id, currentUser);
 
         if (branch.is_main) {
             throw new ConflictException(MESSAGES.ERROR.CANNOT_DELETE_MAIN_BRANCH);
@@ -154,6 +170,7 @@ export class BranchesService {
             message: MESSAGES.SUCCESS.DELETED,
         };
     }
+
 
     async findById(id: string) {
         const branch = await this.branchesRepository.findById(id);

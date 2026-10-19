@@ -20,26 +20,30 @@ export class PurchaseOrdersConsoleController {
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_VIEW_LIST.name)
     @Get()
-    findMany(@Query() query: PurchaseOrderQueryDto) {
-        return this.purchaseOrdersService.findMany(query);
+    findMany(@Query() query: PurchaseOrderQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.purchaseOrdersService.findMany(query, user);
     }
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_VIEW_DETAIL.name)
     @Get(':id')
-    findById(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.purchaseOrdersService.findById(id);
+    findById(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.purchaseOrdersService.findById(id, user);
     }
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_CREATE.name)
     @Post()
-    create(@Body() dto: CreatePurchaseOrderDto) {
-        return this.purchaseOrdersService.create(dto);
+    create(@Body() dto: CreatePurchaseOrderDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.purchaseOrdersService.create(dto, user);
     }
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_UPDATE.name)
     @Patch(':id')
-    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdatePurchaseOrderDto) {
-        return this.purchaseOrdersService.update(id, dto);
+    update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdatePurchaseOrderDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.purchaseOrdersService.update(id, dto, user);
     }
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_APPROVE.name)
@@ -50,8 +54,8 @@ export class PurchaseOrdersConsoleController {
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_CANCEL.name)
     @Patch(':id/cancel')
-    cancel(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.purchaseOrdersService.cancel(id);
+    cancel(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.purchaseOrdersService.cancel(id, user);
     }
 
     @Permissions(PURCHASE_ORDERS_PERMISSIONS.PURCHASE_ORDER_APPROVE.name)
@@ -64,3 +68,4 @@ export class PurchaseOrdersConsoleController {
         return this.purchaseOrdersService.receive(id, dto, user);
     }
 }
+

@@ -31,8 +31,8 @@ export class UsersConsoleController {
 
     @Get(':id')
     @Permissions(USERS_PERMISSIONS.USER_VIEW_DETAIL.name)
-    get(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.usersService.get(id);
+    get(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.usersService.get(id, user);
     }
 
     @Put(':id')
@@ -47,7 +47,8 @@ export class UsersConsoleController {
 
     @Delete(':id')
     @Permissions(USERS_PERMISSIONS.USER_DELETE.name)
-    delete(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.usersService.delete(id);
+    delete(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.usersService.delete(id, user);
     }
 }
+

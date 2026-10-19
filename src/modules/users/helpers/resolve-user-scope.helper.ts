@@ -14,7 +14,7 @@ export const resolveUserScope = (dto: CreateUserDto, currentUser: AuthenticatedU
             throw new ForbiddenException(MESSAGES.ERROR.BRANCH_SCOPED_USERS_ALLOWED_TO_BE_CREATED);
         }
 
-        const pharmacyId = dto.pharmacy_id ?? currentUser.pharmacy_id;
+        const pharmacyId = currentUser.pharmacy_id;
         if (!pharmacyId) {
             throw new BadRequestException(BRANCH_MESSAGES.ERROR.PHARMACY_ID_REQUIRED);
         }
@@ -22,6 +22,7 @@ export const resolveUserScope = (dto: CreateUserDto, currentUser: AuthenticatedU
         if (!dto.branch_id) {
             throw new BadRequestException(BRANCH_MESSAGES.ERROR.BRANCH_ID_REQUIRED);
         }
+
 
         return {
             pharmacyId,

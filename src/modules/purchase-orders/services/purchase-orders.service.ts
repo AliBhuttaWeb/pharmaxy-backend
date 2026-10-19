@@ -22,6 +22,7 @@ import { BranchProductsRepository } from '@/modules/branch-products/repositories
 import { BranchProductBatchesRepository } from '@/modules/branch-products/repositories/branch-product-batches.repository';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { buildPaginationMeta } from '@/common/pagination';
+import { ensurePharmacyAccess, getActivePharmacyId, isSuperAdmin } from '@/common/helpers';
 
 @Injectable()
 export class PurchaseOrdersService {
@@ -41,7 +42,14 @@ export class PurchaseOrdersService {
         private readonly prisma: PrismaService,
     ) {}
 
-    async findMany(query: PurchaseOrderQueryDto) {
+    async findMany(query: PurchaseOrderQueryDto, user: AuthenticatedUser) {
+        if (!isSuperAdmin(user.roles)) {
+            query.pharmacy_id = getActivePharmacyId(user);
+            if (user.branch_id) {
+                query.branch_id = user.branch_id;
+            }
+        }
+
         const { limit, page } = query;
         const { records, total } = await this.purchaseOrdersRepository.findMany(query);
         if (!total || !page || !limit) return { records };
@@ -49,20 +57,25 @@ export class PurchaseOrdersService {
         return { records, pagination };
     }
 
-    async findById(id: string) {
+    async findById(id: string, user: AuthenticatedUser) {
         const purchaseOrder = await this.purchaseOrdersRepository.findById(id);
 
         if (!purchaseOrder) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
+        ensurePharmacyAccess(purchaseOrder.pharmacy_id, user);
+
         return { purchaseOrder };
     }
 
-    async create(dto: CreatePurchaseOrderDto) {
+    async create(dto: CreatePurchaseOrderDto, user: AuthenticatedUser) {
         const branch = await this.branchesService.findById(dto.branch_id);
 
-        await this.suppliersService.get(dto.supplier_id);
+        ensurePharmacyAccess(branch.pharmacy_id, user);
+
+        await this.suppliersService.get(dto.supplier_id, user);
+
 
         const productIds = dto.items.map((item) => item.product_id);
 
@@ -133,11 +146,11 @@ export class PurchaseOrdersService {
         };
     }
 
-    async update(id: string, dto: UpdatePurchaseOrderDto) {
-        const { purchaseOrder } = await this.findById(id);
+    async update(id: string, dto: UpdatePurchaseOrderDto, user: AuthenticatedUser) {
+        const { purchaseOrder } = await this.findById(id, user);
 
         if (dto.supplier_id) {
-            await this.suppliersService.get(dto.supplier_id);
+            await this.suppliersService.get(dto.supplier_id, user);
         }
 
         const data: Prisma.PurchaseOrderUpdateInput = {
@@ -193,8 +206,8 @@ export class PurchaseOrdersService {
         };
     }
 
-    async delete(id: string) {
-        await this.findById(id);
+    async delete(id: string, user: AuthenticatedUser) {
+        await this.findById(id, user);
 
         await this.purchaseOrdersRepository.delete(id);
 
@@ -216,7 +229,7 @@ export class PurchaseOrdersService {
     }
 
     async approve(id: string, user: AuthenticatedUser) {
-        const { purchaseOrder } = await this.findById(id);
+        const { purchaseOrder } = await this.findById(id, user);
 
         if (purchaseOrder.status === PurchaseOrderStatus.ACCEPTED) {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_APPROVED);
@@ -242,8 +255,8 @@ export class PurchaseOrdersService {
         };
     }
 
-    async cancel(id: string) {
-        const { purchaseOrder } = await this.findById(id);
+    async cancel(id: string, user: AuthenticatedUser) {
+        const { purchaseOrder } = await this.findById(id, user);
 
         if (purchaseOrder.status === PurchaseOrderStatus.CANCELLED) {
             throw new ConflictException(MESSAGES.ERROR.ALREADY_CANCELLED);
@@ -270,6 +283,9 @@ export class PurchaseOrdersService {
             if (!purchaseOrder) {
                 throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
             }
+
+            ensurePharmacyAccess(purchaseOrder.pharmacy_id, user);
+
 
             const invalidStatuses: PurchaseOrderStatus[] = [
                 PurchaseOrderStatus.DRAFT,

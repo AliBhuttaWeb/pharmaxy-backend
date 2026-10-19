@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InvoicesRepository } from '../repositories/invoices.repository';
 import { FindInvoicesQueryDto } from '../dtos';
 import { AuthenticatedUser } from '@/modules/auth/types';
-import { getActiveBranchId, isSuperAdmin } from '@/common/helpers';
+import { ensurePharmacyAccess, getActiveBranchId, isSuperAdmin, getActivePharmacyId } from '@/common/helpers';
 import { buildPaginationMeta } from '@/common/pagination';
 import { Prisma } from '@gen/prisma/client';
 import { MESSAGES } from '../constants';
@@ -29,7 +29,7 @@ export class InvoicesService {
         };
 
         if (!isSuperAdmin(user.roles)) {
-            where.pharmacy_id = user.pharmacy_id!;
+            where.pharmacy_id = getActivePharmacyId(user);
             const branchId = getActiveBranchId(user);
             if (branchId) {
                 where.branch_id = branchId;
@@ -74,9 +74,7 @@ export class InvoicesService {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        if (!isSuperAdmin(user.roles) && invoice.pharmacy_id !== user.pharmacy_id) {
-            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
-        }
+        ensurePharmacyAccess(invoice.pharmacy_id, user);
 
         return { invoice };
     }

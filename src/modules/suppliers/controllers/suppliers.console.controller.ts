@@ -1,6 +1,7 @@
 import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query } from '@nestjs/common';
 
-import { ConsoleController, Permissions } from '@/common/decorators';
+import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
+import { AuthenticatedUser } from '@/modules/auth/types';
 
 import {
     CreateSupplierDto,
@@ -18,26 +19,30 @@ export class SuppliersConsoleController {
 
     @Get()
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_VIEW_LIST.name)
-    list(@Query() query: FindSuppliersQueryDto) {
-        return this.suppliersService.list(query);
+    list(@Query() query: FindSuppliersQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.suppliersService.list(query, user);
     }
 
     @Get(':id')
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_VIEW_DETAIL.name)
-    get(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.suppliersService.get(id);
+    get(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.suppliersService.get(id, user);
     }
 
     @Post()
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_CREATE.name)
-    create(@Body() dto: CreateSupplierDto) {
-        return this.suppliersService.create(dto);
+    create(@Body() dto: CreateSupplierDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.suppliersService.create(dto, user);
     }
 
     @Put(':id')
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_UPDATE.name)
-    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateSupplierDto) {
-        return this.suppliersService.update(id, dto);
+    update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateSupplierDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.suppliersService.update(id, dto, user);
     }
 
     @Patch(':id/status')
@@ -45,13 +50,15 @@ export class SuppliersConsoleController {
     updateStatus(
         @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: UpdateSupplierStatusDto,
+        @CurrentUser() user: AuthenticatedUser,
     ) {
-        return this.suppliersService.updateStatus(id, dto);
+        return this.suppliersService.updateStatus(id, dto, user);
     }
 
     @Delete(':id')
     @Permissions(SUPPLIERS_PERMISSIONS.SUPPLIER_DELETE.name)
-    delete(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.suppliersService.delete(id);
+    delete(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.suppliersService.delete(id, user);
     }
 }
+

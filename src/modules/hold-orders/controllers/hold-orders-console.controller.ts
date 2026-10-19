@@ -36,19 +36,20 @@ export class HoldOrdersConsoleController {
 
     @Get(':id')
     @Permissions(HOLD_ORDERS_PERMISSIONS.HOLD_ORDER_VIEW_DETAIL.name)
-    findById(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.holdOrdersService.findById(id);
+    findById(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.holdOrdersService.findById(id, user);
     }
 
     @Delete(':id')
     @Permissions(HOLD_ORDERS_PERMISSIONS.HOLD_ORDER_CANCEL.name)
-    cancel(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.holdOrdersService.cancel(id);
+    cancel(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.holdOrdersService.cancel(id, user);
     }
 
     @Post(':id/resume')
     @Permissions(HOLD_ORDERS_PERMISSIONS.HOLD_ORDER_RESUME.name)
-    resume(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.holdOrdersService.resume(id);
+    resume(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.holdOrdersService.resume(id, user);
     }
 }
+

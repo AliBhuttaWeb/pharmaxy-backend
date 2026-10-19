@@ -1,10 +1,15 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import { IsDateString, IsEmail, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsDateString, IsEmail, IsEnum, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 
 import { Gender } from '@gen/prisma/client';
 
 export class CreateCustomerDto {
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsUUID()
+    pharmacy_id?: string;
+
     @IsString()
     @MaxLength(100)
     first_name!: string;

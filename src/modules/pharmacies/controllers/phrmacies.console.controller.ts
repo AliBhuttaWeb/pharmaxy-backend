@@ -18,20 +18,20 @@ export class PharmaciesConsoleController {
 
     @Get()
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_VIEW_LIST.name)
-    list(@Query() query: FindPharmaciesQueryDto) {
-        return this.pharmaciesService.list(query);
+    list(@Query() query: FindPharmaciesQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.pharmaciesService.list(query, user);
     }
 
     @Get('deleted')
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_VIEW_DELETED.name)
-    listDeleted(@Query() query: FindPharmaciesQueryDto) {
-        return this.pharmaciesService.listDeleted(query);
+    listDeleted(@Query() query: FindPharmaciesQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.pharmaciesService.listDeleted(query, user);
     }
 
     @Get(':id')
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_VIEW_DETAIL.name)
-    get(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.pharmaciesService.get(id);
+    get(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.pharmaciesService.get(id, user);
     }
 
     @Post()
@@ -42,8 +42,12 @@ export class PharmaciesConsoleController {
 
     @Put(':id')
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_UPDATE.name)
-    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdatePharmacyDto) {
-        return this.pharmaciesService.update(id, dto);
+    update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdatePharmacyDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.pharmaciesService.update(id, dto, user);
     }
 
     @Patch(':id/status')
@@ -51,19 +55,21 @@ export class PharmaciesConsoleController {
     updateStatus(
         @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: UpdatePharmacyStatusDto,
+        @CurrentUser() user: AuthenticatedUser,
     ) {
-        return this.pharmaciesService.updateStatus(id, dto);
+        return this.pharmaciesService.updateStatus(id, dto, user);
     }
 
     @Delete(':id')
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_DELETE.name)
-    delete(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.pharmaciesService.delete(id);
+    delete(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.pharmaciesService.delete(id, user);
     }
 
     @Patch(':id/restore')
     @Permissions(PHARMACIES_PERMISSIONS.PHARMACY_RESTORE.name)
-    restore(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.pharmaciesService.restore(id);
+    restore(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.pharmaciesService.restore(id, user);
     }
 }
+

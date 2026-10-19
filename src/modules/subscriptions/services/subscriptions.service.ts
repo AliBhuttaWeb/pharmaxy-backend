@@ -19,7 +19,7 @@ import { SubscriptionsRepository } from '../repositories/subscriptions.repositor
 import { SubscriptionPlansService } from '@/modules/subscription-plans/services/subscription-plans.service';
 import { buildPaginationMeta } from '@/common/pagination';
 import { AuthenticatedUser } from '@/modules/auth/types';
-import { getActivePharmacyId } from '@/common/helpers';
+import { ensurePharmacyAccess, getActivePharmacyId, isSuperAdmin } from '@/common/helpers';
 
 @Injectable()
 export class SubscriptionsService {
@@ -38,7 +38,10 @@ export class SubscriptionsService {
         return { subscription: subscription ?? null };
     }
 
-    async findMany(query: SubscriptionQueryDto) {
+    async findMany(query: SubscriptionQueryDto, user: AuthenticatedUser) {
+        if (!isSuperAdmin(user.roles)) {
+            query.pharmacy_id = getActivePharmacyId(user);
+        }
         const { limit, page } = query;
         const { records, total } = await this.subscriptionsRepository.findMany(query);
         if (!total || !page || !limit) return { records };
@@ -46,17 +49,20 @@ export class SubscriptionsService {
         return { records, pagination };
     }
 
-    async findById(id: string) {
+    async findById(id: string, user: AuthenticatedUser) {
         const subscription = await this.subscriptionsRepository.findById(id);
 
         if (!subscription) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
+        ensurePharmacyAccess(subscription.pharmacy_id, user);
+
         return { subscription };
     }
 
-    async assign(dto: AssignSubscriptionDto) {
+    async assign(dto: AssignSubscriptionDto, user: AuthenticatedUser) {
+        ensurePharmacyAccess(dto.pharmacy_id, user);
         const active = await this.subscriptionsRepository.findActiveByPharmacyId(dto.pharmacy_id);
 
         if (active) {
@@ -105,8 +111,8 @@ export class SubscriptionsService {
         };
     }
 
-    async update(id: string, dto: UpdateSubscriptionDto) {
-        await this.findById(id);
+    async update(id: string, dto: UpdateSubscriptionDto, user: AuthenticatedUser) {
+        await this.findById(id, user);
 
         const data: Prisma.SubscriptionUpdateInput = {
             ...(dto.auto_renew !== undefined && {
@@ -121,8 +127,8 @@ export class SubscriptionsService {
         };
     }
 
-    async cancel(id: string, dto: CancelSubscriptionDto) {
-        await this.findById(id);
+    async cancel(id: string, dto: CancelSubscriptionDto, user: AuthenticatedUser) {
+        await this.findById(id, user);
 
         const subscription = await this.subscriptionsRepository.update(id, {
             status: SubscriptionStatus.CANCELLED,
@@ -137,8 +143,8 @@ export class SubscriptionsService {
         };
     }
 
-    async renew(id: string, dto: RenewSubscriptionDto) {
-        const { subscription } = await this.findById(id);
+    async renew(id: string, dto: RenewSubscriptionDto, user: AuthenticatedUser) {
+        const { subscription } = await this.findById(id, user);
 
         const expiresAt =
             subscription.plan.billing_cycle === 'MONTHLY'

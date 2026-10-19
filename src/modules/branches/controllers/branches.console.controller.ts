@@ -25,8 +25,8 @@ export class BranchesConsoleController {
 
     @Get(':id')
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_VIEW_DETAIL.name)
-    get(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.branchesService.get(id);
+    get(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.branchesService.get(id, user);
     }
 
     @Post()
@@ -37,19 +37,28 @@ export class BranchesConsoleController {
 
     @Put(':id')
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_UPDATE.name)
-    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateBranchDto) {
-        return this.branchesService.update(id, dto);
+    update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateBranchDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.branchesService.update(id, dto, user);
     }
 
     @Patch(':id/status')
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_STATUS_UPDATE.name)
-    updateStatus(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateBranchStatusDto) {
-        return this.branchesService.updateStatus(id, dto);
+    updateStatus(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateBranchStatusDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.branchesService.updateStatus(id, dto, user);
     }
 
     @Delete(':id')
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_DELETE.name)
-    delete(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.branchesService.delete(id);
+    delete(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.branchesService.delete(id, user);
     }
 }
+

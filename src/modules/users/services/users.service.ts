@@ -26,7 +26,7 @@ import { resolveUserScope } from '../helpers/resolve-user-scope.helper';
 import { buildPaginationMeta } from '@/common/pagination';
 import { PermissionsService } from '@/modules/permissions/services/permissions.service';
 import { RolesService } from '@/modules/roles/services/roles.service';
-import { isSuperAdmin } from '@/common/helpers';
+import { isSuperAdmin, ensurePharmacyAccess } from '@/common/helpers';
 import { ROLE_SCOPES } from '@/common/constants';
 
 @Injectable()
@@ -67,15 +67,18 @@ export class UsersService {
         return { records, pagination };
     }
 
-    async get(id: string) {
+    async get(id: string, currentUser: AuthenticatedUser) {
         const user = await this.usersRepository.findById(id);
 
         if (!user) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
+        ensurePharmacyAccess(user.pharmacy_id, currentUser);
+
         return { user };
     }
+
 
     async create(dto: CreateUserDto, currentUser: AuthenticatedUser) {
         const { pharmacyId, branchId } = resolveUserScope(dto, currentUser);
@@ -193,14 +196,17 @@ export class UsersService {
         };
     }
 
-    async update(id: string, dto: UpdateUserDto, currentUser?: AuthenticatedUser) {
+    async update(id: string, dto: UpdateUserDto, currentUser: AuthenticatedUser) {
         const user = await this.usersRepository.findById(id);
 
         if (!user) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
+        ensurePharmacyAccess(user.pharmacy_id, currentUser);
+
         if (dto.email && dto.email !== user.email) {
+
             const existingEmail = await this.usersRepository.findByEmail(dto.email);
 
             if (existingEmail) {
@@ -284,12 +290,14 @@ export class UsersService {
         }
     }
 
-    async updateStatus(id: string, dto: UpdateUserStatusDto) {
+    async updateStatus(id: string, dto: UpdateUserStatusDto, currentUser: AuthenticatedUser) {
         const user = await this.usersRepository.findById(id);
 
         if (!user) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
+
+        ensurePharmacyAccess(user.pharmacy_id, currentUser);
 
         const updatedUser = await this.usersRepository.update(id, {
             status: dto.status,
@@ -300,14 +308,17 @@ export class UsersService {
         };
     }
 
-    async delete(id: string) {
+    async delete(id: string, currentUser: AuthenticatedUser) {
         const user = await this.usersRepository.findById(id);
 
         if (!user) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
+        ensurePharmacyAccess(user.pharmacy_id, currentUser);
+
         await this.usersRepository.delete(id);
         return { message: MESSAGES.SUCCESS.DELETED };
     }
+
 }

@@ -149,7 +149,9 @@ export class PosService {
 
             let customerId = dto.customer_id;
 
-            if (!customerId) {
+            if (customerId) {
+                await this.customersService.findById(customerId, user);
+            } else {
                 const phone = dto.customer_phone || POS_DEFAULTS.CUSTOMER_PHONE;
                 const name = dto.customer_name || POS_DEFAULTS.CUSTOMER_NAME;
 
@@ -158,11 +160,11 @@ export class PosService {
                 if (!customer) {
                     const nameParts = name.trim().split(' ');
                     const firstName = nameParts[0];
-                    const lastName = nameParts.slice(1).join(' ') || null;
+                    const lastName = nameParts.slice(1).join(' ') || undefined;
 
-                    const createdCustomer = await (this.customersService as any).create(
-                        pharmacyId,
+                    const createdCustomer = await this.customersService.create(
                         {
+                            pharmacy_id: pharmacyId,
                             first_name: firstName,
                             last_name: lastName,
                             phone: phone,

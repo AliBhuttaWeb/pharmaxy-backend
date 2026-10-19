@@ -4,7 +4,7 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
 
-import { getActiveBranchId, getActivePharmacyId } from '@/common/helpers';
+import { getActiveBranchId, getActivePharmacyId, ensurePharmacyAccess } from '@/common/helpers';
 
 import { BranchProductsRepository } from '@/modules/branch-products/repositories/branch-products.repository';
 import { BranchProductBatchesRepository } from '@/modules/branch-products/repositories/branch-product-batches.repository';
@@ -228,12 +228,14 @@ export class HoldOrdersService {
         return { records, pagination };
     }
 
-    async findById(id: string) {
+    async findById(id: string, user: AuthenticatedUser) {
         const hold = await this.holdOrdersRepository.findById(id);
 
         if (!hold) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
+
+        ensurePharmacyAccess(hold.pharmacy_id, user);
 
         return { holdOrder: hold };
     }
@@ -246,16 +248,17 @@ export class HoldOrdersService {
         return this.holdOrdersRepository.delete(id, tx);
     }
 
-    async cancel(id: string) {
-        await this.findById(id);
+    async cancel(id: string, user: AuthenticatedUser) {
+        await this.findById(id, user);
         await this.holdOrdersRepository.delete(id);
         return {
             message: MESSAGES.SUCCESS.CANCELLED,
         };
     }
 
-    async resume(id: string) {
-        const { holdOrder: hold } = await this.findById(id);
+    async resume(id: string, user: AuthenticatedUser) {
+        const { holdOrder: hold } = await this.findById(id, user);
+
 
         if (hold.expires_at && new Date(hold.expires_at) <= new Date()) {
             throw new ConflictException(MESSAGES.ERROR.EXPIRED);

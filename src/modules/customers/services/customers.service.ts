@@ -11,6 +11,7 @@ import { CreateCustomerDto, CustomerQueryDto, UpdateCustomerDto } from '../dtos'
 import { BranchesService } from '@/modules/branches/services/branches.service';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
+import { ensurePharmacyAccess, getActivePharmacyId, isSuperAdmin } from '@/common/helpers';
 import { MESSAGES } from '../constants';
 
 @Injectable()
@@ -66,11 +67,14 @@ export class CustomersService {
         };
     }
 
-    async findMany(branchId: string, query: CustomerQueryDto) {
-        const branch = await this.branchesService.findById(branchId);
+    async findMany(query: CustomerQueryDto, user: AuthenticatedUser) {
+        const pharmacyId = !isSuperAdmin(user.roles)
+            ? getActivePharmacyId(user)
+            : (query.pharmacy_id ?? getActivePharmacyId(user));
+
         const { limit, page } = query;
         const { records, total } = await this.customersRepository.findMany(
-            branch.pharmacy_id,
+            pharmacyId,
             query,
         );
         const mappedRecords = (records || []).map((customer: any) => this.mapCustomerStats(customer));
@@ -79,12 +83,14 @@ export class CustomersService {
         return { records: mappedRecords, pagination };
     }
 
-    async findById(id: string) {
+    async findById(id: string, user: AuthenticatedUser) {
         const customer = await this.customersRepository.findById(id);
 
         if (!customer) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
+
+        ensurePharmacyAccess(customer.pharmacy_id, user);
 
         return { customer: this.mapCustomerStats(customer) };
     }
@@ -93,8 +99,15 @@ export class CustomersService {
         return this.customersRepository.findByPhone(pharmacyId, phone);
     }
 
-    async create(pharmacyId: string, dto: CreateCustomerDto, user: AuthenticatedUser) {
+    async create(dto: CreateCustomerDto, user: AuthenticatedUser) {
+        const pharmacyId = !isSuperAdmin(user.roles)
+            ? getActivePharmacyId(user)
+            : (dto.pharmacy_id ?? getActivePharmacyId(user));
+
+        ensurePharmacyAccess(pharmacyId, user);
+
         if (dto.phone) {
+
             const exists = await this.customersRepository.findByPhone(pharmacyId, dto.phone);
 
             if (exists) {
@@ -158,7 +171,7 @@ export class CustomersService {
     }
 
     async update(id: string, dto: UpdateCustomerDto, user: AuthenticatedUser) {
-        const { customer } = await this.findById(id);
+        const { customer } = await this.findById(id, user);
 
         if (dto.phone && dto.phone !== customer.phone) {
             const exists = await this.customersRepository.findByPhone(
@@ -247,8 +260,8 @@ export class CustomersService {
         };
     }
 
-    async delete(id: string) {
-        await this.findById(id);
+    async delete(id: string, user: AuthenticatedUser) {
+        await this.findById(id, user);
 
         await this.customersRepository.delete(id);
 
@@ -256,6 +269,7 @@ export class CustomersService {
             message: MESSAGES.SUCCESS.DELETED,
         };
     }
+
 
     private async generateCustomerCode(pharmacyId: string) {
         const latest = await this.customersRepository.findLatestCustomer(pharmacyId);

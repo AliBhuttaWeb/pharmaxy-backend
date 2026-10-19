@@ -31,18 +31,25 @@ export class ReturnsConsoleController {
 
         @CurrentUser() user: AuthenticatedUser,
     ) {
-        return this.returnsService.findMany(user.branch_id!, query);
+        return this.returnsService.findMany(query, user);
     }
 
     @Get(':id')
     @Permissions(RETURNS_PERMISSIONS.RETURN_VIEW_DETAIL.name)
-    findById(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.returnsService.findById(id);
+    findById(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.returnsService.findById(id, user);
     }
 
     @Delete(':id')
     @Permissions(RETURNS_PERMISSIONS.RETURN_CANCEL.name)
-    cancel(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.returnsService.cancel(id);
+    cancel(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.returnsService.cancel(id, user);
     }
 }
+

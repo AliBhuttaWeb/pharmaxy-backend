@@ -17,6 +17,7 @@ import { UsersRepository } from '@/modules/users/repositories/users.repository';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { buildPaginationMeta } from '@/common/pagination';
+import { ensurePharmacyAccess, getActivePharmacyId, isSuperAdmin } from '@/common/helpers';
 
 @Injectable()
 export class PharmaciesService {
@@ -26,23 +27,40 @@ export class PharmaciesService {
         private readonly prismaService: PrismaService,
     ) {}
 
-    async list(query: FindPharmaciesQueryDto) {
-        const { page, limit } = query;
-        const { records, total } = await this.pharmaciesRepository.findMany(query);
-
-        if (!total || !page || !limit) return { records };
-        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
-        return { records, pagination };
+    private mapPharmacyWithSubscription(pharmacy: any) {
+        if (!pharmacy) return pharmacy;
+        const currentSubscription = pharmacy.subscriptions?.[0] ?? null;
+        return {
+            ...pharmacy,
+            current_subscription: currentSubscription,
+            subscription: currentSubscription,
+        };
     }
 
-    async get(id: string) {
+    async list(query: FindPharmaciesQueryDto, user: AuthenticatedUser) {
+        const targetPharmacyId = isSuperAdmin(user.roles)
+            ? query.pharmacy_id
+            : getActivePharmacyId(user);
+
+        const { page, limit } = query;
+        const { records, total } = await this.pharmaciesRepository.findMany(query, targetPharmacyId);
+        const mappedRecords = (records || []).map((pharmacy) => this.mapPharmacyWithSubscription(pharmacy));
+
+        if (!total || !page || !limit) return { records: mappedRecords };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+        return { records: mappedRecords, pagination };
+    }
+
+    async get(id: string, user: AuthenticatedUser) {
+        ensurePharmacyAccess(id, user);
+
         const pharmacy = await this.pharmaciesRepository.findById(id);
 
         if (!pharmacy) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        return { pharmacy };
+        return { pharmacy: this.mapPharmacyWithSubscription(pharmacy) };
     }
 
     async create(dto: CreatePharmacyDto, user: AuthenticatedUser) {
@@ -65,7 +83,9 @@ export class PharmaciesService {
         });
     }
 
-    async update(id: string, dto: UpdatePharmacyDto) {
+    async update(id: string, dto: UpdatePharmacyDto, user: AuthenticatedUser) {
+        ensurePharmacyAccess(id, user);
+
         const pharmacy = await this.pharmaciesRepository.findById(id);
 
         if (!pharmacy) {
@@ -84,7 +104,9 @@ export class PharmaciesService {
         return { pharmacy: updatedPharmacy, message: MESSAGES.SUCCESS.UPDATED };
     }
 
-    async updateStatus(id: string, dto: UpdatePharmacyStatusDto) {
+    async updateStatus(id: string, dto: UpdatePharmacyStatusDto, user: AuthenticatedUser) {
+        ensurePharmacyAccess(id, user);
+
         const pharmacy = await this.pharmaciesRepository.findById(id);
 
         if (!pharmacy) {
@@ -96,7 +118,9 @@ export class PharmaciesService {
         return { pharmacy: updatedPharmacy, message: MESSAGES.SUCCESS.STATUS_UPDATED };
     }
 
-    async delete(id: string) {
+    async delete(id: string, user: AuthenticatedUser) {
+        ensurePharmacyAccess(id, user);
+
         const pharmacy = await this.pharmaciesRepository.findById(id);
 
         if (!pharmacy) {
@@ -110,7 +134,9 @@ export class PharmaciesService {
         };
     }
 
-    async restore(id: string) {
+    async restore(id: string, user: AuthenticatedUser) {
+        ensurePharmacyAccess(id, user);
+
         const pharmacy = await this.pharmaciesRepository.findByIdIncludingDeleted(id);
 
         if (!pharmacy) {
@@ -125,12 +151,21 @@ export class PharmaciesService {
         return { pharmacy: restoredPharmacy, message: MESSAGES.SUCCESS.RESTORED };
     }
 
-    async listDeleted(query: FindPharmaciesQueryDto) {
-        const { page, limit } = query;
-        const { records, total } = await this.pharmaciesRepository.findDeleted(query);
+    async listDeleted(query: FindPharmaciesQueryDto, user: AuthenticatedUser) {
+        const targetPharmacyId = isSuperAdmin(user.roles)
+            ? query.pharmacy_id
+            : getActivePharmacyId(user);
 
-        if (!total || !page || !limit) return { records };
+        const { page, limit } = query;
+        const { records, total } = await this.pharmaciesRepository.findDeleted(
+            query,
+            targetPharmacyId,
+        );
+        const mappedRecords = (records || []).map((pharmacy) => this.mapPharmacyWithSubscription(pharmacy));
+
+        if (!total || !page || !limit) return { records: mappedRecords };
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
-        return { records, pagination };
+        return { records: mappedRecords, pagination };
     }
 }
+

@@ -4,12 +4,13 @@ import { IsDateString, IsEnum, IsOptional, IsUUID } from 'class-validator';
 
 import { PurchaseOrderStatus } from '@gen/prisma/client';
 import { PaginationQueryDto } from '@/common/pagination';
-
 export class PurchaseOrderQueryDto extends PaginationQueryDto {
+
     @ApiPropertyOptional()
     @IsOptional()
     @IsUUID()
     supplier_id?: string;
+
 
     @ApiPropertyOptional({
         enum: PurchaseOrderStatus,

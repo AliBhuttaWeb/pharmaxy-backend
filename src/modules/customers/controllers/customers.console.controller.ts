@@ -9,7 +9,6 @@ import { CreateCustomerDto, CustomerQueryDto, UpdateCustomerDto } from '../dtos'
 import { CustomersService } from '../services/customers.service';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
-import { getActiveBranchId } from '@/common/helpers';
 
 @ConsoleController('customers')
 export class CustomersConsoleController {
@@ -18,19 +17,19 @@ export class CustomersConsoleController {
     @Get()
     @Permissions(CUSTOMERS_PERMISSIONS.CUSTOMER_VIEW_LIST.name)
     findMany(@Query() query: CustomerQueryDto, @CurrentUser() user: AuthenticatedUser) {
-        return this.customersService.findMany(getActiveBranchId(user), query);
+        return this.customersService.findMany(query, user);
     }
 
     @Get(':id')
     @Permissions(CUSTOMERS_PERMISSIONS.CUSTOMER_VIEW_DETAIL.name)
-    findById(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.customersService.findById(id);
+    findById(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.customersService.findById(id, user);
     }
 
     @Post()
     @Permissions(CUSTOMERS_PERMISSIONS.CUSTOMER_CREATE.name)
     create(@Body() dto: CreateCustomerDto, @CurrentUser() user: AuthenticatedUser) {
-        return this.customersService.create(getActiveBranchId(user), dto, user);
+        return this.customersService.create(dto, user);
     }
 
     @Patch(':id')
@@ -45,7 +44,8 @@ export class CustomersConsoleController {
 
     @Delete(':id')
     @Permissions(CUSTOMERS_PERMISSIONS.CUSTOMER_DELETE.name)
-    delete(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.customersService.delete(id);
+    delete(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.customersService.delete(id, user);
     }
 }
+

@@ -4,7 +4,7 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 
 import { AuthenticatedUser } from '@/modules/auth/types';
 
-import { getActiveBranchId, getActivePharmacyId } from '@/common/helpers';
+import { getActiveBranchId, getActivePharmacyId, ensurePharmacyAccess } from '@/common/helpers';
 
 import { CreateReturnDto, ReturnQueryDto } from '../dtos';
 
@@ -276,25 +276,28 @@ export class ReturnsService {
         return result;
     }
 
-    async findMany(branchId: string, query: ReturnQueryDto) {
+    async findMany(query: ReturnQueryDto, user: AuthenticatedUser) {
+        const effectiveBranchId = getActiveBranchId(user);
         const { limit, page } = query;
-        const { records, total } = await this.returnsRepository.findMany(branchId, query);
+        const { records, total } = await this.returnsRepository.findMany(effectiveBranchId, query);
         if (!total || !page || !limit) return { records };
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
         return { records, pagination };
     }
 
-    async findById(id: string) {
+    async findById(id: string, user: AuthenticatedUser) {
         const record = await this.returnsRepository.findById(id);
 
         if (!record) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
+        ensurePharmacyAccess(record.pharmacy_id, user);
+
         return { saleReturn: record };
     }
 
-    async cancel(id: string) {
+    async cancel(id: string, user: AuthenticatedUser) {
         return this.prisma.$transaction(async (tx) => {
             const returnRecord = await this.returnsRepository.findByIdForCancel(id, tx);
 
@@ -302,9 +305,12 @@ export class ReturnsService {
                 throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
             }
 
+            ensurePharmacyAccess(returnRecord.pharmacy_id, user);
+
             if (returnRecord.status === ReturnStatus.CANCELLED) {
                 throw new ConflictException(MESSAGES.ERROR.ALREADY_CANCELLED);
             }
+
 
             if (returnRecord.status === ReturnStatus.COMPLETED) {
                 throw new ConflictException(MESSAGES.ERROR.COMPLETED_CANNOT_BE_CANCELLED);

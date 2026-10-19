@@ -12,10 +12,25 @@ import { isSuperAdmin } from '@/common/helpers';
 export class PharmaciesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findMany(query: FindPharmaciesQueryDto) {
+    private readonly pharmacyRelations: Prisma.PharmacyInclude = {
+        subscriptions: {
+            orderBy: {
+                created_at: 'desc',
+            },
+            take: 1,
+            include: {
+                plan: true,
+            },
+        },
+    };
+
+    async findMany(query: FindPharmaciesQueryDto, pharmacyId?: string) {
         const { search, status, is_deleted, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.PharmacyWhereInput = {
+            ...(pharmacyId && {
+                id: pharmacyId,
+            }),
             ...(search && {
                 OR: [
                     {
@@ -102,9 +117,10 @@ export class PharmaciesRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            const records = this.prisma.pharmacy.findMany({
+            const records = await this.prisma.pharmacy.findMany({
                 where,
                 orderBy,
+                include: this.pharmacyRelations,
             });
             return { records };
         }
@@ -115,6 +131,7 @@ export class PharmaciesRepository {
                 orderBy,
                 skip: (page - 1) * limit,
                 take: limit,
+                include: this.pharmacyRelations,
             }),
             this.prisma.pharmacy.count({
                 where,
@@ -133,6 +150,7 @@ export class PharmaciesRepository {
                 id,
                 deleted_at: null,
             },
+            include: this.pharmacyRelations,
         });
     }
 
@@ -186,6 +204,7 @@ export class PharmaciesRepository {
             where: {
                 id,
             },
+            include: this.pharmacyRelations,
         });
     }
 
@@ -200,13 +219,17 @@ export class PharmaciesRepository {
         });
     }
 
-    async findDeleted(query: FindPharmaciesQueryDto) {
+    async findDeleted(query: FindPharmaciesQueryDto, pharmacyId?: string) {
         const { search, status, page, limit, sort_by, sort_order } = query;
 
         const where: Prisma.PharmacyWhereInput = {
             deleted_at: {
                 not: null,
             },
+
+            ...(pharmacyId && {
+                id: pharmacyId,
+            }),
 
             ...(status && {
                 status,
@@ -294,6 +317,7 @@ export class PharmaciesRepository {
             const records = await this.prisma.pharmacy.findMany({
                 where,
                 orderBy,
+                include: this.pharmacyRelations,
             });
 
             return { records };
@@ -305,6 +329,7 @@ export class PharmaciesRepository {
                 orderBy,
                 skip: (page - 1) * limit,
                 take: limit,
+                include: this.pharmacyRelations,
             }),
 
             this.prisma.pharmacy.count({

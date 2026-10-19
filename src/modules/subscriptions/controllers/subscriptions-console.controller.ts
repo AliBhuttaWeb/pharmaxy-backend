@@ -27,37 +27,52 @@ export class SubscriptionsConsoleController {
 
     @Get()
     @Permissions(SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_LIST.name)
-    findMany(@Query() query: SubscriptionQueryDto) {
-        return this.subscriptionsService.findMany(query);
+    findMany(@Query() query: SubscriptionQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.subscriptionsService.findMany(query, user);
     }
 
     @Get(':id')
     @Permissions(SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_VIEW_DETAIL.name)
-    findById(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.subscriptionsService.findById(id);
+    findById(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.subscriptionsService.findById(id, user);
     }
 
     @Post('assign')
     @Permissions(SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_ASSIGN.name)
-    assign(@Body() dto: AssignSubscriptionDto) {
-        return this.subscriptionsService.assign(dto);
+    assign(@Body() dto: AssignSubscriptionDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.subscriptionsService.assign(dto, user);
     }
 
     @Patch(':id')
     @Permissions(SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_UPDATE.name)
-    update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateSubscriptionDto) {
-        return this.subscriptionsService.update(id, dto);
+    update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateSubscriptionDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.subscriptionsService.update(id, dto, user);
     }
 
     @Patch(':id/cancel')
     @Permissions(SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_CANCEL.name)
-    cancel(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CancelSubscriptionDto) {
-        return this.subscriptionsService.cancel(id, dto);
+    cancel(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: CancelSubscriptionDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.subscriptionsService.cancel(id, dto, user);
     }
 
     @Patch(':id/renew')
     @Permissions(SUBSCRIPTIONS_PERMISSIONS.SUBSCRIPTION_RENEW.name)
-    renew(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: RenewSubscriptionDto) {
-        return this.subscriptionsService.renew(id, dto);
+    renew(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: RenewSubscriptionDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.subscriptionsService.renew(id, dto, user);
     }
 }
