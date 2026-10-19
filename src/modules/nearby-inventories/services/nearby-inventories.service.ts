@@ -58,9 +58,9 @@ export class NearbyInventoriesService {
                     item.quantity,
                     tx,
                 );
-                if (item.product_batch_id) {
+                if (item.branch_product_batch_id) {
                     await this.nearbyInventoriesRepository.incrementBatchStock(
-                        item.product_batch_id,
+                        item.branch_product_batch_id,
                         item.quantity,
                         tx,
                     );
@@ -247,12 +247,12 @@ export class NearbyInventoriesService {
                 await this.nearbyInventoriesRepository.findAvailableBatchForReservation(
                     targetBranchProduct.id,
                     dto.quantity,
-                    dto.product_batch_id,
+                    dto.branch_product_batch_id,
                     tx,
                 );
 
-            if (dto.product_batch_id && !targetBatch) {
-                throw new NotFoundException(MESSAGES.ERROR.PRODUCT_BATCH_NOT_FOUND);
+            if (dto.branch_product_batch_id && !targetBatch) {
+                throw new NotFoundException(MESSAGES.ERROR.BRANCH_PRODUCT_BATCH_NOT_FOUND);
             }
 
             await this.nearbyInventoriesRepository.decrementBranchProductStock(
@@ -282,7 +282,7 @@ export class NearbyInventoriesService {
                         connect: { id: targetBranchProduct.id },
                     },
                     ...(targetBatch && {
-                        product_batch: {
+                        branch_product_batch: {
                             connect: { id: targetBatch.id },
                         },
                     }),
@@ -420,9 +420,9 @@ export class NearbyInventoriesService {
                     existing.quantity,
                     tx,
                 );
-                if (existing.product_batch_id) {
+                if (existing.branch_product_batch_id) {
                     await this.nearbyInventoriesRepository.incrementBatchStock(
-                        existing.product_batch_id,
+                        existing.branch_product_batch_id,
                         existing.quantity,
                         tx,
                     );

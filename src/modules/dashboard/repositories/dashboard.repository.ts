@@ -196,7 +196,7 @@ export class DashboardRepository {
         const date = new Date();
         date.setDate(date.getDate() + expiryDays);
 
-        return this.prisma.productBatch.count({
+        return this.prisma.branchProductBatch.count({
             where: {
                 branch_product: {
                     branch_id: branchId,

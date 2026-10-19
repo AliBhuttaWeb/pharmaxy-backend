@@ -58,7 +58,7 @@ export class InvoicesRepository {
                         branch_product: true,
                         batches: {
                             include: {
-                                product_batch: true,
+                                branch_product_batch: true,
                             },
                         },
                     },

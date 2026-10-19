@@ -10,7 +10,7 @@ describe('HoldOrdersService', () => {
     let mockPrisma: any;
     let mockHoldOrdersRepo: any;
     let mockBranchProductsRepo: any;
-    let mockProductBatchesRepo: any;
+    let mockBranchProductBatchesRepo: any;
 
     const mockUser: AuthenticatedUser = {
         id: 'user-1',
@@ -41,7 +41,7 @@ describe('HoldOrdersService', () => {
         mockBranchProductsRepo = {
             findById: jest.fn(),
         };
-        mockProductBatchesRepo = {
+        mockBranchProductBatchesRepo = {
             findAvailableForSale: jest.fn().mockResolvedValue([]),
         };
 
@@ -49,7 +49,7 @@ describe('HoldOrdersService', () => {
             mockPrisma,
             mockHoldOrdersRepo,
             mockBranchProductsRepo,
-            mockProductBatchesRepo,
+            mockBranchProductBatchesRepo,
         );
     });
 
@@ -67,7 +67,7 @@ describe('HoldOrdersService', () => {
                 selling_price: new Decimal(100),
             });
 
-            mockProductBatchesRepo.findAvailableForSale.mockResolvedValue([
+            mockBranchProductBatchesRepo.findAvailableForSale.mockResolvedValue([
                 { id: 'batch-1', quantity: 10 },
             ]);
 

@@ -41,8 +41,8 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         // Product catalog
         ...Object.values(permissions.PRODUCTS_PERMISSIONS),
 
-        permissions.PRODUCT_BATCHES_PERMISSIONS.PRODUCT_BATCH_VIEW_LIST,
-        permissions.PRODUCT_BATCHES_PERMISSIONS.PRODUCT_BATCH_VIEW_DETAIL,
+        permissions.BRANCH_PRODUCT_BATCHES_PERMISSIONS.BRANCH_PRODUCT_BATCH_VIEW_LIST,
+        permissions.BRANCH_PRODUCT_BATCHES_PERMISSIONS.BRANCH_PRODUCT_BATCH_VIEW_DETAIL,
 
         ...Object.values(permissions.CATEGORIES_PERMISSIONS),
         ...Object.values(permissions.DOSAGE_FORMS_PERMISSIONS),
@@ -93,7 +93,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         // Inventory
         ...Object.values(permissions.BRANCH_PRODUCTS_PERMISSIONS),
 
-        ...Object.values(permissions.PRODUCT_BATCHES_PERMISSIONS),
+        ...Object.values(permissions.BRANCH_PRODUCT_BATCHES_PERMISSIONS),
 
         ...Object.values(permissions.STOCK_ADJUSTMENTS_PERMISSIONS),
 

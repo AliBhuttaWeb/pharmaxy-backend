@@ -7,8 +7,8 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 export class PosRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    updateProductBatchQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.update({
+    updateBranchProductBatchQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
+        return this.prisma.getClient(tx).branchProductBatch.update({
             where: {
                 id,
             },

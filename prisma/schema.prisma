@@ -628,7 +628,7 @@ model BranchProduct {
 
   product Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
 
-  batches ProductBatch[]
+  batches BranchProductBatch[]
 
   invoice_items InvoiceItem[]
 
@@ -709,7 +709,7 @@ enum BatchSourceType {
   @@map("batch_source_type")
 }
 
-model ProductBatch {
+model BranchProductBatch {
   id String @id @default(uuid()) @db.Uuid
 
   branch_product_id String @db.Uuid
@@ -761,7 +761,7 @@ model ProductBatch {
   @@index([branch_product_id])
   @@index([expiry_date])
   @@index([batch_number])
-  @@map("product_batches")
+  @@map("branch_product_batches")
 }
 
 enum PurchaseOrderStatus {
@@ -865,7 +865,7 @@ model PurchaseOrderItem {
 
   product Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
 
-  product_batches ProductBatch[]
+  branch_product_batches BranchProductBatch[]
 
   @@index([purchase_order_id])
   @@index([product_id])
@@ -1118,7 +1118,7 @@ model InvoiceItemBatch {
 
   invoice_item_id String @db.Uuid
 
-  product_batch_id String @db.Uuid
+  branch_product_batch_id String @db.Uuid
 
   quantity Int
 
@@ -1126,10 +1126,10 @@ model InvoiceItemBatch {
 
   invoice_item InvoiceItem @relation(fields: [invoice_item_id], references: [id], onDelete: Cascade)
 
-  product_batch ProductBatch @relation(fields: [product_batch_id], references: [id], onDelete: Restrict)
+  branch_product_batch BranchProductBatch @relation(fields: [branch_product_batch_id], references: [id], onDelete: Restrict)
 
   @@index([invoice_item_id])
-  @@index([product_batch_id])
+  @@index([branch_product_batch_id])
   @@map("invoice_item_batches")
 }
 
@@ -1379,7 +1379,7 @@ model StockAdjustmentItem {
 
   branch_product_id String @db.Uuid
 
-  product_batch_id String? @db.Uuid
+  branch_product_batch_id String? @db.Uuid
 
   reason AdjustmentReason
 
@@ -1395,7 +1395,7 @@ model StockAdjustmentItem {
 
   branch_product BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
 
-  product_batch ProductBatch? @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
+  branch_product_batch BranchProductBatch? @relation(fields: [branch_product_batch_id], references: [id], onDelete: SetNull)
 
   @@index([stock_adjustment_id])
   @@index([branch_product_id])
@@ -1464,7 +1464,7 @@ model StockTransferItem {
 
   branch_product_id String @db.Uuid
 
-  product_batch_id String? @db.Uuid
+  branch_product_batch_id String? @db.Uuid
 
   quantity Int
 
@@ -1474,11 +1474,11 @@ model StockTransferItem {
 
   branch_product BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
 
-  product_batch ProductBatch? @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
+  branch_product_batch BranchProductBatch? @relation(fields: [branch_product_batch_id], references: [id], onDelete: SetNull)
 
   @@index([stock_transfer_id])
   @@index([branch_product_id])
-  @@index([product_batch_id])
+  @@index([branch_product_batch_id])
   @@map("stock_transfer_items")
 }
 
@@ -1945,10 +1945,10 @@ model NearbyReservation {
 
   reservation_number String @unique @db.VarChar(50)
 
-  requesting_branch_id String  @db.Uuid
-  target_branch_id     String  @db.Uuid
-  branch_product_id    String  @db.Uuid
-  product_batch_id     String? @db.Uuid
+  requesting_branch_id    String  @db.Uuid
+  target_branch_id        String  @db.Uuid
+  branch_product_id       String  @db.Uuid
+  branch_product_batch_id String? @db.Uuid
 
   quantity Int
 
@@ -1967,15 +1967,15 @@ model NearbyReservation {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
 
-  requesting_branch Branch        @relation("RequestingBranchReservations", fields: [requesting_branch_id], references: [id], onDelete: Restrict)
-  target_branch     Branch        @relation("TargetBranchReservations", fields: [target_branch_id], references: [id], onDelete: Restrict)
-  branch_product    BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
-  product_batch     ProductBatch? @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
+  requesting_branch    Branch              @relation("RequestingBranchReservations", fields: [requesting_branch_id], references: [id], onDelete: Restrict)
+  target_branch        Branch              @relation("TargetBranchReservations", fields: [target_branch_id], references: [id], onDelete: Restrict)
+  branch_product       BranchProduct       @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+  branch_product_batch BranchProductBatch? @relation(fields: [branch_product_batch_id], references: [id], onDelete: SetNull)
 
   @@index([requesting_branch_id])
   @@index([target_branch_id])
   @@index([branch_product_id])
-  @@index([product_batch_id])
+  @@index([branch_product_batch_id])
   @@index([status])
   @@index([expires_at])
   @@map("nearby_reservations")

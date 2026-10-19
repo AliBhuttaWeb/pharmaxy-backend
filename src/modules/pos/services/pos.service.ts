@@ -6,7 +6,7 @@ import { AuthenticatedUser } from '@/modules/auth/types';
 
 import { CustomersService } from '@/modules/customers/services/customers.service';
 import { BranchProductsRepository } from '@/modules/branch-products/repositories/branch-products.repository';
-import { ProductBatchesRepository } from '@/modules/branch-products/repositories/product-batches.repository';
+import { BranchProductBatchesRepository } from '@/modules/branch-products/repositories/branch-product-batches.repository';
 
 import { CreatePosSaleDto } from '../dtos';
 
@@ -29,7 +29,7 @@ type PreparedSaleItem = {
     unitPrice: number; // stored as Decimal in DB, converted to number here
     lineTotal: number;
     allocations: {
-        product_batch_id: string;
+        branch_product_batch_id: string;
         quantity: number;
     }[];
 };
@@ -45,7 +45,7 @@ export class PosService {
 
         private readonly branchProductsRepository: BranchProductsRepository,
 
-        private readonly productBatchesRepository: ProductBatchesRepository,
+        private readonly branchProductBatchesRepository: BranchProductBatchesRepository,
 
         private readonly customersService: CustomersService,
 
@@ -83,7 +83,7 @@ export class PosService {
                     throw new ConflictException(PRODUCT_MESSAGES.ERROR.INSUFFIENT_STOCK);
                 }
 
-                const batches = await this.productBatchesRepository.findAvailableForSale(
+                const batches = await this.branchProductBatchesRepository.findAvailableForSale(
                     branchProduct.id,
                     tx,
                 );
@@ -243,9 +243,9 @@ export class PosService {
 
                             batches: {
                                 create: item.allocations.map((allocation) => ({
-                                    product_batch: {
+                                    branch_product_batch: {
                                         connect: {
-                                            id: allocation.product_batch_id,
+                                            id: allocation.branch_product_batch_id,
                                         },
                                     },
 
@@ -274,8 +274,8 @@ export class PosService {
 
             for (const item of preparedItems) {
                 for (const allocation of item.allocations) {
-                    const batch = await this.productBatchesRepository.findById(
-                        allocation.product_batch_id,
+                    const batch = await this.branchProductBatchesRepository.findById(
+                        allocation.branch_product_batch_id,
                         tx,
                     );
 
@@ -283,7 +283,7 @@ export class PosService {
                         throw new NotFoundException(BRANCH_MESSAGES.ERROR.BATCH_NOT_FOUND);
                     }
 
-                    await this.productBatchesRepository.decrementQuantity(
+                    await this.branchProductBatchesRepository.decrementQuantity(
                         batch.id,
                         allocation.quantity,
                         tx,

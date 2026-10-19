@@ -9,7 +9,7 @@ export * from './subscription-payments.permissions';
 export * from './permissions.constants';
 export * from './pharmacies.permissions';
 export * from './pos.permissions';
-export * from './product-batches.permissions';
+export * from './branch-product-batches.permissions';
 export * from './products.permissions';
 export * from './purchase-order-workflow.permissions';
 export * from './purchase-orders.permissions';

@@ -19,7 +19,7 @@ import { PurchaseOrdersRepository } from '../repositories/purchase-orders-reposi
 import { calculatePurchaseOrderTotals } from '../helpers/purchase-order-calculation.helper';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { BranchProductsRepository } from '@/modules/branch-products/repositories/branch-products.repository';
-import { ProductBatchesRepository } from '@/modules/branch-products/repositories/product-batches.repository';
+import { BranchProductBatchesRepository } from '@/modules/branch-products/repositories/branch-product-batches.repository';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { buildPaginationMeta } from '@/common/pagination';
 
@@ -36,7 +36,7 @@ export class PurchaseOrdersService {
 
         private readonly branchProductsRepository: BranchProductsRepository,
 
-        private readonly productBatchesRepository: ProductBatchesRepository,
+        private readonly branchProductBatchesRepository: BranchProductBatchesRepository,
 
         private readonly prisma: PrismaService,
     ) {}
@@ -317,7 +317,7 @@ export class PurchaseOrdersService {
 
                 for (const batch of item.batches) {
                     const existingBatch =
-                        await this.productBatchesRepository.findByBranchProductAndBatchNumber(
+                        await this.branchProductBatchesRepository.findByBranchProductAndBatchNumber(
                             branchProduct.id,
                             batch.batch_number,
                             tx,
@@ -327,7 +327,7 @@ export class PurchaseOrdersService {
                         throw new ConflictException(MESSAGES.ERROR.BATCH_ALREADY_EXISTS);
                     }
 
-                    await this.productBatchesRepository.create(
+                    await this.branchProductBatchesRepository.create(
                         {
                             branch_product_id: branchProduct.id,
 

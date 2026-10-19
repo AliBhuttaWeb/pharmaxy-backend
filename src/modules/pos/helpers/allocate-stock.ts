@@ -16,7 +16,7 @@ export function allocateStock(
     let remaining = requestedQuantity;
 
     const allocations: {
-        product_batch_id: string;
+        branch_product_batch_id: string;
         quantity: number;
     }[] = [];
 
@@ -28,7 +28,7 @@ export function allocateStock(
         const allocated = Math.min(batch.quantity, remaining);
 
         allocations.push({
-            product_batch_id: batch.id,
+            branch_product_batch_id: batch.id,
             quantity: allocated,
         });
 

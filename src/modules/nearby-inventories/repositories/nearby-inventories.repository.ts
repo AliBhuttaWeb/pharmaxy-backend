@@ -250,14 +250,14 @@ export class NearbyInventoriesRepository {
     findAvailableBatchForReservation(
         branchProductId: string,
         requiredQuantity: number,
-        productBatchId?: string,
+        branchProductBatchId?: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.prisma.getClient(tx).productBatch.findFirst({
+        return this.prisma.getClient(tx).branchProductBatch.findFirst({
             where: {
                 branch_product_id: branchProductId,
                 deleted_at: null,
-                ...(productBatchId && { id: productBatchId }),
+                ...(branchProductBatchId && { id: branchProductBatchId }),
                 quantity: {
                     gte: requiredQuantity,
                 },
@@ -268,7 +268,7 @@ export class NearbyInventoriesRepository {
     }
 
     decrementBatchStock(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).branchProductBatch.update({
             where: { id },
             data: {
                 quantity: {
@@ -279,7 +279,7 @@ export class NearbyInventoriesRepository {
     }
 
     incrementBatchStock(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).branchProductBatch.update({
             where: { id },
             data: {
                 quantity: {

@@ -195,7 +195,7 @@ export class ReturnsService {
             for (const item of preparedItems) {
                 for (const batch of item.batches) {
                     await this.returnsRepository.restoreBatchQuantity(
-                        batch.product_batch_id,
+                        batch.branch_product_batch_id,
 
                         batch.quantity,
 
@@ -244,7 +244,7 @@ export class ReturnsService {
 
     private prepareReturnBatches(
         batches: {
-            product_batch_id: string;
+            branch_product_batch_id: string;
 
             quantity: unknown;
         }[],
@@ -265,7 +265,7 @@ export class ReturnsService {
             const restoreQuantity = Math.min(available, remaining);
 
             result.push({
-                product_batch_id: batch.product_batch_id,
+                branch_product_batch_id: batch.branch_product_batch_id,
 
                 quantity: restoreQuantity,
             });
@@ -326,7 +326,7 @@ export class ReturnsService {
                     const decreaseQuantity = Math.min(Number(batch.quantity), remainingQuantity);
 
                     await this.returnsRepository.decreaseBatchQuantity(
-                        batch.product_batch_id,
+                        batch.branch_product_batch_id,
 
                         decreaseQuantity,
 

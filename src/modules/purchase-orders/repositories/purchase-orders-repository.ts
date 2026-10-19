@@ -16,7 +16,7 @@ export class PurchaseOrdersRepository {
         items: {
             include: {
                 product: true,
-                product_batches: true,
+                branch_product_batches: true,
             },
         },
     };
@@ -203,7 +203,7 @@ export class PurchaseOrdersRepository {
             include: {
                 product: true,
                 purchase_order: true,
-                product_batches: true,
+                branch_product_batches: true,
             },
         });
     }
@@ -221,7 +221,7 @@ export class PurchaseOrdersRepository {
             include: {
                 product: true,
                 purchase_order: true,
-                product_batches: true,
+                branch_product_batches: true,
             },
         });
     }

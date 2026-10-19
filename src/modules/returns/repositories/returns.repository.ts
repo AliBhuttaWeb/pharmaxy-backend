@@ -252,7 +252,7 @@ export class ReturnsRepository {
     }
 
     restoreBatchQuantity(batchId: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).branchProductBatch.update({
             where: {
                 id: batchId,
             },
@@ -266,7 +266,7 @@ export class ReturnsRepository {
     }
 
     decreaseBatchQuantity(batchId: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).branchProductBatch.update({
             where: {
                 id: batchId,
             },

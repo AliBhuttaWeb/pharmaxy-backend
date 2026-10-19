@@ -13,7 +13,7 @@ import {
     Min,
 } from 'class-validator';
 
-export class CreateInitialProductBatchDto {
+export class CreateInitialBranchProductBatchDto {
     @ApiProperty({
         example: 'BATCH-001',
     })

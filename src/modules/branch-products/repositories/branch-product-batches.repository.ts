@@ -5,23 +5,23 @@ import { PrismaService } from '@/database/prisma/prisma.service';
 import { ReceiveStockDto } from '../dtos';
 
 @Injectable()
-export class ProductBatchesRepository {
+export class BranchProductBatchesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    private readonly productBatchRelations: Prisma.ProductBatchInclude = {
+    private readonly branchProductBatchRelations: Prisma.BranchProductBatchInclude = {
         branch_product: true,
         purchase_order_item: true,
     };
 
-    create(data: Prisma.ProductBatchUncheckedCreateInput, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.create({
+    create(data: Prisma.BranchProductBatchUncheckedCreateInput, tx?: Prisma.TransactionClient) {
+        return this.prisma.getClient(tx).branchProductBatch.create({
             data,
-            include: this.productBatchRelations,
+            include: this.branchProductBatchRelations,
         });
     }
 
     createBatch(branchProductId: string, data: ReceiveStockDto, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.create({
+        return this.prisma.getClient(tx).branchProductBatch.create({
             data: {
                 branch_product_id: branchProductId,
                 batch_number: data.batch_number,
@@ -39,10 +39,10 @@ export class ProductBatchesRepository {
 
     update(
         id: string,
-        data: Prisma.ProductBatchUncheckedUpdateInput,
+        data: Prisma.BranchProductBatchUncheckedUpdateInput,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.prisma.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).branchProductBatch.update({
             where: {
                 id,
             },
@@ -51,7 +51,7 @@ export class ProductBatchesRepository {
     }
 
     findById(id: string, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.findUnique({
+        return this.prisma.getClient(tx).branchProductBatch.findUnique({
             where: {
                 id,
             },
@@ -59,7 +59,7 @@ export class ProductBatchesRepository {
     }
 
     findManyByBranchProduct(branchProductId: string, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.findMany({
+        return this.prisma.getClient(tx).branchProductBatch.findMany({
             where: {
                 branch_product_id: branchProductId,
                 deleted_at: null,
@@ -78,7 +78,7 @@ export class ProductBatchesRepository {
         tx?: Prisma.TransactionClient,
         is_deleted?: boolean,
     ) {
-        const where: Prisma.ProductBatchWhereInput = {
+        const where: Prisma.BranchProductBatchWhereInput = {
             branch_product_id: branchProductId,
             ...(is_deleted !== undefined && {
                 deleted_at: is_deleted ? { not: null } : null,
@@ -88,7 +88,7 @@ export class ProductBatchesRepository {
         const isPaginated = page !== undefined && limit !== undefined;
 
         if (!isPaginated) {
-            const records = await this.prisma.productBatch.findMany({
+            const records = await this.prisma.branchProductBatch.findMany({
                 where,
                 orderBy: { expiry_date: 'asc' },
             });
@@ -96,13 +96,13 @@ export class ProductBatchesRepository {
         }
 
         const [records, total] = await this.prisma.$transaction([
-            this.prisma.productBatch.findMany({
+            this.prisma.branchProductBatch.findMany({
                 where,
                 orderBy: { expiry_date: 'asc' },
                 skip: (page - 1) * limit,
                 take: limit,
             }),
-            this.prisma.productBatch.count({ where }),
+            this.prisma.branchProductBatch.count({ where }),
         ]);
 
         return { records, total };
@@ -113,7 +113,7 @@ export class ProductBatchesRepository {
         batchNumber: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.prisma.getClient(tx).productBatch.findFirst({
+        return this.prisma.getClient(tx).branchProductBatch.findFirst({
             where: {
                 branch_product_id: branchProductId,
                 batch_number: batchNumber,
@@ -127,7 +127,7 @@ export class ProductBatchesRepository {
         batchNumber: string,
         tx?: Prisma.TransactionClient,
     ) {
-        return this.prisma.getClient(tx).productBatch.findFirst({
+        return this.prisma.getClient(tx).branchProductBatch.findFirst({
             where: {
                 branch_product_id: branchProductId,
                 batch_number: batchNumber,
@@ -137,7 +137,7 @@ export class ProductBatchesRepository {
     }
 
     updateQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).branchProductBatch.update({
             where: {
                 id,
             },
@@ -149,7 +149,7 @@ export class ProductBatchesRepository {
     }
 
     incrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).branchProductBatch.update({
             where: {
                 id,
             },
@@ -162,7 +162,7 @@ export class ProductBatchesRepository {
     }
 
     decrementQuantity(id: string, quantity: number, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.update({
+        return this.prisma.getClient(tx).branchProductBatch.update({
             where: {
                 id,
             },
@@ -175,7 +175,7 @@ export class ProductBatchesRepository {
     }
 
     findAvailableForSale(branchProductId: string, tx?: Prisma.TransactionClient) {
-        return this.prisma.getClient(tx).productBatch.findMany({
+        return this.prisma.getClient(tx).branchProductBatch.findMany({
             where: {
                 branch_product_id: branchProductId,
 

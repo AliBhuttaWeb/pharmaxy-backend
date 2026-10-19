@@ -20,7 +20,7 @@ export const MESSAGES = {
             'This reservation is already completed, cancelled, or expired.',
         ONLY_TARGET_BRANCH_CAN_CONFIRM_OR_COMPLETE:
             'Only the fulfilling (target) branch can confirm or complete a reservation.',
-        PRODUCT_BATCH_NOT_FOUND:
-            'Specified product batch was not found or does not have sufficient stock.',
+        BRANCH_PRODUCT_BATCH_NOT_FOUND:
+            'Specified branch product batch was not found or does not have sufficient stock.',
     },
 } as const;

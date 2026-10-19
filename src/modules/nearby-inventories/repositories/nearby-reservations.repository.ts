@@ -81,7 +81,7 @@ export class NearbyReservationsRepository {
                 },
             },
         },
-        product_batch: {
+        branch_product_batch: {
             select: {
                 id: true,
                 batch_number: true,
@@ -127,7 +127,7 @@ export class NearbyReservationsRepository {
             select: {
                 id: true,
                 branch_product_id: true,
-                product_batch_id: true,
+                branch_product_batch_id: true,
                 quantity: true,
             },
         });

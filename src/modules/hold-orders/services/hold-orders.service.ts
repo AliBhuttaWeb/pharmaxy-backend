@@ -7,7 +7,7 @@ import { AuthenticatedUser } from '@/modules/auth/types';
 import { getActiveBranchId, getActivePharmacyId } from '@/common/helpers';
 
 import { BranchProductsRepository } from '@/modules/branch-products/repositories/branch-products.repository';
-import { ProductBatchesRepository } from '@/modules/branch-products/repositories/product-batches.repository';
+import { BranchProductBatchesRepository } from '@/modules/branch-products/repositories/branch-product-batches.repository';
 
 import { CreateHoldOrderDto, HoldOrderQueryDto } from '../dtos';
 
@@ -38,7 +38,7 @@ export class HoldOrdersService {
 
         private readonly branchProductsRepository: BranchProductsRepository,
 
-        private readonly productBatchesRepository: ProductBatchesRepository,
+        private readonly branchProductBatchesRepository: BranchProductBatchesRepository,
     ) {}
 
     async create(dto: CreateHoldOrderDto, user: AuthenticatedUser) {
@@ -90,7 +90,7 @@ export class HoldOrdersService {
                     throw new ConflictException(PRODUCT_MESSAGES.ERROR.INSUFFIENT_STOCK);
                 }
 
-                const batches = await this.productBatchesRepository.findAvailableForSale(
+                const batches = await this.branchProductBatchesRepository.findAvailableForSale(
                     branchProduct.id,
                     tx,
                 );

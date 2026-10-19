@@ -5,7 +5,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { CreateProductDto } from '@/modules/products/dtos';
 
 import { CreateBranchProductItemDto } from './create-branch-product-item.dto';
-import { CreateInitialProductBatchDto } from './create-initial-product-batch.dto';
+import { CreateInitialBranchProductBatchDto } from './create-initial-branch-product-batch.dto';
 
 export class CreateBranchProductDto {
     @ApiPropertyOptional({
@@ -26,10 +26,10 @@ export class CreateBranchProductDto {
     branch_product!: CreateBranchProductItemDto;
 
     @ApiProperty({
-        type: CreateInitialProductBatchDto,
+        type: CreateInitialBranchProductBatchDto,
     })
     @IsDefined()
     @ValidateNested()
-    @Type(() => CreateInitialProductBatchDto)
-    initial_batch!: CreateInitialProductBatchDto;
+    @Type(() => CreateInitialBranchProductBatchDto)
+    initial_batch!: CreateInitialBranchProductBatchDto;
 }

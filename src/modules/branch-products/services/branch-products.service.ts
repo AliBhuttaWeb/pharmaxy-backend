@@ -10,14 +10,14 @@ import { BranchesService } from '@/modules/branches/services/branches.service';
 
 import { MESSAGES } from '../constants/messages.constants';
 import {
+    BranchProductBatchQueryDto,
     BranchProductQueryDto,
     CreateBranchProductDto,
-    ProductBatchQueryDto,
     ReceiveStockDto,
     UpdateBranchProductDto,
 } from '../dtos';
 import { BranchProductsRepository } from '../repositories/branch-products.repository';
-import { ProductBatchesRepository } from '../repositories/product-batches.repository';
+import { BranchProductBatchesRepository } from '../repositories/branch-product-batches.repository';
 
 @Injectable()
 export class BranchProductsService {
@@ -26,7 +26,7 @@ export class BranchProductsService {
 
         private readonly branchProductsRepository: BranchProductsRepository,
 
-        private readonly productBatchesRepository: ProductBatchesRepository,
+        private readonly branchProductBatchesRepository: BranchProductBatchesRepository,
 
         private readonly branchesService: BranchesService,
 
@@ -111,7 +111,7 @@ export class BranchProductsService {
             /**
              * Initial Batch
              */
-            await this.productBatchesRepository.create(
+            await this.branchProductBatchesRepository.create(
                 {
                     branch_product_id: branchProduct.id,
 
@@ -187,7 +187,7 @@ export class BranchProductsService {
 
         return this.prisma.$transaction(async (tx) => {
             const existingBatch =
-                await this.productBatchesRepository.findByBranchProductAndBatchNumber(
+                await this.branchProductBatchesRepository.findByBranchProductAndBatchNumber(
                     id,
                     dto.batch_number,
                     tx,
@@ -195,13 +195,13 @@ export class BranchProductsService {
 
             let batch;
             if (existingBatch) {
-                batch = await this.productBatchesRepository.incrementQuantity(
+                batch = await this.branchProductBatchesRepository.incrementQuantity(
                     existingBatch.id,
                     dto.quantity,
                     tx,
                 );
             } else {
-                batch = await this.productBatchesRepository.createBatch(id, dto, tx);
+                batch = await this.branchProductBatchesRepository.createBatch(id, dto, tx);
             }
 
             await this.branchProductsRepository.incrementQuantity(
@@ -218,12 +218,16 @@ export class BranchProductsService {
         });
     }
 
-    async findBatches(id: string, user: AuthenticatedUser, query: ProductBatchQueryDto) {
+    async findBatches(id: string, user: AuthenticatedUser, query: BranchProductBatchQueryDto) {
         await this.findById(id, user);
 
         const { page, limit } = query;
 
-        const { records, total } = await this.productBatchesRepository.findMany(id, page, limit);
+        const { records, total } = await this.branchProductBatchesRepository.findMany(
+            id,
+            page,
+            limit,
+        );
 
         if (!total || !page || !limit) return { records };
 

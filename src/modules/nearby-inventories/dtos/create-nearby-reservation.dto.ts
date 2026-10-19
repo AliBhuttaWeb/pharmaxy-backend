@@ -19,11 +19,11 @@ export class CreateNearbyReservationDto {
 
     @ApiPropertyOptional({
         description:
-            'Optional specific product_batch_id at the target branch (auto-selected by earliest expiry if omitted)',
+            'Optional specific branch_product_batch_id at the target branch (auto-selected by earliest expiry if omitted)',
     })
     @IsOptional()
     @IsUUID()
-    product_batch_id?: string;
+    branch_product_batch_id?: string;
 
     @ApiProperty({
         description: 'Quantity to reserve from the target branch',

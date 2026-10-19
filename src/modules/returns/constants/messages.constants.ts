@@ -17,7 +17,7 @@ export const MESSAGES = {
         EXCEEDS_REMAINING_QUANTITY: 'Return quantity exceeds the remaining returnable quantity.',
         INVALID_RETURN_QUANTITY: 'Return quantity exceeds the maximum bought quantity.',
         INVALID_RETURN_AMOUNT: 'Invalid refund amount.',
-        PRODUCT_BATCH_NOT_FOUND: 'Product batch not found.',
+        BRANCH_PRODUCT_BATCH_NOT_FOUND: 'Branch product batch not found.',
         BRANCH_PRODUCT_NOT_FOUND: 'Branch product not found.',
         ALREADY_CANCELLED: 'Sale return is already cancelled.',
         DUPLICATE_RETURN_ITEM: 'Duplicate return items found in request.',
