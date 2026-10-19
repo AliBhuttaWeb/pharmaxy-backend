@@ -13,4 +13,14 @@ export const NEARBY_INVENTORIES_PERMISSIONS = {
         name: 'nearby_inventories.item.reserve',
         description: 'Reserve item from nearby pharmacy inventory',
     },
+
+    NEARBY_INVENTORIES_VIEW_RESERVATIONS: {
+        name: 'nearby_inventories.reservations.view',
+        description: 'View nearby inventory reservations',
+    },
+
+    NEARBY_INVENTORIES_UPDATE_RESERVATION_STATUS: {
+        name: 'nearby_inventories.reservations.status.update',
+        description: 'Update nearby inventory reservation status',
+    },
 } as const;

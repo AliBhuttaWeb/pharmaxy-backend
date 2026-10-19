@@ -176,6 +176,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
 
         permissions.ROLES_PERMISSIONS.ROLE_ASSIGN_PERMISSION,
         permissions.ROLES_PERMISSIONS.VIEW_ROLE_PERMISSIONS_LIST,
+
+         // Nearby inventory
+        ...Object.values(permissions.NEARBY_INVENTORIES_PERMISSIONS),
     ),
 
     // =====================================================
@@ -219,6 +222,12 @@ export const DEFAULT_ROLE_PERMISSIONS = {
 
         // Hold Orders
         ...Object.values(permissions.HOLD_ORDERS_PERMISSIONS),
+
+         // Nearby inventory
+        permissions.NEARBY_INVENTORIES_PERMISSIONS.NEARBY_INVENTORIES_RESERVE_ITEM,
+        permissions.NEARBY_INVENTORIES_PERMISSIONS.NEARBY_INVENTORIES_SEARCH,
+        permissions.NEARBY_INVENTORIES_PERMISSIONS.NEARBY_INVENTORIES_VIEW_RESERVATIONS,
+        permissions.NEARBY_INVENTORIES_PERMISSIONS.NEARBY_INVENTORIES_VIEW_STORE,
     ),
 
     // =====================================================

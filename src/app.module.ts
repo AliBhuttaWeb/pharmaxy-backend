@@ -36,6 +36,7 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { SupportTicketsModule } from './modules/support-tickets/support-tickets.module';
 import { SystemLogsModule } from './modules/system-logs/system-logs.module';
 import { InvoicesModule } from './modules/invoices/invoices.module';
+import { NearbyInventoriesModule } from './modules/nearby-inventories/nearby-inventories.module';
 
 @Module({
     imports: [
@@ -84,6 +85,7 @@ import { InvoicesModule } from './modules/invoices/invoices.module';
         SupportTicketsModule,
         SystemLogsModule,
         InvoicesModule,
+        NearbyInventoriesModule,
     ],
     providers: [
         {

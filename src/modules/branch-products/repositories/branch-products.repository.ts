@@ -19,10 +19,13 @@ export class BranchProductsRepository {
         },
         product: {
             select: {
+                id: true,
                 name: true,
                 generic_name: true,
                 strength: true,
                 pack_quantity: true,
+                dosage_form_id: true,
+                category_id: true,
                 is_active: true,
                 manufacturer: {
                     select: { name: true, description: true },
@@ -257,5 +260,95 @@ export class BranchProductsRepository {
             },
             include: this.branchProductRelations,
         });
+    }
+
+    async findAlternatives(params: {
+        branchId: string;
+        excludeProductId: string;
+        genericName: string;
+        dosageFormId: string;
+        search?: string;
+        page?: number;
+        limit?: number;
+    }) {
+        const { branchId, excludeProductId, genericName, dosageFormId, search, page, limit } =
+            params;
+
+        const where: Prisma.BranchProductWhereInput = {
+            branch_id: branchId,
+            deleted_at: null,
+            is_active: true,
+            quantity: {
+                gt: 0,
+            },
+            product_id: {
+                not: excludeProductId,
+            },
+            product: {
+                deleted_at: null,
+                is_active: true,
+                dosage_form_id: dosageFormId,
+                generic_name: {
+                    equals: genericName,
+                    mode: 'insensitive',
+                },
+                ...(search && {
+                    OR: [
+                        {
+                            name: {
+                                contains: search,
+                                mode: 'insensitive',
+                            },
+                        },
+                        {
+                            strength: {
+                                contains: search,
+                                mode: 'insensitive',
+                            },
+                        },
+                        {
+                            barcode: {
+                                contains: search,
+                                mode: 'insensitive',
+                            },
+                        },
+                    ],
+                }),
+            },
+        };
+
+        const orderBy: Prisma.BranchProductOrderByWithRelationInput[] = [
+            { quantity: 'desc' },
+            { selling_price: 'asc' },
+        ];
+
+        const isPaginated = page !== undefined && limit !== undefined;
+
+        if (!isPaginated) {
+            const records = await this.prisma.branchProduct.findMany({
+                where,
+                orderBy,
+                include: this.branchProductRelations,
+            });
+            return { records };
+        }
+
+        const [records, total] = await this.prisma.$transaction([
+            this.prisma.branchProduct.findMany({
+                where,
+                orderBy,
+                include: this.branchProductRelations,
+                skip: (page - 1) * limit,
+                take: limit,
+            }),
+            this.prisma.branchProduct.count({
+                where,
+            }),
+        ]);
+
+        return {
+            records,
+            total,
+        };
     }
 }

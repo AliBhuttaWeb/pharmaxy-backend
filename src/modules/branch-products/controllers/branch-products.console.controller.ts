@@ -7,6 +7,7 @@ import {
 } from '../dtos';
 
 import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
+import { PaginationQueryDto } from '@/common/pagination';
 import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 import { BranchProductsService } from '../services/branch-products.service';
 import { BRANCH_PRODUCTS_PERMISSIONS } from '@/common/constants/permissions/branch-products.permissions';
@@ -20,6 +21,16 @@ export class BranchProductsConsoleController {
     @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_LIST.name)
     findMany(@Query() query: BranchProductQueryDto, @CurrentUser() user: AuthenticatedUser) {
         return this.branchProductsService.findMany(query, user);
+    }
+
+    @Get(':id/alternatives')
+    @Permissions(BRANCH_PRODUCTS_PERMISSIONS.BRANCH_PRODUCT_VIEW_LIST.name)
+    findAlternatives(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Query() query: PaginationQueryDto,
+        @CurrentUser() user: AuthenticatedUser,
+    ) {
+        return this.branchProductsService.findAlternatives(id, query, user);
     }
 
     @Get(':id')

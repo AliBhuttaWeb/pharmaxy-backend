@@ -362,6 +362,9 @@ model Branch {
 
   support_tickets SupportTicket[]
 
+  requested_nearby_reservations NearbyReservation[] @relation("RequestingBranchReservations")
+  received_nearby_reservations  NearbyReservation[] @relation("TargetBranchReservations")
+
   @@unique([pharmacy_id, name])
   @@index([pharmacy_id])
   @@index([city])
@@ -635,6 +638,8 @@ model BranchProduct {
 
   stock_transfer_items StockTransferItem[]
 
+  nearby_reservations NearbyReservation[]
+
   //////////////////////////////////////////////////////
   // Constraints
   //////////////////////////////////////////////////////
@@ -741,6 +746,8 @@ model ProductBatch {
   stock_adjustment_items StockAdjustmentItem[]
 
   stock_transfer_items StockTransferItem[]
+
+  nearby_reservations NearbyReservation[]
 
   //////////////////////////////////////////////////////
   // Constraints
@@ -1922,3 +1929,55 @@ model RefreshToken {
   @@index([revoked_at])
   @@map("refresh_tokens")
 }
+
+enum NearbyReservationStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  EXPIRED
+
+  @@map("nearby_reservation_status")
+}
+
+model NearbyReservation {
+  id String @id @default(uuid()) @db.Uuid
+
+  reservation_number String @unique @db.VarChar(50)
+
+  requesting_branch_id String  @db.Uuid
+  target_branch_id     String  @db.Uuid
+  branch_product_id    String  @db.Uuid
+  product_batch_id     String? @db.Uuid
+
+  quantity Int
+
+  customer_name  String? @db.VarChar(150)
+  customer_phone String? @db.VarChar(30)
+  notes          String? @db.Text
+
+  status     NearbyReservationStatus @default(PENDING)
+  expires_at DateTime
+
+  responded_at DateTime?
+  completed_at DateTime?
+  cancelled_at DateTime?
+
+  deleted_at DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  requesting_branch Branch        @relation("RequestingBranchReservations", fields: [requesting_branch_id], references: [id], onDelete: Restrict)
+  target_branch     Branch        @relation("TargetBranchReservations", fields: [target_branch_id], references: [id], onDelete: Restrict)
+  branch_product    BranchProduct @relation(fields: [branch_product_id], references: [id], onDelete: Restrict)
+  product_batch     ProductBatch? @relation(fields: [product_batch_id], references: [id], onDelete: SetNull)
+
+  @@index([requesting_branch_id])
+  @@index([target_branch_id])
+  @@index([branch_product_id])
+  @@index([product_batch_id])
+  @@index([status])
+  @@index([expires_at])
+  @@map("nearby_reservations")
+}
+

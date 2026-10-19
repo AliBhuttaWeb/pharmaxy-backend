@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { BatchSourceType } from '@gen/prisma/client';
 
 import { PrismaService } from '@/database/prisma/prisma.service';
-import { buildPaginationMeta } from '@/common/pagination';
+import { buildPaginationMeta, PaginationQueryDto } from '@/common/pagination';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { getActiveBranchId } from '@/common/helpers';
 import { ProductsService } from '@/modules/products/services/products.service';
@@ -226,6 +226,35 @@ export class BranchProductsService {
         const { records, total } = await this.productBatchesRepository.findMany(id, page, limit);
 
         if (!total || !page || !limit) return { records };
+
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+
+        return { records, pagination };
+    }
+
+    async findAlternatives(id: string, query: PaginationQueryDto, user: AuthenticatedUser) {
+        const branchId = getActiveBranchId(user);
+        const { search, page, limit } = query;
+
+        const branchProduct = await this.branchProductsRepository.findById(id, branchId);
+
+        if (!branchProduct) {
+            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+        }
+
+        const { records, total } = await this.branchProductsRepository.findAlternatives({
+            branchId,
+            excludeProductId: branchProduct.product_id,
+            genericName: branchProduct.product.generic_name,
+            dosageFormId: branchProduct.product.dosage_form_id,
+            search,
+            page,
+            limit,
+        });
+
+        if (!total || !page || !limit) {
+            return { records };
+        }
 
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
 
