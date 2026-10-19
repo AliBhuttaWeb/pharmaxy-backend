@@ -27,8 +27,10 @@ export class BranchesService {
         private readonly subscriptionConstraintService: SubscriptionConstraintService,
     ) {}
 
-    async list(query: FindBranchesQueryDto) {
+    async list(query: FindBranchesQueryDto, currentUser: AuthenticatedUser) {
+        const targetPharmacyId = isSuperAdmin(currentUser.roles) ? query.pharmacy_id : (currentUser.pharmacy_id ?? query.pharmacy_id);
         const { limit, page } = query;
+        query.pharmacy_id = targetPharmacyId
         const { records, total } = await this.branchesRepository.findMany(query);
 
         if (!total || !page || !limit) return { records };

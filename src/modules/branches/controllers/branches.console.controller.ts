@@ -19,8 +19,8 @@ export class BranchesConsoleController {
 
     @Get()
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_VIEW_LIST.name)
-    list(@Query() query: FindBranchesQueryDto) {
-        return this.branchesService.list(query);
+    list(@Query() query: FindBranchesQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.branchesService.list(query, user);
     }
 
     @Get(':id')
