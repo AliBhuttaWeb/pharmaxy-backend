@@ -1,6 +1,11 @@
 import { Body, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query } from '@nestjs/common';
 
-import { ConsoleController, CurrentUser, Permissions } from '@/common/decorators';
+import {
+    BypassBranchContext,
+    ConsoleController,
+    CurrentUser,
+    Permissions,
+} from '@/common/decorators';
 import type { AuthenticatedUser } from '@/modules/auth/types';
 
 import {
@@ -18,6 +23,7 @@ export class BranchesConsoleController {
     constructor(private readonly branchesService: BranchesService) {}
 
     @Get()
+    @BypassBranchContext()
     @Permissions(BRANCHES_PERMISSIONS.BRANCH_VIEW_LIST.name)
     list(@Query() query: FindBranchesQueryDto, @CurrentUser() user: AuthenticatedUser) {
         return this.branchesService.list(query, user);

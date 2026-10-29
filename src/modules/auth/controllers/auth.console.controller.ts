@@ -15,7 +15,7 @@ import {
 } from '../dtos';
 import type { AuthenticatedUser, SessionMetadata } from '../types';
 
-import { ConsoleController, CurrentUser, Public } from '@/common/decorators';
+import { BypassBranchContext, ConsoleController, CurrentUser, Public } from '@/common/decorators';
 
 @ConsoleController('auth')
 export class AuthConsoleController {
@@ -59,6 +59,7 @@ export class AuthConsoleController {
     }
 
     @Get('me')
+    @BypassBranchContext()
     me(@CurrentUser() user: AuthenticatedUser): Promise<ProfileDto> {
         return this.authService.getProfile(user);
     }
