@@ -234,6 +234,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         permissions.NEARBY_INVENTORIES_PERMISSIONS.NEARBY_INVENTORIES_SEARCH,
         permissions.NEARBY_INVENTORIES_PERMISSIONS.NEARBY_INVENTORIES_VIEW_RESERVATIONS,
         permissions.NEARBY_INVENTORIES_PERMISSIONS.NEARBY_INVENTORIES_VIEW_STORE,
+
+        // Branch
+        permissions.BRANCHES_PERMISSIONS.BRANCH_VIEW_LIST,
     ),
 
     // =====================================================
