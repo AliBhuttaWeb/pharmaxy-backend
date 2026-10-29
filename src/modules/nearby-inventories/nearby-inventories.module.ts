@@ -4,8 +4,10 @@ import { NearbyInventoriesConsoleController } from './controllers/nearby-invento
 import { NearbyInventoriesRepository } from './repositories/nearby-inventories.repository';
 import { NearbyReservationsRepository } from './repositories/nearby-reservations.repository';
 import { NearbyInventoriesService } from './services/nearby-inventories.service';
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
 
 @Module({
+    imports: [SubscriptionsModule],
     controllers: [NearbyInventoriesConsoleController],
     providers: [
         NearbyInventoriesService,

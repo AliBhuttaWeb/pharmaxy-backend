@@ -7,6 +7,7 @@ import { PosRepository } from './repositories/pos.repository';
 import { PosService } from './services/pos.service';
 import { HoldOrdersModule } from '../hold-orders/hold-orders.module';
 import { InvoicesModule } from '../invoices/invoices.module';
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { InvoicesModule } from '../invoices/invoices.module';
         CustomersModule,
         HoldOrdersModule,
         InvoicesModule,
+        SubscriptionsModule,
     ],
 
     controllers: [PosConsoleController],

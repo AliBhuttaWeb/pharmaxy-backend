@@ -22,6 +22,8 @@ import { MESSAGES as BRANCH_MESSAGES } from '@modules/branch-products/constants'
 import { HoldOrdersService } from '@/modules/hold-orders/services/hold-orders.service';
 import { MESSAGES } from '../constants/messages.constants';
 import { POS_DEFAULTS } from '../constants/defaults.constants';
+import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
+import { PREMIUM_FEATUIRES } from '@/modules/subscriptions/constants';
 
 type PreparedSaleItem = {
     branchProduct: any;
@@ -50,6 +52,8 @@ export class PosService {
         private readonly customersService: CustomersService,
 
         private readonly holdOrdersService: HoldOrdersService,
+
+        private readonly subscriptionConstraintService: SubscriptionConstraintService,
     ) {}
     private async processSale(
         dto: CreatePosSaleDto,
@@ -324,6 +328,11 @@ export class PosService {
 
         user: AuthenticatedUser,
     ) {
+        await this.subscriptionConstraintService.validateFeatureAccess(
+            user,
+            PREMIUM_FEATUIRES.QUICK_SALE,
+        );
+
         return this.createSale(
             {
                 ...dto,

@@ -5,6 +5,7 @@ import { AuthenticatedUser } from '@/modules/auth/types';
 import { SubscriptionsRepository } from '../repositories/subscriptions.repository';
 import { MESSAGES } from '../constants';
 import { PremiumFeatures, ValidateBranchesLimit } from '../types';
+import { isSuperAdmin } from '@/common/helpers';
 
 @Injectable()
 export class SubscriptionConstraintService {
@@ -72,6 +73,10 @@ export class SubscriptionConstraintService {
      * Validates feature availability for quick sale or nearby inventory.
      */
     async validateFeatureAccess(user: AuthenticatedUser, feature: PremiumFeatures): Promise<void> {
+        if (isSuperAdmin(user.roles)) {
+            return;
+        }
+
         if (!user.pharmacy_id) {
             throw new ConflictException(MESSAGES.ERROR.NO_ACTIVE_SUBSCRIPTION);
         }
@@ -79,7 +84,7 @@ export class SubscriptionConstraintService {
         const subscription = await this.ensureActiveSubscription(user.pharmacy_id);
 
         if (!subscription.plan[feature]) {
-            throw new ConflictException(MESSAGES.ERROR.FEATURE_NOT_ALLOWED(feature));
+            throw new ConflictException(MESSAGES.ERROR.FEATURE_NOT_ALLOWED);
         }
     }
 

@@ -27,6 +27,8 @@ import { calculateDistanceKm } from '../helpers/calculate-distance.helper';
 import { generateReservationNumber } from '../helpers/generate-reservation-number.helper';
 import { NearbyInventoriesRepository } from '../repositories/nearby-inventories.repository';
 import { NearbyReservationsRepository } from '../repositories/nearby-reservations.repository';
+import { SubscriptionConstraintService } from '@/modules/subscriptions/services/subscription-constraint.service';
+import { PREMIUM_FEATUIRES } from '@/modules/subscriptions/constants';
 
 @Injectable()
 export class NearbyInventoriesService {
@@ -34,6 +36,7 @@ export class NearbyInventoriesService {
         private readonly prisma: PrismaService,
         private readonly nearbyInventoriesRepository: NearbyInventoriesRepository,
         private readonly nearbyReservationsRepository: NearbyReservationsRepository,
+        private readonly subscriptionConstraintService: SubscriptionConstraintService,
     ) {}
 
     /**
@@ -70,6 +73,11 @@ export class NearbyInventoriesService {
     }
 
     async search(query: NearbyInventoriesQueryDto, user: AuthenticatedUser) {
+        await this.subscriptionConstraintService.validateFeatureAccess(
+            user,
+            PREMIUM_FEATUIRES.NEARBY_INVENTORY,
+        );
+
         const currentBranchId = user.branch_id ?? undefined;
 
         await this.releaseExpiredReservations();
@@ -147,6 +155,11 @@ export class NearbyInventoriesService {
     }
 
     async getStore(branchId: string, query: NearbyInventoriesQueryDto, user: AuthenticatedUser) {
+        await this.subscriptionConstraintService.validateFeatureAccess(
+            user,
+            PREMIUM_FEATUIRES.NEARBY_INVENTORY,
+        );
+
         await this.releaseExpiredReservations(branchId);
 
         const store = await this.nearbyInventoriesRepository.findStoreById(branchId);
@@ -199,6 +212,11 @@ export class NearbyInventoriesService {
     }
 
     async reserve(dto: CreateNearbyReservationDto, user: AuthenticatedUser) {
+        await this.subscriptionConstraintService.validateFeatureAccess(
+            user,
+            PREMIUM_FEATUIRES.NEARBY_INVENTORY,
+        );
+
         const requestingBranchId = getActiveBranchId(user);
 
         await this.releaseExpiredReservations();
@@ -303,6 +321,11 @@ export class NearbyInventoriesService {
     }
 
     async listReservations(query: NearbyReservationsQueryDto, user: AuthenticatedUser) {
+        await this.subscriptionConstraintService.validateFeatureAccess(
+            user,
+            PREMIUM_FEATUIRES.NEARBY_INVENTORY,
+        );
+
         const isUserSuperAdmin = isSuperAdmin(user.roles);
         const currentBranchId =
             isUserSuperAdmin && !user.branch_id ? undefined : getActiveBranchId(user);
@@ -335,6 +358,11 @@ export class NearbyInventoriesService {
     }
 
     async getReservation(id: string, user: AuthenticatedUser) {
+        await this.subscriptionConstraintService.validateFeatureAccess(
+            user,
+            PREMIUM_FEATUIRES.NEARBY_INVENTORY,
+        );
+
         const isUserSuperAdmin = isSuperAdmin(user.roles);
         const currentBranchId =
             isUserSuperAdmin && !user.branch_id ? undefined : getActiveBranchId(user);
@@ -372,6 +400,11 @@ export class NearbyInventoriesService {
         dto: UpdateNearbyReservationStatusDto,
         user: AuthenticatedUser,
     ) {
+        await this.subscriptionConstraintService.validateFeatureAccess(
+            user,
+            PREMIUM_FEATUIRES.NEARBY_INVENTORY,
+        );
+
         const isUserSuperAdmin = isSuperAdmin(user.roles);
         const currentBranchId =
             isUserSuperAdmin && !user.branch_id ? undefined : getActiveBranchId(user);

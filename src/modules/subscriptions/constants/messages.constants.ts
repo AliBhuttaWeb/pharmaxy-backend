@@ -26,10 +26,6 @@ export const MESSAGES = {
             'You have reached the maximum number of users allowed by your subscription plan.',
         REPORT_ACCESS_DENIED:
             'Your subscription plan does not allow access to reports for the selected period.',
-        NEARBY_INVENTORY_NOT_ALLOWED:
-            'Nearby inventory is not available in your current subscription plan.',
-        QUICK_SALE_NOT_ALLOWED: 'Quick Sale is not available in your current subscription plan.',
-        FEATURE_NOT_ALLOWED: (feature: string) =>
-            `This ${feature} is not available in your current subscription plan.`,
+        FEATURE_NOT_ALLOWED: 'This feature is not available in your current subscription plan.',
     },
 } as const;
