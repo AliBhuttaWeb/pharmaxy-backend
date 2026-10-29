@@ -175,13 +175,17 @@ export class AuthService {
     async login(loginDto: LoginDto, session: SessionMetadata): Promise<LoginResultDto> {
         const user = await this.authRepository.findUserByEmail(loginDto.email);
 
-        this.ensureUserCanAuthenticate(user);
+        if (!user) {
+            throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
+        }
 
         const isPasswordValid = await this.validatePassword(loginDto.password, user.password);
 
         if (!isPasswordValid) {
             throw new UnauthorizedException(MESSAGES.ERROR.INVALID_CREDENTIALS);
         }
+
+        this.ensureUserCanAuthenticate(user);
 
         const payload: SessionTokenPayload = {
             sub: user.id,

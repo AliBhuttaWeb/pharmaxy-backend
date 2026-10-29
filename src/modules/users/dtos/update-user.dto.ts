@@ -63,4 +63,18 @@ export class UpdateUserDto {
     @IsOptional()
     @IsBoolean()
     permissions_modified?: boolean;
+
+    @ApiPropertyOptional({
+        description: 'Whether the user email is verified',
+    })
+    @IsOptional()
+    @IsBoolean()
+    is_email_verified?: boolean;
+
+    @ApiPropertyOptional({
+        description: 'Whether the user phone is verified',
+    })
+    @IsOptional()
+    @IsBoolean()
+    is_phone_verified?: boolean;
 }

@@ -93,4 +93,20 @@ export class CreateUserDto {
     @IsOptional()
     @IsBoolean()
     permissions_modified?: boolean;
+
+    @ApiPropertyOptional({
+        description: 'Whether the user email is verified (defaults to false)',
+        default: false,
+    })
+    @IsOptional()
+    @IsBoolean()
+    is_email_verified?: boolean;
+
+    @ApiPropertyOptional({
+        description: 'Whether the user phone is verified (defaults to false)',
+        default: false,
+    })
+    @IsOptional()
+    @IsBoolean()
+    is_phone_verified?: boolean;
 }

@@ -108,8 +108,16 @@ export class UsersService {
             throw new BadRequestException(MESSAGES.ERROR.ROLE_SCOPE_MISMATCH);
         }
 
-        const { branch_id, role_scope, role_id, permission_ids, permissions_modified, ...userDto } =
-            dto;
+        const {
+            branch_id,
+            role_scope,
+            role_id,
+            permission_ids,
+            permissions_modified,
+            is_email_verified = false,
+            is_phone_verified = false,
+            ...userDto
+        } = dto;
 
         const permissionsModified = Boolean(permissions_modified);
         if (permissionsModified && permission_ids?.length) {
@@ -121,6 +129,8 @@ export class UsersService {
             const createdUser = await this.usersRepository.create(
                 {
                     ...userDto,
+                    is_email_verified,
+                    is_phone_verified,
                     pharmacy_id: pharmacyId,
                     password: hashedPassword,
                 },
