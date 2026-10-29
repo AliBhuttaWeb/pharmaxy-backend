@@ -237,6 +237,8 @@ export const DEFAULT_ROLE_PERMISSIONS = {
 
         // Branch
         permissions.BRANCHES_PERMISSIONS.BRANCH_VIEW_LIST,
+
+        permissions.SETTINGS_PERMISSIONS.SETTINGS_VIEW
     ),
 
     // =====================================================
