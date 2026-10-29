@@ -14,6 +14,7 @@ import {
 } from '../dtos';
 import { PharmaciesRepository } from '../repositories/pharmacies.repository';
 import { UsersRepository } from '@/modules/users/repositories/users.repository';
+import { PharmacyPaymentMethodsService } from '@/modules/pharmacy-payment-methods/services/pharmacy-payment-methods.service';
 import { PrismaService } from '@/database/prisma/prisma.service';
 import { AuthenticatedUser } from '@/modules/auth/types';
 import { buildPaginationMeta } from '@/common/pagination';
@@ -25,6 +26,7 @@ export class PharmaciesService {
         private readonly pharmaciesRepository: PharmaciesRepository,
         private readonly usersRepository: UsersRepository,
         private readonly prismaService: PrismaService,
+        private readonly pharmacyPaymentMethodsService: PharmacyPaymentMethodsService,
     ) {}
 
     private mapPharmacyWithSubscription(pharmacy: any) {
@@ -77,6 +79,8 @@ export class PharmaciesService {
             const pharmacy = await this.pharmaciesRepository.create(dto, tx);
 
             await this.usersRepository.updatePharmacy(user.id, pharmacy.id, tx);
+
+            await this.pharmacyPaymentMethodsService.attachCashPaymentMethod(pharmacy.id, tx);
 
             return { pharmacy, message: MESSAGES.SUCCESS.CREATED };
         });

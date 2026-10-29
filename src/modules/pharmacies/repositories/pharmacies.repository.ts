@@ -180,7 +180,7 @@ export class PharmaciesRepository {
     }
 
     create(data: Prisma.PharmacyCreateInput, tx?: Prisma.TransactionClient) {
-        return this.prisma.pharmacy.create({
+        return this.prisma.getClient(tx).pharmacy.create({
             data,
         });
     }

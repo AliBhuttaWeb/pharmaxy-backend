@@ -1,9 +1,18 @@
 import { PaymentMethodType } from '@gen/prisma/enums';
 
+export const PAYMENT_METHOD_CODES = {
+    CASH: 'CASH',
+    CARD: 'CARD',
+    BANK_TRANSFER: 'BANK_TRANSFER',
+    JAZZCASH: 'JAZZCASH',
+    EASYPAISA: 'EASYPAISA',
+    CREDIT: 'CREDIT',
+} as const;
+
 export const PAYMENT_METHODS = [
     {
         name: 'Cash',
-        code: 'CASH',
+        code: PAYMENT_METHOD_CODES.CASH,
         type: PaymentMethodType.CASH,
         providerCode: null,
         requires_reference: false,
@@ -12,7 +21,7 @@ export const PAYMENT_METHODS = [
 
     {
         name: 'Card',
-        code: 'CARD',
+        code: PAYMENT_METHOD_CODES.CARD,
         type: PaymentMethodType.CARD,
         providerCode: null,
         requires_reference: false,
@@ -21,7 +30,7 @@ export const PAYMENT_METHODS = [
 
     {
         name: 'Bank Transfer',
-        code: 'BANK_TRANSFER',
+        code: PAYMENT_METHOD_CODES.BANK_TRANSFER,
         type: PaymentMethodType.BANK_TRANSFER,
         providerCode: null,
         requires_reference: true,
@@ -30,7 +39,7 @@ export const PAYMENT_METHODS = [
 
     {
         name: 'JazzCash',
-        code: 'JAZZCASH',
+        code: PAYMENT_METHOD_CODES.JAZZCASH,
         type: PaymentMethodType.DIGITAL_WALLET,
         providerCode: 'JAZZCASH',
         requires_reference: true,
@@ -39,7 +48,7 @@ export const PAYMENT_METHODS = [
 
     {
         name: 'Easypaisa',
-        code: 'EASYPAISA',
+        code: PAYMENT_METHOD_CODES.EASYPAISA,
         type: PaymentMethodType.DIGITAL_WALLET,
         providerCode: 'EASYPAISA',
         requires_reference: true,
@@ -48,7 +57,7 @@ export const PAYMENT_METHODS = [
 
     {
         name: 'Credit',
-        code: 'CREDIT',
+        code: PAYMENT_METHOD_CODES.CREDIT,
         type: PaymentMethodType.CREDIT,
         providerCode: null,
         requires_reference: false,

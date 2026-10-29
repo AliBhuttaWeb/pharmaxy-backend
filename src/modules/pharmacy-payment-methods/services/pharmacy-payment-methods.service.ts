@@ -1,7 +1,9 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@gen/prisma/client';
 
 import { AuthenticatedUser } from '@/modules/auth/types/authenticated-user.type';
 import { getActivePharmacyId } from '@/common/helpers/auth.helper';
+import { PAYMENT_METHOD_CODES } from '@/common/constants';
 
 import {
     CreatePharmacyPaymentMethodDto,
@@ -19,6 +21,38 @@ export class PharmacyPaymentMethodsService {
         private readonly pharmacyPaymentMethodsRepository: PharmacyPaymentMethodsRepository,
         private readonly paymentMethodsRepository: PaymentMethodsRepository,
     ) {}
+
+    async attachCashPaymentMethod(pharmacyId: string, tx?: Prisma.TransactionClient) {
+        const cashMethod = await this.paymentMethodsRepository.findByCode(
+            PAYMENT_METHOD_CODES.CASH,
+            undefined,
+            tx,
+        );
+
+        if (!cashMethod) {
+            return null;
+        }
+
+        const existing = await this.pharmacyPaymentMethodsRepository.findByPaymentMethodId(
+            pharmacyId,
+            cashMethod.id,
+            tx,
+        );
+
+        if (existing) {
+            return existing;
+        }
+
+        return this.pharmacyPaymentMethodsRepository.create(
+            {
+                pharmacy_id: pharmacyId,
+                payment_method_id: cashMethod.id,
+                is_active: true,
+                display_order: 1,
+            },
+            tx,
+        );
+    }
 
     async list(user: AuthenticatedUser, query?: PharmacyPaymentMethodQueryDto) {
         const pharmacyId = getActivePharmacyId(user);
