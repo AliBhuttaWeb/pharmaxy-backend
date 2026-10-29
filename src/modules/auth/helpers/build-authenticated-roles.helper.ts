@@ -3,7 +3,7 @@ import { Role } from '@common/types';
 
 export function buildAuthenticatedRoles(user: UserWithRolesAndBranchesQuery): AuthenticatedRole[] {
     return user.user_roles.map((userRole) => ({
-        id: userRole.id,
+        id: userRole.role_id,
         name: userRole.role.name,
         role_scope: userRole.role.role_scope,
         signup_scope: userRole.role.signup_scope,

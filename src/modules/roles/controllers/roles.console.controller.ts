@@ -12,21 +12,22 @@ import { RolesService } from '../services/roles.service';
 export class RolesConsoleController {
     constructor(private readonly rolesService: RolesService) {}
 
-    @Get()
+    @Get('signup')
     @Public()
-    list(@Query() query: FindRolesQueryDto) {
-        return this.rolesService.list(query);
+    listSignup(@Query() query: FindRolesQueryDto) {
+        return this.rolesService.listSignup(query);
     }
 
-    @Get('me/children')
-    getMyChildren(@CurrentUser() user: AuthenticatedUser, @Query() query: FindRolesQueryDto) {
-        return this.rolesService.getChildRoles(user, query);
+    @Get()
+    @Permissions(ROLES_PERMISSIONS.ROLE_VIEW_LIST.name)
+    list(@Query() query: FindRolesQueryDto, @CurrentUser() user: AuthenticatedUser) {
+        return this.rolesService.list(query, user);
     }
 
     @Get(':id')
     @Permissions(ROLES_PERMISSIONS.ROLE_VIEW_DETAIL.name)
-    get(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.rolesService.get(id);
+    get(@Param('id', new ParseUUIDPipe()) id: string, @CurrentUser() user: AuthenticatedUser) {
+        return this.rolesService.get(id, user);
     }
 
     @Get(':id/permissions')
@@ -43,7 +44,8 @@ export class RolesConsoleController {
     assignPermissions(
         @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: UpdateRolePermissionsDto,
+        @CurrentUser() user: AuthenticatedUser,
     ) {
-        return this.rolesService.replacePermissions(id, dto);
+        return this.rolesService.replacePermissions(id, dto, user);
     }
 }

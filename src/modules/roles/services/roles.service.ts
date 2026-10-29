@@ -1,21 +1,43 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { MESSAGES } from '../constants/messages.constants';
-
 import { FindRolesQueryDto, UpdateRolePermissionsDto } from '../dtos';
-
 import { RolesRepository } from '../repositories/roles.repository';
 import { buildPaginationMeta } from '@/common/pagination';
 import type { AuthenticatedUser } from '@/modules/auth/types';
 import { groupPermissionsByModule } from '@/modules/permissions/helpers/permissions.helper';
+import { PermissionsService } from '@/modules/permissions/services/permissions.service';
+import { isSuperAdmin } from '@/common/helpers';
 
 @Injectable()
 export class RolesService {
-    constructor(private readonly rolesRepository: RolesRepository) {}
+    constructor(
+        private readonly rolesRepository: RolesRepository,
+        private readonly permissionsService: PermissionsService,
+    ) {}
 
-    async list(query: FindRolesQueryDto) {
+    async list(query: FindRolesQueryDto, currentUser: AuthenticatedUser) {
         const { page, limit } = query;
-        const { records, total } = await this.rolesRepository.findMany(query);
+        let allowedRoleIds: string[] | undefined;
+
+        if (!isSuperAdmin(currentUser.roles)) {
+            const parentRoleIds = (currentUser.roles ?? []).map((r) => r.id);
+            allowedRoleIds = await this.rolesRepository.findChildRoleIds(parentRoleIds);
+        }
+
+        const { records, total } = await this.rolesRepository.findMany(query, allowedRoleIds);
+
+        if (!total || !page || !limit) return { records };
+        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
+
+        return { records, pagination };
+    }
+
+    async listSignup(query: FindRolesQueryDto) {
+        const { page, limit } = query;
+        const { records, total } = await this.rolesRepository.findMany(query, undefined, {
+            signupOnly: true,
+        });
 
         if (!total || !page || !limit) return { records };
         const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
@@ -24,16 +46,7 @@ export class RolesService {
     }
 
     async getChildRoles(currentUser: AuthenticatedUser, query?: FindRolesQueryDto) {
-        const parentRoleIds = (currentUser.roles ?? []).map((r) => r.id);
-        const childRoleIds = await this.rolesRepository.findChildRoleIds(parentRoleIds);
-
-        const { page, limit } = query ?? {};
-        const { records, total } = await this.rolesRepository.findMany(query, childRoleIds);
-
-        if (!total || !page || !limit) return { records };
-        const pagination = buildPaginationMeta({ currentPage: page, limit, totalRecords: total });
-
-        return { records, pagination };
+        return this.list(query ?? {}, currentUser);
     }
 
     findChildRoleIds(parentRoleIds: string[]) {
@@ -62,24 +75,32 @@ export class RolesService {
         return this.rolesRepository.isSelfOrChildRole(parentRoleIds, targetRole);
     }
 
-    async get(id: string) {
+    async get(id: string, currentUser: AuthenticatedUser) {
         const role = await this.rolesRepository.findById(id);
 
         if (!role) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
+        if (!isSuperAdmin(currentUser.roles)) {
+            const parentRoleIds = (currentUser.roles ?? []).map((r) => r.id);
+            const isSelfOrChild = await this.rolesRepository.isSelfOrChildRole(parentRoleIds, role);
+            if (!isSelfOrChild) {
+                throw new ForbiddenException(MESSAGES.ERROR.ROLE_VIEW_FORBIDDEN);
+            }
+        }
+
         return { role };
     }
 
-    async getPermissions(roleId: string, currentUser?: AuthenticatedUser) {
+    async getPermissions(roleId: string, currentUser: AuthenticatedUser) {
         const role = await this.rolesRepository.findByIdWithPermissions(roleId);
 
         if (!role) {
             throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
         }
 
-        if (currentUser) {
+        if (!isSuperAdmin(currentUser.roles)) {
             const parentRoleIds = (currentUser.roles ?? []).map((r) => r.id);
             const isSelfOrChild = await this.rolesRepository.isSelfOrChildRole(parentRoleIds, role);
             if (!isSelfOrChild) {
@@ -92,12 +113,47 @@ export class RolesService {
         return { permissions: groupPermissionsByModule(permissions) };
     }
 
-    async replacePermissions(roleId: string, dto: UpdateRolePermissionsDto) {
-        await this.get(roleId);
-        const role = await this.rolesRepository.replacePermissions(roleId, dto.permission_ids);
+    async replacePermissions(
+        roleId: string,
+        dto: UpdateRolePermissionsDto,
+        currentUser: AuthenticatedUser,
+    ) {
+        const role = await this.rolesRepository.findById(roleId);
+
+        if (!role) {
+            throw new NotFoundException(MESSAGES.ERROR.NOT_FOUND);
+        }
+
+        if (!isSuperAdmin(currentUser.roles)) {
+            const parentRoleIds = (currentUser.roles ?? []).map((r) => r.id);
+            const isChild = await this.rolesRepository.isChildRole(parentRoleIds, role);
+            if (!isChild) {
+                throw new ForbiddenException(MESSAGES.ERROR.ROLE_PERMISSION_UPDATE_FORBIDDEN);
+            }
+
+            if (dto.permission_ids?.length) {
+                const allowedRoleIds =
+                    await this.rolesRepository.getSelfAndChildRoleIds(parentRoleIds);
+                const allowedPermissionIds =
+                    await this.permissionsService.getRolePermissions(allowedRoleIds);
+
+                for (const permissionId of dto.permission_ids) {
+                    if (!allowedPermissionIds.has(permissionId)) {
+                        throw new ForbiddenException(
+                            MESSAGES.ERROR.ROLE_ASSIGN_PERMISSION_FORBIDDEN,
+                        );
+                    }
+                }
+            }
+        }
+
+        const updatedRole = await this.rolesRepository.replacePermissions(
+            roleId,
+            dto.permission_ids,
+        );
 
         return {
-            permissions: role.role_permissions.map(({ permission }) => permission),
+            permissions: updatedRole.role_permissions.map(({ permission }) => permission),
         };
     }
 }

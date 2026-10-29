@@ -9,7 +9,11 @@ import { FindRolesQueryDto, UpdateRolePermissionsDto } from '../dtos';
 export class RolesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findMany(query?: FindRolesQueryDto, allowedRoleIds?: string[]) {
+    async findMany(
+        query?: FindRolesQueryDto,
+        allowedRoleIds?: string[],
+        options?: { signupOnly?: boolean },
+    ) {
         const {
             page,
             limit,
@@ -32,6 +36,8 @@ export class RolesRepository {
 
         if (signup_scope) {
             where.signup_scope = signup_scope;
+        } else if (options?.signupOnly) {
+            where.signup_scope = { not: null };
         }
 
         if (search) {
@@ -194,6 +200,23 @@ export class RolesRepository {
         };
     }
 
+    private async resolveRoleIds(roleOrUserRoleIds: string[]): Promise<string[]> {
+        if (!roleOrUserRoleIds.length) {
+            return [];
+        }
+
+        const userRoles = await this.prisma.userRole.findMany({
+            where: { id: { in: roleOrUserRoleIds } },
+            select: { role_id: true },
+        });
+
+        if (userRoles.length > 0) {
+            return [...new Set([...roleOrUserRoleIds, ...userRoles.map((ur) => ur.role_id)])];
+        }
+
+        return roleOrUserRoleIds;
+    }
+
     async isChildRole(
         parentRoleIds: string[],
         targetRole: { id: string; parent_id?: string | null },
@@ -202,16 +225,7 @@ export class RolesRepository {
             return false;
         }
 
-        let effectiveRoleIds = parentRoleIds;
-        const userRoles = await this.prisma.userRole.findMany({
-            where: { id: { in: parentRoleIds } },
-            select: { role_id: true },
-        });
-        if (userRoles.length > 0) {
-            effectiveRoleIds = [
-                ...new Set([...parentRoleIds, ...userRoles.map((ur) => ur.role_id)]),
-            ];
-        }
+        const effectiveRoleIds = await this.resolveRoleIds(parentRoleIds);
 
         // A role cannot be a child of itself
         if (effectiveRoleIds.includes(targetRole.id)) {
@@ -258,16 +272,7 @@ export class RolesRepository {
             return [];
         }
 
-        let effectiveRoleIds = parentRoleIds;
-        const userRoles = await this.prisma.userRole.findMany({
-            where: { id: { in: parentRoleIds } },
-            select: { role_id: true },
-        });
-        if (userRoles.length > 0) {
-            effectiveRoleIds = [
-                ...new Set([...parentRoleIds, ...userRoles.map((ur) => ur.role_id)]),
-            ];
-        }
+        const effectiveRoleIds = await this.resolveRoleIds(parentRoleIds);
 
         // Single lightweight query to load role parent mappings
         const roles = await this.prisma.role.findMany({
@@ -291,7 +296,7 @@ export class RolesRepository {
             const children = childrenMap.get(currentId);
             if (children) {
                 for (const childId of children) {
-                    if (!childRoleIds.has(childId) && !parentRoleIds.includes(childId)) {
+                    if (!childRoleIds.has(childId) && !effectiveRoleIds.includes(childId)) {
                         childRoleIds.add(childId);
                         queue.push(childId);
                     }
@@ -310,22 +315,13 @@ export class RolesRepository {
             return false;
         }
 
-        let effectiveRoleIds = parentRoleIds;
-        const userRoles = await this.prisma.userRole.findMany({
-            where: { id: { in: parentRoleIds } },
-            select: { role_id: true },
-        });
-        if (userRoles.length > 0) {
-            effectiveRoleIds = [
-                ...new Set([...parentRoleIds, ...userRoles.map((ur) => ur.role_id)]),
-            ];
-        }
+        const effectiveRoleIds = await this.resolveRoleIds(parentRoleIds);
 
         if (effectiveRoleIds.includes(targetRole.id)) {
             return true;
         }
 
-        return this.isChildRole(parentRoleIds, targetRole);
+        return this.isChildRole(effectiveRoleIds, targetRole);
     }
 
     async getSelfAndChildRoleIds(parentRoleIds: string[]): Promise<string[]> {
@@ -333,18 +329,8 @@ export class RolesRepository {
             return [];
         }
 
-        let effectiveRoleIds = parentRoleIds;
-        const userRoles = await this.prisma.userRole.findMany({
-            where: { id: { in: parentRoleIds } },
-            select: { role_id: true },
-        });
-        if (userRoles.length > 0) {
-            effectiveRoleIds = [
-                ...new Set([...parentRoleIds, ...userRoles.map((ur) => ur.role_id)]),
-            ];
-        }
-
-        const childRoleIds = await this.findChildRoleIds(parentRoleIds);
+        const effectiveRoleIds = await this.resolveRoleIds(parentRoleIds);
+        const childRoleIds = await this.findChildRoleIds(effectiveRoleIds);
         return Array.from(new Set([...effectiveRoleIds, ...childRoleIds]));
     }
 }

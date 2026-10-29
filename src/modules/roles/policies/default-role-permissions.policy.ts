@@ -174,8 +174,14 @@ export const DEFAULT_ROLE_PERMISSIONS = {
         // Hold Orders
         ...Object.values(permissions.HOLD_ORDERS_PERMISSIONS),
 
+        // Roles
+        permissions.ROLES_PERMISSIONS.ROLE_VIEW_LIST,
+        permissions.ROLES_PERMISSIONS.ROLE_VIEW_DETAIL,
         permissions.ROLES_PERMISSIONS.ROLE_ASSIGN_PERMISSION,
         permissions.ROLES_PERMISSIONS.VIEW_ROLE_PERMISSIONS_LIST,
+
+        // Permissions
+        permissions.PERMISSIONS_PERMISSIONS.PERMISSION_VIEW_LIST,
 
          // Nearby inventory
         ...Object.values(permissions.NEARBY_INVENTORIES_PERMISSIONS),
